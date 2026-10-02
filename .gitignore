@@ -1,0 +1,14 @@
+# .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo
+
+# Ideiglenes mentés a rétegekre bontás előttről
+C#/_backup/
+
+# Környezeti fájlok (minta: .env.example)
+.env
+.env.*
+!.env.example

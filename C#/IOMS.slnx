@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="IOMS.API/IOMS.API.csproj" />
+  <Project Path="IOMS.BLL/IOMS.BLL.csproj" />
+  <Project Path="IOMS.DAL/IOMS.DAL.csproj" />
+  <Project Path="IOMS.DTO/IOMS.DTO.csproj" />
+</Solution>

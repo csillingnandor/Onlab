@@ -1,0 +1,9 @@
+4. konzi
+-Keszlet info eladas alapjan
+-Rendeles szures: datum, nev, statusz, date intervallum
+-Dashboard statisztikak(szurheto ido alapjan): termekek eladasai felhasznalonkent, userenkent, kategoriankent sbt
+-Fluent validator
+-Refactor
+-IEntityTypeConfiguration
+-Kliensoldali Stock
+-UML

@@ -1,0 +1,79 @@
+/* Közös táblázat stílus (termék lista, rendelési tételek): görgethető keret kis képernyőn */
+.data-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background-color: #212529;
+  border: 1px solid #343a40;
+  border-radius: 0.5rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #dee2e6;
+}
+
+.data-table th {
+  padding: 0.75rem 1rem;
+  background-color: #1a1d20;
+  border-bottom: 1px solid #343a40;
+  color: #adb5bd;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #2c3036;
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.data-table tbody tr:hover {
+  background-color: #2c3036;
+}
+
+/* Számok jobbra igazítva, azonos szélességű számjegyekkel */
+.data-table .numeric {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table-strong {
+  font-weight: 600;
+  color: #f8f9fa;
+}
+
+.data-table-mono {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.8rem;
+  color: #adb5bd;
+}
+
+/* Figyelmeztető érték (pl. készlet a minimum szint alatt) */
+.data-table-warning {
+  color: #ffda6a;
+  font-weight: 600;
+}
+
+/* Összesítő sor a táblázat alján */
+.data-table tfoot td {
+  padding: 0.75rem 1rem;
+  background-color: #1a1d20;
+  border-top: 1px solid #343a40;
+  font-weight: 700;
+  color: #f8f9fa;
+}

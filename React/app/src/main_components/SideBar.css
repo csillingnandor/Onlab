@@ -1,0 +1,129 @@
+/* Sidebar főkonténer */
+.app-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: #212529;
+  color: #ffffff;
+  border-right: 1px solid #495057;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.app-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Lenyíló szekció fejléce */
+.sidebar-section-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.6rem 0.75rem;
+  color: #dee2e6;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.sidebar-section-toggle:hover {
+  background-color: #2c3036;
+  color: #ffffff;
+}
+
+.sidebar-section-toggle:focus-visible,
+.sidebar-nav-button:focus-visible {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+/* Ha a szekcióban van aktív oldal, a fejléc is kiemelt */
+.sidebar-section-toggle.has-active {
+  color: #6ea8fe;
+}
+
+.sidebar-chevron {
+  font-size: 0.75rem;
+  transition: transform 0.25s ease-in-out;
+}
+
+.sidebar-section.open .sidebar-chevron {
+  transform: rotate(180deg);
+}
+
+/* Nyitás/zárás animáció (grid 0fr -> 1fr) */
+.sidebar-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease-in-out;
+}
+
+.sidebar-section.open .sidebar-collapse {
+  grid-template-rows: 1fr;
+}
+
+.sidebar-collapse > .sidebar-nav-list {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Navigációs lista és linkek */
+.sidebar-nav-list {
+  list-style: none;
+  padding: 0 0 0 0.75rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-left: 1px solid #343a40;
+  margin-left: 1.1rem;
+}
+
+.sidebar-section.open .sidebar-nav-list {
+  padding-top: 0.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.sidebar-nav-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  color: #adb5bd;
+  font-size: 0.9rem;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.sidebar-nav-button:hover {
+  background-color: #2c3036;
+  color: #ffffff;
+}
+
+.sidebar-nav-button.active {
+  background-color: #0d6efd;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.sidebar-nav-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebar-nav-icon {
+  font-size: 1.1rem;
+}
