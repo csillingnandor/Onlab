@@ -1,33 +1,27 @@
 using IOMS.BLL.Mapping;
-using IOMS.DAL;
+using IOMS.DAL.Repositories;
 using IOMS.DTO;
-using Microsoft.EntityFrameworkCore;
 
 namespace IOMS.BLL.Services;
 
 public class CustomerOrderItemService : ICustomerOrderItemService
 {
-    private readonly AppDbContext _context;
+    private readonly ICustomerOrderItemRepository _items;
 
-    public CustomerOrderItemService(AppDbContext context)
+    public CustomerOrderItemService(ICustomerOrderItemRepository items)
     {
-        _context = context;
+        _items = items;
     }
 
     public async Task<IReadOnlyList<CustomerOrderItemDto>> GetAllAsync(CancellationToken ct = default)
     {
-        return await _context.CustomerOrderItems
-            .AsNoTracking()
-            .Select(DtoProjections.CustomerOrderItem)
-            .ToListAsync(ct);
+        var items = await _items.GetAllAsync(ct);
+        return items.Select(i => i.ToDto()).ToList();
     }
 
     public async Task<IReadOnlyList<CustomerOrderItemDto>> GetByOrderAsync(int orderId, CancellationToken ct = default)
     {
-        return await _context.CustomerOrderItems
-            .AsNoTracking()
-            .Where(i => i.CustomerOrderId == orderId)
-            .Select(DtoProjections.CustomerOrderItem)
-            .ToListAsync(ct);
+        var items = await _items.GetByOrderAsync(orderId, ct);
+        return items.Select(i => i.ToDto()).ToList();
     }
 }
