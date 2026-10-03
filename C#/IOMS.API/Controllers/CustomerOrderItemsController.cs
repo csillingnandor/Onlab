@@ -16,13 +16,13 @@ public class CustomerOrderItemsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CustomerOrderItemDto>>> GetAll(CancellationToken ct)
+    public async Task<ActionResult<IEnumerable<CustomerOrderItemData>>> GetAll(CancellationToken ct)
     {
         return Ok(await _itemService.GetAllAsync(ct));
     }
 
     [HttpGet("by-order/{orderId:int}")]
-    public async Task<ActionResult<IEnumerable<CustomerOrderItemDto>>> GetByOrder(int orderId, CancellationToken ct)
+    public async Task<ActionResult<IEnumerable<CustomerOrderItemData>>> GetByOrder(int orderId, CancellationToken ct)
     {
         return Ok(await _itemService.GetByOrderAsync(orderId, ct));
     }

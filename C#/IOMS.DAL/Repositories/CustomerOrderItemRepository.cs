@@ -1,4 +1,5 @@
-using IOMS.DAL.Entities;
+using IOMS.DAL.Mapping;
+using IOMS.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace IOMS.DAL.Repositories;
@@ -12,22 +13,22 @@ public class CustomerOrderItemRepository : ICustomerOrderItemRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderItem>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<CustomerOrderItemData>> GetAllAsync(CancellationToken ct = default)
     {
         return await _context.CustomerOrderItems
             .AsNoTracking()
-            .Include(i => i.Product)
             .OrderBy(i => i.Id)
+            .Select(DataProjections.CustomerOrderItem)
             .ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<CustomerOrderItem>> GetByOrderAsync(int orderId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<CustomerOrderItemData>> GetByOrderAsync(int orderId, CancellationToken ct = default)
     {
         return await _context.CustomerOrderItems
             .AsNoTracking()
-            .Include(i => i.Product)
             .Where(i => i.CustomerOrderId == orderId)
             .OrderBy(i => i.Id)
+            .Select(DataProjections.CustomerOrderItem)
             .ToListAsync(ct);
     }
 }

@@ -4,6 +4,6 @@ namespace IOMS.BLL.Services;
 
 public interface ICustomerOrderItemService
 {
-    Task<IReadOnlyList<CustomerOrderItemDto>> GetAllAsync(CancellationToken ct = default);
-    Task<IReadOnlyList<CustomerOrderItemDto>> GetByOrderAsync(int orderId, CancellationToken ct = default);
+    Task<IReadOnlyList<CustomerOrderItemData>> GetAllAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<CustomerOrderItemData>> GetByOrderAsync(int orderId, CancellationToken ct = default);
 }

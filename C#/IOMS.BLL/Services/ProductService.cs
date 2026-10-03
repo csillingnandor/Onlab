@@ -1,6 +1,4 @@
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Mapping;
-using IOMS.DAL.Entities;
 using IOMS.DAL.Repositories;
 using IOMS.DTO;
 
@@ -15,36 +13,22 @@ public class ProductService : IProductService
         _products = products;
     }
 
-    public async Task<IReadOnlyList<ProductDto>> GetAllAsync(CancellationToken ct = default)
+    public Task<IReadOnlyList<ProductData>> GetAllAsync(CancellationToken ct = default)
     {
-        var products = await _products.GetAllAsync(ct);
-        return products.Select(p => p.ToDto()).ToList();
+        return _products.GetAllAsync(ct);
     }
 
-    public async Task<ProductDto?> GetByIdAsync(int id, CancellationToken ct = default)
+    public Task<ProductData?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        var product = await _products.GetByIdAsync(id, ct);
-        return product?.ToDto();
+        return _products.GetByIdAsync(id, ct);
     }
 
-    public async Task<ProductDto> CreateAsync(CreateProductDto dto, CancellationToken ct = default)
+    public async Task<ProductData> CreateAsync(CreateProductData data, CancellationToken ct = default)
     {
         // Az SKU egyedi index; előre ellenőrizzük, hogy 500 helyett érthető hibát adjunk.
-        if (await _products.SkuExistsAsync(dto.SKU, ct))
-            throw new BusinessValidationException(nameof(dto.SKU), $"Már létezik termék ezzel az SKU-val: {dto.SKU}");
+        if (await _products.SkuExistsAsync(data.SKU, ct))
+            throw new BusinessValidationException(nameof(data.SKU), $"Már létezik termék ezzel az SKU-val: {data.SKU}");
 
-        var product = new Product
-        {
-            Name = dto.Name,
-            SKU = dto.SKU,
-            Category = dto.Category ?? string.Empty,
-            StockQuantity = dto.StockQuantity,
-            MinStockLevel = dto.MinStockLevel,
-            Price = dto.Price,
-        };
-
-        await _products.AddAsync(product, ct);
-
-        return product.ToDto();
+        return await _products.CreateAsync(data, ct);
     }
 }

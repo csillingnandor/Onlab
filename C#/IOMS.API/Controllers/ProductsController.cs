@@ -16,22 +16,22 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll(CancellationToken ct)
+    public async Task<ActionResult<IEnumerable<ProductData>>> GetAll(CancellationToken ct)
     {
         return Ok(await _productService.GetAllAsync(ct));
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ProductDto>> GetById(int id, CancellationToken ct)
+    public async Task<ActionResult<ProductData>> GetById(int id, CancellationToken ct)
     {
         var product = await _productService.GetByIdAsync(id, ct);
         return product is null ? NotFound() : Ok(product);
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> Create(CreateProductDto dto, CancellationToken ct)
+    public async Task<ActionResult<ProductData>> Create(CreateProductData data, CancellationToken ct)
     {
-        var created = await _productService.CreateAsync(dto, ct);
+        var created = await _productService.CreateAsync(data, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 }

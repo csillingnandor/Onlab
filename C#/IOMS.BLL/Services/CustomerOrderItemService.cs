@@ -1,4 +1,3 @@
-using IOMS.BLL.Mapping;
 using IOMS.DAL.Repositories;
 using IOMS.DTO;
 
@@ -13,15 +12,13 @@ public class CustomerOrderItemService : ICustomerOrderItemService
         _items = items;
     }
 
-    public async Task<IReadOnlyList<CustomerOrderItemDto>> GetAllAsync(CancellationToken ct = default)
+    public Task<IReadOnlyList<CustomerOrderItemData>> GetAllAsync(CancellationToken ct = default)
     {
-        var items = await _items.GetAllAsync(ct);
-        return items.Select(i => i.ToDto()).ToList();
+        return _items.GetAllAsync(ct);
     }
 
-    public async Task<IReadOnlyList<CustomerOrderItemDto>> GetByOrderAsync(int orderId, CancellationToken ct = default)
+    public Task<IReadOnlyList<CustomerOrderItemData>> GetByOrderAsync(int orderId, CancellationToken ct = default)
     {
-        var items = await _items.GetByOrderAsync(orderId, ct);
-        return items.Select(i => i.ToDto()).ToList();
+        return _items.GetByOrderAsync(orderId, ct);
     }
 }
