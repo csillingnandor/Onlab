@@ -28,6 +28,15 @@ public class ProductsController : ControllerBase
         return product is null ? NotFound() : Ok(product);
     }
 
+    // GET api/products/5/sales?from=2026-09-01&to=2026-09-30
+    [HttpGet("{id:int}/sales")]
+    public async Task<ActionResult<ProductSaleStatisticsData>> GetSaleStatistics(
+        int id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to, CancellationToken ct)
+    {
+        var statistics = await _productService.GetSaleStatisticsAsync(id, from, to, ct);
+        return statistics is null ? NotFound() : Ok(statistics);
+    }
+
     [HttpPost]
     public async Task<ActionResult<ProductData>> Create(CreateProductData data, CancellationToken ct)
     {

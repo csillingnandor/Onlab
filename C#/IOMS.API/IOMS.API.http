@@ -10,6 +10,17 @@ Accept: application/json
 
 ###
 
+# Eladási statisztika (csak a Delivered rendelések számítanak)
+GET {{host}}/api/products/1/sales?from=2026-09-01&to=2026-09-30
+Accept: application/json
+
+###
+
+GET {{host}}/api/warehouses
+Accept: application/json
+
+###
+
 GET {{host}}/api/customerorders
 Accept: application/json
 

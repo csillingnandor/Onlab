@@ -1,4 +1,4 @@
-import type { Product } from '../util/Types.js';
+import type { Product, ProductSaleStatistics } from '../util/Types.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/products';
 
@@ -18,6 +18,33 @@ const productService = {
     if (!response.ok) throw new Error('Nem sikerült a termék mentése.');
     return response.json();
   },
+
+  // from / to: 'YYYY-MM-DD'; ha elhagyjuk, a backend az utolsó 30 napot adja
+  getSaleStatistics: async (productId: number, from?: string, to?: string): Promise<ProductSaleStatistics> => {
+    const params = new URLSearchParams();
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
+    const query = params.size > 0 ? `?${params}` : '';
+
+    const response = await fetch(`${API_BASE_URL}/${productId}/sales${query}`);
+    if (response.status === 404) throw new Error('Nincs ilyen termék.');
+    if (response.status === 400) throw new Error(await readValidationErrors(response));
+    if (!response.ok) throw new Error('Nem sikerült a termék eladási statisztikáinak lekérése.');
+    return response.json();
+  },
 };
+
+// A backend 400-as ValidationProblemDetails válaszából kiszedi az üzeneteket
+// (pl. "A kezdő dátum nem lehet későbbi a záró dátumnál.").
+async function readValidationErrors(response: Response): Promise<string> {
+  try {
+    const problem: { errors?: Record<string, string[]> } = await response.json();
+    const messages = Object.values(problem.errors ?? {}).flat();
+    if (messages.length > 0) return messages.join(' ');
+  } catch {
+    // nem JSON válasz: marad az általános üzenet
+  }
+  return 'Hibás lekérdezési paraméterek.';
+}
 
 export default productService;

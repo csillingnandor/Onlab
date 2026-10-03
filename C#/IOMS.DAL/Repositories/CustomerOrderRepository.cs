@@ -72,7 +72,58 @@ public class CustomerOrderRepository : ICustomerOrderRepository
         return (await GetByIdAsync(order.Id, ct))!;
     }
 
-    public async Task<IReadOnlyList<DailySalesResult>> GetDailySalesForProductAsync(
+    public async Task<ProductSaleStatisticsData?> GetProductSaleStatisticsAsync(
+        int productId, DateOnly from, DateOnly to, CancellationToken ct = default)
+    {
+        var productName = await _context.Products
+            .Where(p => p.Id == productId)
+            .Select(p => p.Name)
+            .SingleOrDefaultAsync(ct);
+
+        if (productName is null)
+            return null;
+
+        // A zárt [from, to] napokból félig nyitott [from, to+1) időintervallum, hogy a záró nap egésze benne legyen.
+        var sales = await GetDailySalesForProductAsync(
+            productId,
+            from.ToDateTime(TimeOnly.MinValue),
+            to.AddDays(1).ToDateTime(TimeOnly.MinValue),
+            ct);
+
+        var salesByDay = sales.ToDictionary(s => DateOnly.FromDateTime(s.Date));
+
+        // Az eladás nélküli napok is szerepeljenek (0 értékkel), hogy a diagram folytonos legyen.
+        var daily = new List<DailyProductSaleData>();
+        for (var day = from; day <= to; day = day.AddDays(1))
+        {
+            salesByDay.TryGetValue(day, out var s);
+            daily.Add(new DailyProductSaleData
+            {
+                Date = day,
+                Quantity = s?.Quantity ?? 0,
+                Revenue = s?.Revenue ?? 0,
+                OrderCount = s?.OrderCount ?? 0,
+            });
+        }
+
+        var totalQuantity = daily.Sum(d => d.Quantity);
+        var totalRevenue = daily.Sum(d => d.Revenue);
+
+        return new ProductSaleStatisticsData
+        {
+            ProductId = productId,
+            ProductName = productName,
+            From = from,
+            To = to,
+            TotalQuantity = totalQuantity,
+            TotalRevenue = totalRevenue,
+            AverageUnitPrice = totalQuantity > 0 ? totalRevenue / totalQuantity : null,
+            Daily = daily,
+        };
+    }
+
+    // Csak a kiszállított (Delivered) rendelések számítanak eladásnak; az intervallum [from, toExclusive).
+    private async Task<IReadOnlyList<DailySalesResult>> GetDailySalesForProductAsync(
         int productId, DateTime from, DateTime toExclusive, CancellationToken ct = default)
     {
         return await _context.CustomerOrderItems

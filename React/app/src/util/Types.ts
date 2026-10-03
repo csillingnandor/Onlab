@@ -39,3 +39,23 @@ export type CustomerOrder = {
     totalAmount: number;
     items: CustomerOrderItem[];
 };
+
+// A backend DailyProductSaleData-jának megfelelő alak
+export type DailyProductSale = {
+    date: string; // 'YYYY-MM-DD', időpont nélkül
+    quantity: number;
+    revenue: number;
+    orderCount: number;
+};
+
+// A backend ProductSaleStatisticsData-jának megfelelő alak (csak a Delivered rendelések számítanak)
+export type ProductSaleStatistics = {
+    productId: number;
+    productName: string;
+    from: string; // 'YYYY-MM-DD', zárt intervallum: a to napja is benne van
+    to: string; // 'YYYY-MM-DD'
+    totalQuantity: number;
+    totalRevenue: number;
+    averageUnitPrice: number | null; // null, ha az időszakban nem volt eladás
+    daily: DailyProductSale[];
+};

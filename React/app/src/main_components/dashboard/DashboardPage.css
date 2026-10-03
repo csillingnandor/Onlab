@@ -1,0 +1,77 @@
+/* Műszerfal: kitölti a jobb oldali területet (mint a .order-page) */
+.dashboard-page {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.dashboard-page-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2d3238;
+}
+
+.dashboard-page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f8f9fa;
+}
+
+.dashboard-page-subtitle {
+  margin: 0.25rem 0 0;
+  color: #adb5bd;
+}
+
+/* Termékeladások panel: cím balra, vezérlők jobbra; keskeny nézetben egymás alá törnek */
+.sales-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.sales-panel-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.sales-panel-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.product-select {
+  width: auto;
+  max-width: 18rem;
+}
+
+.sales-panel-body {
+  transition: opacity 0.15s ease-in-out;
+}
+
+.sales-panel-body.is-loading {
+  opacity: 0.5;
+}
+
+/* A ResponsiveContainer ehhez a magassághoz igazodik */
+.sales-chart {
+  height: 320px;
+}
+
+.date-range-menu {
+  min-width: 14rem;
+}
+
+.date-range-menu-custom {
+  padding: 0.5rem 1rem 0.25rem;
+}

@@ -49,6 +49,16 @@ internal static class DataProjections
             .ToList(),
     };
 
+    public static readonly Expression<Func<Warehouse, WarehouseData>> Warehouse = w => new WarehouseData
+    {
+        Id = w.Id,
+        Name = w.Name,
+        Address = w.Address,
+        Capacity = w.Capacity,
+        Latitude = w.Latitude,
+        Longitude = w.Longitude,
+    };
+
     // Metódushívás, nem sima cast: így az EF a beolvasott értéken memóriában futtatja,
     // a cast-ot viszont SQL CAST-ra fordítaná, ami a stringként tárolt státusznál elszáll.
     private static DataOrderStatus ToData(EntityOrderStatus status) => status switch

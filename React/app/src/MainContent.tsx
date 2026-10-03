@@ -3,6 +3,7 @@ import SideBar from './main_components/SideBar.js';
 import ProductPage from './main_components/product/ProductPage.js';
 import CustomerOrderPage from './main_components/order/CustomerOrderPage.js';
 import './MainContent.css';
+import DashboardPage from './main_components/dashboard/DashboardPage.js';
 
 export default function MainContent() {
   return (
@@ -10,7 +11,7 @@ export default function MainContent() {
       <SideBar />
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<div>Dashboard Nézet</div>} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/warehouse" element={<div>Raktár Nézet</div>} />
         <Route path="/customer-orders" element={<CustomerOrderPage />} />
