@@ -59,6 +59,31 @@ internal static class DataProjections
         Longitude = w.Longitude,
     };
 
+    public static readonly Expression<Func<SupplierOrderItem, SupplierOrderItemData>> SupplierOrderItem = i => new SupplierOrderItemData
+    {
+        Id = i.Id,
+        SupplierOrderId = i.SupplierOrderId,
+        ProductId = i.ProductId,
+        ProductName = i.Product.Name,
+        UnitCost = i.UnitCost,
+        Quantity = i.Quantity,
+    };
+
+    public static readonly Expression<Func<SupplierOrder, SupplierOrderData>> SupplierOrder = o => new SupplierOrderData
+    {
+        Id = o.Id,
+        SupplierId = o.SupplierId,
+        SupplierName = o.Supplier.Name,
+        OrderDate = o.OrderDate,
+        Status = ToData(o.Status),
+        TotalCost = o.Items.Sum(i => i.UnitCost * i.Quantity),
+        Items = o.Items
+            .AsQueryable()
+            .OrderBy(i => i.Id)
+            .Select(SupplierOrderItem)
+            .ToList(),
+    };
+
     // Metódushívás, nem sima cast: így az EF a beolvasott értéken memóriában futtatja,
     // a cast-ot viszont SQL CAST-ra fordítaná, ami a stringként tárolt státusznál elszáll.
     private static DataOrderStatus ToData(EntityOrderStatus status) => status switch

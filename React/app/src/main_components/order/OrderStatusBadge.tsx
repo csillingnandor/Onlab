@@ -1,7 +1,7 @@
 import type { OrderStatus } from '../../util/Types.js';
 import './OrderStatusBadge.css';
 
-const statusLabels: Record<OrderStatus, string> = {
+export const statusLabels: Record<OrderStatus, string> = {
   Pending: 'Függőben',
   Shipped: 'Szállítás alatt',
   Delivered: 'Kézbesítve',

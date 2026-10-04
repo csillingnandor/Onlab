@@ -40,6 +40,39 @@ export type CustomerOrder = {
     items: CustomerOrderItem[];
 };
 
+// A backend SupplierOrderItemData-jának megfelelő alak
+export type SupplierOrderItem = {
+    id: number;
+    supplierOrderId: number;
+    productId: number;
+    productName: string;
+    unitCost: number; // a beszállítónak fizetett egységár
+    quantity: number;
+};
+
+// A backend SupplierOrderData-jának megfelelő alak
+export type SupplierOrder = {
+    id: number;
+    supplierId: number;
+    supplierName: string;
+    orderDate: string; // ISO dátum szöveg
+    status: OrderStatus;
+    totalCost: number;
+    items: SupplierOrderItem[];
+};
+
+// A backend WarehouseData-jának megfelelő alak
+export type Warehouse = {
+    id: number;
+    name: string;
+    address: string;
+    capacity: number;
+    latitude: number | null; // null, ha nincs megadva hely (a térképen nem jelenik meg)
+    longitude: number | null;
+};
+
+export type WarehouseViewMode = 'table' | 'map';
+
 // A backend DailyProductSaleData-jának megfelelő alak
 export type DailyProductSale = {
     date: string; // 'YYYY-MM-DD', időpont nélkül

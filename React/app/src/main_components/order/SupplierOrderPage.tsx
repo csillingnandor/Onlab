@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import orderService from '../../services/orderService.js';
-import type { CustomerOrder } from '../../util/Types.js';
+import supplierOrderService from '../../services/supplierOrderService.js';
+import type { SupplierOrder } from '../../util/Types.js';
 import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } from '../../util/orderFilter.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
@@ -8,10 +8,11 @@ import OrderFilterToggle from './OrderFilterToggle.js';
 import '../../DataTable.css';
 import './CustomerOrderPage.css';
 
-const FILTER_PANEL_ID = 'customer-order-filter';
+const FILTER_PANEL_ID = 'supplier-order-filter';
 
-export default function CustomerOrderPage() {
-  const [orders, setOrders] = useState<CustomerOrder[]>([]);
+// A vevői rendelések oldalának párja: ugyanaz az elrendezés és harmonika, beszállítóval és beszerzési árral.
+export default function SupplierOrderPage() {
+  const [orders, setOrders] = useState<SupplierOrder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
@@ -21,7 +22,7 @@ export default function CustomerOrderPage() {
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
 
-    orderService.getAll()
+    supplierOrderService.getAll()
       .then((data) => {
         if (!ignore) setOrders(data);
       })
@@ -39,7 +40,7 @@ export default function CustomerOrderPage() {
 
   // Kliensoldali szűrés a betöltött listán
   const visibleOrders = useMemo(
-    () => filterOrders(orders, filter, (order) => order.customerName),
+    () => filterOrders(orders, filter, (order) => order.supplierName),
     [orders, filter],
   );
   const activeFilterCount = countActiveFilters(filter);
@@ -65,13 +66,13 @@ export default function CustomerOrderPage() {
 
   const itemCount = visibleOrders.reduce((sum, order) => sum + order.items.length, 0);
 
-  if (loading) return <div className="p-4 text-white">Rendelések betöltése...</div>;
+  if (loading) return <div className="p-4 text-white">Beszerzési rendelések betöltése...</div>;
 
   return (
     <div className="order-page">
       <header className="order-page-header">
         <div>
-          <h1>Vevői rendelések</h1>
+          <h1>Beszerzési rendelések</h1>
           <p className="order-page-subtitle">
             {activeFilterCount > 0 ? `${visibleOrders.length} / ${orders.length}` : orders.length} rendelés,{' '}
             {itemCount} tétel
@@ -103,14 +104,14 @@ export default function CustomerOrderPage() {
           value={filter}
           onChange={setFilter}
           onClear={() => setFilter(emptyOrderFilter)}
-          nameLabel="Vevő"
+          nameLabel="Beszállító"
         />
       )}
 
       {error ? (
         <div className="alert alert-danger" role="alert">{error}</div>
       ) : orders.length === 0 ? (
-        <div className="alert alert-info text-center" role="alert">Nincsenek rendelések.</div>
+        <div className="alert alert-info text-center" role="alert">Nincsenek beszerzési rendelések.</div>
       ) : visibleOrders.length === 0 ? (
         <div className="alert alert-info text-center" role="status">Nincs a szűrésnek megfelelő rendelés.</div>
       ) : (
@@ -119,14 +120,14 @@ export default function CustomerOrderPage() {
             <OrderAccordionItem
               key={order.id}
               id={order.id}
-              partyName={order.customerName}
+              partyName={order.supplierName}
               orderDate={order.orderDate}
               status={order.status}
-              totalAmount={order.totalAmount}
+              totalAmount={order.totalCost}
               items={order.items.map((item) => ({
                 id: item.id,
                 productName: item.productName,
-                unitPrice: item.productPrice,
+                unitPrice: item.unitCost,
                 quantity: item.quantity,
               }))}
               isOpen={openIds.has(order.id)}

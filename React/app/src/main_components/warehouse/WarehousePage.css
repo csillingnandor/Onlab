@@ -1,0 +1,60 @@
+/* Raktárak oldal: kitölti a jobb oldali területet (mint az .order-page) */
+.warehouse-page {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+/* Fejléc: cím balra, nézetváltó jobbra */
+.warehouse-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2d3238;
+}
+
+.warehouse-page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f8f9fa;
+}
+
+.warehouse-page-subtitle {
+  margin: 0.25rem 0 0;
+  color: #adb5bd;
+}
+
+/* A Leaflet-térképnek fix magasság kell, különben 0 magas lesz */
+.warehouse-map {
+  height: 520px;
+  border: 1px solid #2d3238;
+  border-radius: 0.5rem;
+}
+
+/* Sötét térkép a Darkly témához: csak a csempéket invertáljuk, a markereket és a popupot nem */
+.warehouse-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+
+.warehouse-map.leaflet-container {
+  background: #1f2226;
+}
+
+.warehouse-map-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: #adb5bd;
+}
+
+/* A popup világos hátterén ne a Darkly világos szövegszíne öröklődjön */
+.warehouse-map .leaflet-popup-content {
+  color: #212529;
+}

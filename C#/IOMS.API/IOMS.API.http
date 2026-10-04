@@ -21,6 +21,11 @@ Accept: application/json
 
 ###
 
+GET {{host}}/api/supplierorders
+Accept: application/json
+
+###
+
 GET {{host}}/api/customerorders
 Accept: application/json
 

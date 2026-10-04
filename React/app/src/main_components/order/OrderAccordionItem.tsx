@@ -1,16 +1,38 @@
-import type { CustomerOrder } from '../../util/Types.js';
+import type { OrderStatus } from '../../util/Types.js';
 import { dateTimeFormatter, priceFormatter } from '../../util/format.js';
 import OrderStatusBadge from './OrderStatusBadge.js';
 
+// Közös tételalak, hogy a vevői és a beszerzési rendelés is ugyanazt a komponenst használja
+export type OrderLine = {
+  id: number;
+  productName: string;
+  unitPrice: number;
+  quantity: number;
+};
+
 type OrderAccordionItemProps = {
-  order: CustomerOrder;
+  id: number;
+  partyName: string; // vevő vagy beszállító neve
+  orderDate: string;
+  status: OrderStatus;
+  totalAmount: number;
+  items: OrderLine[];
   isOpen: boolean;
   onToggle: () => void;
 };
 
-export default function OrderAccordionItem({ order, isOpen, onToggle }: OrderAccordionItemProps) {
-  const panelId = `order-panel-${order.id}`;
-  const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
+export default function OrderAccordionItem({
+  id,
+  partyName,
+  orderDate,
+  status,
+  totalAmount,
+  items,
+  isOpen,
+  onToggle,
+}: OrderAccordionItemProps) {
+  const panelId = `order-panel-${id}`;
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <section className={`order-accordion ${isOpen ? 'open' : ''}`}>
@@ -22,20 +44,20 @@ export default function OrderAccordionItem({ order, isOpen, onToggle }: OrderAcc
         aria-controls={panelId}
       >
         <i className="bi bi-chevron-right order-accordion-chevron" aria-hidden="true"></i>
-        <span className="order-accordion-id">#{order.id}</span>
+        <span className="order-accordion-id">#{id}</span>
         <span className="order-accordion-customer">
-          <span className="order-accordion-customer-name">{order.customerName}</span>
-          <span className="order-accordion-date">{dateTimeFormatter.format(new Date(order.orderDate))}</span>
+          <span className="order-accordion-customer-name">{partyName}</span>
+          <span className="order-accordion-date">{dateTimeFormatter.format(new Date(orderDate))}</span>
         </span>
-        <span className="order-accordion-count">{order.items.length} tétel</span>
-        <OrderStatusBadge status={order.status} />
-        <span className="order-accordion-total">{priceFormatter.format(order.totalAmount)}</span>
+        <span className="order-accordion-count">{items.length} tétel</span>
+        <OrderStatusBadge status={status} />
+        <span className="order-accordion-total">{priceFormatter.format(totalAmount)}</span>
       </button>
 
       {/* inert: becsukva a tartalom ne legyen elérhető billentyűzettel / képernyőolvasóval */}
       <div id={panelId} className="order-accordion-collapse" inert={!isOpen}>
         <div className="order-accordion-body">
-          {order.items.length === 0 ? (
+          {items.length === 0 ? (
             <p className="order-accordion-empty">Ennek a rendelésnek nincsenek tételei.</p>
           ) : (
             <div className="data-table-wrapper">
@@ -49,12 +71,12 @@ export default function OrderAccordionItem({ order, isOpen, onToggle }: OrderAcc
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map((item) => (
+                  {items.map((item) => (
                     <tr key={item.id}>
                       <td className="data-table-strong">{item.productName}</td>
-                      <td className="numeric">{priceFormatter.format(item.productPrice)}</td>
+                      <td className="numeric">{priceFormatter.format(item.unitPrice)}</td>
                       <td className="numeric">{item.quantity} db</td>
-                      <td className="numeric">{priceFormatter.format(item.productPrice * item.quantity)}</td>
+                      <td className="numeric">{priceFormatter.format(item.unitPrice * item.quantity)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -62,7 +84,7 @@ export default function OrderAccordionItem({ order, isOpen, onToggle }: OrderAcc
                   <tr>
                     <td colSpan={2}>Összesen</td>
                     <td className="numeric">{totalQuantity} db</td>
-                    <td className="numeric">{priceFormatter.format(order.totalAmount)}</td>
+                    <td className="numeric">{priceFormatter.format(totalAmount)}</td>
                   </tr>
                 </tfoot>
               </table>
