@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
 namespace IOMS.DAL.Entities;
 
+// Adatbázis-leképezés: Configurations/CustomerOrderItemConfiguration.cs
 public class CustomerOrderItem
 {
     public int Id { get; set; }
@@ -14,6 +13,6 @@ public class CustomerOrderItem
 
     public int Quantity { get; set; }
 
-    [Column(TypeName = "decimal(18,2)")]
+    // A rendeléskori egységár (a termék későbbi árváltozása nem írja át)
     public decimal UnitPrice { get; set; }
 }

@@ -20,53 +20,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<CustomerOrder>(order =>
-        {
-            order.Property(o => o.Status).HasConversion<string>().HasMaxLength(20);
-
-            order.HasOne(o => o.Customer)
-                 .WithMany(c => c.Orders)
-                 .HasForeignKey(o => o.CustomerId)
-                 .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<CustomerOrderItem>(item =>
-        {
-            item.HasOne(i => i.CustomerOrder)
-                .WithMany(o => o.Items)
-                .HasForeignKey(i => i.CustomerOrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            item.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<SupplierOrder>(order =>
-        {
-            order.Property(o => o.Status).HasConversion<string>().HasMaxLength(20);
-
-            order.HasOne(o => o.Supplier)
-                 .WithMany(s => s.Orders)
-                 .HasForeignKey(o => o.SupplierId)
-                 .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<SupplierOrderItem>(item =>
-        {
-            item.HasOne(i => i.SupplierOrder)
-                .WithMany(o => o.Items)
-                .HasForeignKey(i => i.SupplierOrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            item.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-
-
-        SeedData.Seed(modelBuilder);
+        // Entitásonkénti leképezés és seed adatok: Configurations/*Configuration.cs
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }

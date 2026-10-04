@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
 namespace IOMS.DAL.Entities;
 
+// Adatbázis-leképezés: Configurations/SupplierOrderItemConfiguration.cs
 public class SupplierOrderItem
 {
     public int Id { get; set; }
@@ -14,7 +13,6 @@ public class SupplierOrderItem
 
     public int Quantity { get; set; }
 
-    // What we paid the supplier per unit
-    [Column(TypeName = "decimal(18,2)")]
+    // A beszállítónak fizetett egységár
     public decimal UnitCost { get; set; }
 }

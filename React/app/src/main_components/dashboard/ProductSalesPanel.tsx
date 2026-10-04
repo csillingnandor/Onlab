@@ -2,43 +2,26 @@ import { useEffect, useState } from 'react';
 import { Alert, Card, Spinner, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import productService from '../../services/productService.js';
 import type { Product, ProductSaleStatistics } from '../../util/Types.js';
-import { presetRange, type DateRange } from '../../util/dateRange.js';
-import DateRangeMenu from './DateRangeMenu.js';
+import type { DateRange } from '../../util/dateRange.js';
+import { priceFormatter } from '../../util/format.js';
 import ProductSelect from './ProductSelect.js';
 import SalesBarChart, { type SalesMetric } from './SalesBarChart.js';
 
-export default function ProductSalesPanel() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState<boolean>(true);
-  const [productId, setProductId] = useState<number | null>(null);
-  const [range, setRange] = useState<DateRange>(() => presetRange('month'));
+type ProductSalesPanelProps = {
+  products: Product[]; // név szerint rendezve; a műszerfal tölti be
+  productsLoading: boolean;
+  range: DateRange; // a műszerfal közös időszaka
+};
+
+export default function ProductSalesPanel({ products, productsLoading, range }: ProductSalesPanelProps) {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [metric, setMetric] = useState<SalesMetric>('quantity');
   const [statistics, setStatistics] = useState<ProductSaleStatistics | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Terméklista a választóhoz: egyszer töltjük be, és alapból az első (név szerint) termék lesz kiválasztva.
-  useEffect(() => {
-    let ignore = false;
-
-    productService.getAll()
-      .then((data) => {
-        if (ignore) return;
-        const sorted = [...data].sort((a, b) => a.name.localeCompare(b.name, 'hu'));
-        setProducts(sorted);
-        setProductId((current) => current ?? sorted[0]?.id ?? null);
-      })
-      .catch((err: unknown) => {
-        if (!ignore) setError(err instanceof Error ? err.message : 'Nem sikerült a termékek betöltése.');
-      })
-      .finally(() => {
-        if (!ignore) setProductsLoading(false);
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  // Amíg a felhasználó nem választott, az első termék látszik
+  const productId = selectedId ?? products[0]?.id ?? null;
 
   // Statisztika: a termék vagy az időszak változásakor újratöltjük.
   useEffect(() => {
@@ -91,23 +74,34 @@ export default function ProductSalesPanel() {
           </Alert>
         )}
         <SalesBarChart daily={statistics.daily} metric={metric} />
+        <dl className="sales-summary">
+          <div>
+            <dt>Eladott</dt>
+            <dd>{statistics.totalQuantity} db</dd>
+          </div>
+          <div>
+            <dt>Bevétel</dt>
+            <dd>{priceFormatter.format(statistics.totalRevenue)}</dd>
+          </div>
+          <div>
+            <dt>Átlagár</dt>
+            <dd>{statistics.averageUnitPrice === null ? '–' : priceFormatter.format(statistics.averageUnitPrice)}</dd>
+          </div>
+        </dl>
       </div>
     );
   };
 
   return (
-    <Card>
-      <Card.Header className="sales-panel-header">
-        <div className="sales-panel-title">
-          <i className="bi bi-bar-chart me-2" aria-hidden="true"></i>
-          Termékeladások
-        </div>
+    <Card className="dashboard-card h-100">
+      <Card.Header className="dashboard-card-header">
+        <span className="dashboard-card-title">Termékeladások</span>
 
         <div className="sales-panel-controls">
           <ProductSelect
             products={products}
             value={productId}
-            onChange={setProductId}
+            onChange={setSelectedId}
             disabled={productsLoading}
           />
 
@@ -125,8 +119,6 @@ export default function ProductSalesPanel() {
               Bevétel
             </ToggleButton>
           </ToggleButtonGroup>
-
-          <DateRangeMenu value={range} onChange={setRange} />
         </div>
       </Card.Header>
 

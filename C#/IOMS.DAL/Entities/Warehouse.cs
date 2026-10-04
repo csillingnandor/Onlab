@@ -1,20 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
 namespace IOMS.DAL.Entities;
 
+// Adatbázis-leképezés: Configurations/WarehouseConfiguration.cs
 public class Warehouse
 {
     public int Id { get; set; }
-
-    [Required]
-    [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
-
-    [MaxLength(200)]
     public string Address { get; set; } = string.Empty;
-
     public int Capacity { get; set; }
 
+    // null, ha nincs megadva hely
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
 }

@@ -1,4 +1,6 @@
+using FluentValidation;
 using IOMS.BLL.Exceptions;
+using IOMS.BLL.Validation;
 using IOMS.DAL.Repositories;
 using IOMS.DTO;
 
@@ -11,11 +13,16 @@ public class ProductService : IProductService
 
     private readonly IProductRepository _products;
     private readonly ICustomerOrderRepository _orders;
+    private readonly IValidator<CreateProductData> _createValidator;
 
-    public ProductService(IProductRepository products, ICustomerOrderRepository orders)
+    public ProductService(
+        IProductRepository products,
+        ICustomerOrderRepository orders,
+        IValidator<CreateProductData> createValidator)
     {
         _products = products;
         _orders = orders;
+        _createValidator = createValidator;
     }
 
     public Task<IReadOnlyList<ProductData>> GetAllAsync(CancellationToken ct = default)
@@ -30,6 +37,9 @@ public class ProductService : IProductService
 
     public async Task<ProductData> CreateAsync(CreateProductData data, CancellationToken ct = default)
     {
+        // Előbb a formai szabályok, hogy hibás kérés ne menjen az adatbázisig
+        await _createValidator.EnsureValidAsync(data, ct);
+
         // Az SKU egyedi index; előre ellenőrizzük, hogy 500 helyett érthető hibát adjunk.
         if (await _products.SkuExistsAsync(data.SKU, ct))
             throw new BusinessValidationException(nameof(data.SKU), $"Már létezik termék ezzel az SKU-val: {data.SKU}");

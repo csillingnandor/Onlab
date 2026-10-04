@@ -1,3 +1,5 @@
+using System.Globalization;
+using FluentValidation;
 using IOMS.BLL.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,11 @@ public static class DependencyInjection
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<ISupplierOrderService, SupplierOrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
+
+        // Az összes AbstractValidator<T> regisztrálása ebből a projektből, magyar alapüzenetekkel
+        services.AddValidatorsFromAssemblyContaining<ProductService>(includeInternalTypes: true);
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("hu");
+
         return services;
     }
 }
