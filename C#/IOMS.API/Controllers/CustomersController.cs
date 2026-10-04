@@ -1,0 +1,31 @@
+using IOMS.BLL.Services;
+using IOMS.DTO;
+using Microsoft.AspNetCore.Mvc;
+
+namespace IOMS.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class CustomersController : ControllerBase
+{
+    private readonly ICustomerService _customerService;
+
+    public CustomersController(ICustomerService customerService)
+    {
+        _customerService = customerService;
+    }
+
+    // GET api/customers
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CustomerData>>> GetAll(CancellationToken ct)
+    {
+        return Ok(await _customerService.GetAllAsync(ct));
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CustomerData>> GetById(int id, CancellationToken ct)
+    {
+        var customer = await _customerService.GetByIdAsync(id, ct);
+        return customer is null ? NotFound() : Ok(customer);
+    }
+}

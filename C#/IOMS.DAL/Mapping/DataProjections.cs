@@ -84,6 +84,20 @@ internal static class DataProjections
             .ToList(),
     };
 
+    public static readonly Expression<Func<Customer, CustomerData>> Customer = c => new CustomerData
+    {
+        Id = c.Id,
+        Name = c.Name,
+        Email = c.Email,
+        Phone = c.Phone,
+        OrderCount = c.Orders.Count(),
+        TotalSpent = c.Orders
+            .Where(o => o.Status == EntityOrderStatus.Delivered)
+            .SelectMany(o => o.Items)
+            .Sum(i => i.UnitPrice * i.Quantity),
+        LastOrderDate = c.Orders.Max(o => (DateTime?)o.OrderDate),
+    };
+
     // Metódushívás, nem sima cast: így az EF a beolvasott értéken memóriában futtatja,
     // a cast-ot viszont SQL CAST-ra fordítaná, ami a stringként tárolt státusznál elszáll.
     private static DataOrderStatus ToData(EntityOrderStatus status) => status switch

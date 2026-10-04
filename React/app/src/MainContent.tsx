@@ -6,6 +6,7 @@ import SupplierOrderPage from './main_components/order/SupplierOrderPage.js';
 import './MainContent.css';
 import DashboardPage from './main_components/dashboard/DashboardPage.js';
 import WarehousePage from './main_components/warehouse/WarehousePage.js';
+import CustomerPage from './main_components/customer/CustomerPage.js';
 
 export default function MainContent() {
   return (
@@ -18,7 +19,7 @@ export default function MainContent() {
         <Route path="/warehouse" element={<WarehousePage />} />
         <Route path="/customer-orders" element={<CustomerOrderPage />} />
         <Route path="/supplier-orders" element={<SupplierOrderPage />} />
-        <Route path="/customers" element={<div>Ügyfelek</div>} />
+        <Route path="/customers" element={<CustomerPage />} />
       </Routes>
     </main>
   );

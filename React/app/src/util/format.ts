@@ -16,3 +16,7 @@ export const dateTimeFormatter = new Intl.DateTimeFormat('hu-HU', {
     dateStyle: 'medium',
     timeStyle: 'short',
 });
+
+export const dateFormatter = new Intl.DateTimeFormat('hu-HU', {
+    dateStyle: 'medium',
+});

@@ -40,6 +40,17 @@ export type CustomerOrder = {
     items: CustomerOrderItem[];
 };
 
+// A backend CustomerData-jának megfelelő alak
+export type Customer = {
+    id: number;
+    name: string;
+    email: string;
+    phone: string | null;
+    orderCount: number;
+    totalSpent: number; // csak a kiszállított (Delivered) rendelésekből
+    lastOrderDate: string | null; // ISO dátum szöveg; null, ha még nem rendelt
+};
+
 // A backend SupplierOrderItemData-jának megfelelő alak
 export type SupplierOrderItem = {
     id: number;

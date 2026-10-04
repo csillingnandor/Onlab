@@ -1,0 +1,37 @@
+/* Vevők oldal: kitölti a jobb oldali területet (mint a .warehouse-page) */
+.customer-page {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.customer-page-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2d3238;
+}
+
+.customer-page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f8f9fa;
+}
+
+.customer-page-subtitle {
+  margin: 0.25rem 0 0;
+  color: #adb5bd;
+}
+
+.customer-email {
+  color: #adb5bd;
+  text-decoration: none;
+}
+
+.customer-email:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
