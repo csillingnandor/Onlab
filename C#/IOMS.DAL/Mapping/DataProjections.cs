@@ -9,7 +9,7 @@ namespace IOMS.DAL.Mapping;
 // Entitás -> Data projekciók. Az EF SQL-re fordítja őket, így csak a szükséges oszlopok jönnek le.
 internal static class DataProjections
 {
-    public static readonly Expression<Func<Product, ProductData>> Product = p => new ProductData
+    public static Expression<Func<Product, ProductData>> Product(DateTime since) => p => new ProductData
     {
         Id = p.Id,
         Name = p.Name,
@@ -18,10 +18,14 @@ internal static class DataProjections
         StockQuantity = p.StockQuantity,
         MinStockLevel = p.MinStockLevel,
         Price = p.Price,
-        // Üzleti szabály: készlethiány / alacsony készlet a minimum szinthez képest.
-        Status = p.StockQuantity == 0 ? "Out of Stock" :
-                 p.StockQuantity <= p.MinStockLevel ? "Low Stock" :
-                 "In Stock",
+
+        // Kereslet az utolsó időszakban: minden nem lemondott rendelés tételei a 'since' időponttól
+        OrderedLast7Days = p.OrderItems
+            .Where(i => i.CustomerOrder.Status != EntityOrderStatus.Cancelled
+                     && i.CustomerOrder.OrderDate >= since)
+            .Sum(i => i.Quantity),
+
+        // Status és DaysOfCover: a repository számolja ki a lekérdezés után
     };
 
     public static readonly Expression<Func<CustomerOrderItem, CustomerOrderItemData>> CustomerOrderItem = i => new CustomerOrderItemData

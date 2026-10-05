@@ -24,6 +24,73 @@ export type DashboardStats = {
 
 const statusOrder: OrderStatus[] = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
+// Eladások bontása egy szempont szerint (termék / vevő / kategória)
+export type SalesBreakdownRow = {
+  key: string;
+  label: string;
+  quantity: number;
+  revenue: number;
+  orderCount: number; // hány különböző rendelésben szerepelt
+};
+
+export type SalesBreakdowns = {
+  byProduct: SalesBreakdownRow[];
+  byCustomer: SalesBreakdownRow[];
+  byCategory: SalesBreakdownRow[];
+};
+
+const NO_CATEGORY = 'Nincs kategória';
+
+// ordersInRange: a kiválasztott időszakra már leszűrt rendelések; ebből csak a kiszállítottak számítanak.
+// A kategóriát a terméklistából párosítjuk, mert a rendelési tétel csak a termék azonosítóját és nevét hordozza.
+export function computeSalesBreakdowns(ordersInRange: CustomerOrder[], products: Product[]): SalesBreakdowns {
+  const categoryByProductId = new Map(products.map((p) => [p.id, p.category.trim() || NO_CATEGORY]));
+
+  const byProduct = new Map<string, SalesBreakdownRow & { orders: Set<number> }>();
+  const byCustomer = new Map<string, SalesBreakdownRow & { orders: Set<number> }>();
+  const byCategory = new Map<string, SalesBreakdownRow & { orders: Set<number> }>();
+
+  const add = (
+    map: Map<string, SalesBreakdownRow & { orders: Set<number> }>,
+    key: string,
+    label: string,
+    orderId: number,
+    quantity: number,
+    revenue: number,
+  ) => {
+    const row = map.get(key) ?? { key, label, quantity: 0, revenue: 0, orderCount: 0, orders: new Set<number>() };
+    row.quantity += quantity;
+    row.revenue += revenue;
+    row.orders.add(orderId);
+    map.set(key, row);
+  };
+
+  for (const order of ordersInRange) {
+    if (order.status !== 'Delivered') continue;
+
+    for (const item of order.items) {
+      // A tétel a rendeléskori egységárat hordozza (productPrice), ebből számolunk
+      const revenue = item.productPrice * item.quantity;
+      const category = categoryByProductId.get(item.productId) ?? NO_CATEGORY;
+
+      add(byProduct, `p${item.productId}`, item.productName, order.id, item.quantity, revenue);
+      add(byCustomer, `c${order.customerId}`, order.customerName, order.id, item.quantity, revenue);
+      add(byCategory, `k${category}`, category, order.id, item.quantity, revenue);
+    }
+  }
+
+  const finish = (map: Map<string, SalesBreakdownRow & { orders: Set<number> }>) =>
+    [...map.values()]
+      .map(({ orders, ...row }) => ({ ...row, orderCount: orders.size }))
+      .sort((a, b) => b.revenue - a.revenue || a.label.localeCompare(b.label, 'hu'));
+
+  return {
+    byProduct: finish(byProduct),
+    byCustomer: finish(byCustomer),
+    byCategory: finish(byCategory),
+  };
+}
+
 // ordersInRange: a kiválasztott időszakra már leszűrt rendelések
 export function computeDashboardStats(ordersInRange: CustomerOrder[], products: Product[]): DashboardStats {
   const delivered = ordersInRange.filter((o) => o.status === 'Delivered');

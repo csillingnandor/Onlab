@@ -10,4 +10,5 @@ public class Product
     public int StockQuantity { get; set; }
     public int MinStockLevel { get; set; }
     public decimal Price { get; set; }
+    public ICollection<CustomerOrderItem> OrderItems { get; set; } = new List<CustomerOrderItem>();
 }

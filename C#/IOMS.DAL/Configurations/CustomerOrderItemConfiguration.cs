@@ -18,7 +18,7 @@ internal class CustomerOrderItemConfiguration : IEntityTypeConfiguration<Custome
 
         // Termék nem törölhető, amíg rendelési tétel hivatkozik rá
         builder.HasOne(i => i.Product)
-            .WithMany()
+            .WithMany(p => p.OrderItems)
             .HasForeignKey(i => i.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 

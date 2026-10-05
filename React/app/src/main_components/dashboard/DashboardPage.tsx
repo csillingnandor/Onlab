@@ -3,7 +3,7 @@ import { Alert, Spinner } from 'react-bootstrap';
 import orderService from '../../services/orderService.js';
 import productService from '../../services/productService.js';
 import type { CustomerOrder, Product } from '../../util/Types.js';
-import { computeDashboardStats } from '../../util/dashboardStats.js';
+import { computeDashboardStats, computeSalesBreakdowns } from '../../util/dashboardStats.js';
 import { presetRange, type DateRange } from '../../util/dateRange.js';
 import { priceFormatter } from '../../util/format.js';
 import { emptyOrderFilter, filterOrders } from '../../util/orderFilter.js';
@@ -12,6 +12,7 @@ import KpiCard from './KpiCard.js';
 import OrderStatusChart from './OrderStatusChart.js';
 import ProductSalesPanel from './ProductSalesPanel.js';
 import RecentOrdersCard from './RecentOrdersCard.js';
+import SalesBreakdownCard from './SalesBreakdownCard.js';
 import StockAlertsCard from './StockAlertsCard.js';
 import './DashboardPage.css';
 
@@ -45,13 +46,16 @@ export default function DashboardPage() {
   }, []);
 
   // Ugyanaz a dátumszűrés, mint a rendelésoldalakon (zárt intervallum, napra pontosan)
-  const stats = useMemo(() => {
+  const { stats, breakdowns } = useMemo(() => {
     const ordersInRange = filterOrders(
       orders,
       { ...emptyOrderFilter, from: range.from, to: range.to },
       (order) => order.customerName,
     );
-    return computeDashboardStats(ordersInRange, products);
+    return {
+      stats: computeDashboardStats(ordersInRange, products),
+      breakdowns: computeSalesBreakdowns(ordersInRange, products),
+    };
   }, [orders, products, range.from, range.to]);
 
   const pending = stats.statusCounts.find((c) => c.status === 'Pending')?.count ?? 0;
@@ -107,6 +111,8 @@ export default function DashboardPage() {
             <ProductSalesPanel products={products} productsLoading={loading} range={range} />
             <OrderStatusChart counts={stats.statusCounts} />
           </div>
+
+          <SalesBreakdownCard breakdowns={breakdowns} />
 
           <div className="dashboard-row-bottom">
             <RecentOrdersCard orders={stats.recentOrders} />

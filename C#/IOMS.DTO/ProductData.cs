@@ -10,4 +10,6 @@ public class ProductData
     public int MinStockLevel { get; set; }
     public decimal Price { get; set; }
     public string Status { get; set; } = string.Empty;
+    public int OrderedLast7Days { get; set; }
+    public decimal? DaysOfCover { get; set; }
 }
