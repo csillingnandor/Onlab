@@ -6,4 +6,5 @@ public interface ISupplierOrderService
 {
     Task<IReadOnlyList<SupplierOrderData>> GetAllAsync(CancellationToken ct = default);
     Task<SupplierOrderData?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<SupplierOrderData> CreateAsync(CreateSupplierOrderData data, CancellationToken ct = default);
 }

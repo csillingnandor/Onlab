@@ -51,6 +51,28 @@ export type Customer = {
     lastOrderDate: string | null; // ISO dátum szöveg; null, ha még nem rendelt
 };
 
+// A backend CreateCustomerData-jának megfelelő alak (új vevő felvétele)
+export type NewCustomer = {
+    name: string;
+    email: string;
+    phone: string | null;
+};
+
+// A backend SupplierData-jának megfelelő alak
+export type Supplier = {
+    id: number;
+    name: string;
+    email: string | null;
+    phone: string | null;
+};
+
+// Új rendelés tétele; unitCost csak beszerzési rendelésnél (vevői rendelésnél a termék aktuális ára számít)
+export type NewOrderItem = {
+    productId: number;
+    quantity: number;
+    unitCost?: number;
+};
+
 // A backend SupplierOrderItemData-jának megfelelő alak
 export type SupplierOrderItem = {
     id: number;

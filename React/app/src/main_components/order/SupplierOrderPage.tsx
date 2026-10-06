@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import supplierOrderService from '../../services/supplierOrderService.js';
-import type { SupplierOrder } from '../../util/Types.js';
+import type { NewOrderItem, SupplierOrder } from '../../util/Types.js';
 import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } from '../../util/orderFilter.js';
+import CreateOrderModal from './CreateOrderModal.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
-import OrderFilterToggle from './OrderFilterToggle.js';
+import FilterToggle from '../filter/FilterToggle.js';
 import '../../DataTable.css';
 import './CustomerOrderPage.css';
+
+// Stabil referencia, hogy a modal ne töltse újra a listát minden rendereléskor
+const loadSuppliers = () => supplierOrderService.getSuppliers();
 
 const FILTER_PANEL_ID = 'supplier-order-filter';
 
@@ -18,6 +22,7 @@ export default function SupplierOrderPage() {
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
   const [filter, setFilter] = useState<OrderFilter>(emptyOrderFilter);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
+  const [createOpen, setCreateOpen] = useState<boolean>(false);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -64,6 +69,14 @@ export default function SupplierOrderPage() {
     });
   };
 
+  // Az új rendelés a lista elejére kerül (legújabb elöl), kinyitva
+  const handleCreate = async (partyId: number, items: NewOrderItem[]) => {
+    const created = await supplierOrderService.create(partyId, items);
+    setOrders((prev) => [created, ...prev]);
+    setOpenIds((prev) => new Set(prev).add(created.id));
+    setCreateOpen(false);
+  };
+
   const itemCount = visibleOrders.reduce((sum, order) => sum + order.items.length, 0);
 
   if (loading) return <div className="p-4 text-white">Beszerzési rendelések betöltése...</div>;
@@ -80,7 +93,7 @@ export default function SupplierOrderPage() {
         </div>
 
         <div className="order-header-actions">
-          <OrderFilterToggle
+          <FilterToggle
             open={filterOpen}
             activeCount={activeFilterCount}
             controls={FILTER_PANEL_ID}
@@ -95,6 +108,10 @@ export default function SupplierOrderPage() {
             <i className={`bi ${allOpen ? 'bi-arrows-collapse' : 'bi-arrows-expand'}`} aria-hidden="true"></i>
             {allOpen ? 'Összes becsukása' : 'Összes kinyitása'}
           </button>
+          <button type="button" className="add-product-btn" onClick={() => setCreateOpen(true)}>
+            <i className="bi bi-plus-lg me-1" aria-hidden="true"></i>
+            Új rendelés
+          </button>
         </div>
       </header>
 
@@ -107,6 +124,16 @@ export default function SupplierOrderPage() {
           nameLabel="Beszállító"
         />
       )}
+
+      <CreateOrderModal
+        show={createOpen}
+        title="Új beszerzési rendelés"
+        partyLabel="Beszállító"
+        loadParties={loadSuppliers}
+        priceMode="manual"
+        onSubmit={handleCreate}
+        onHide={() => setCreateOpen(false)}
+      />
 
       {error ? (
         <div className="alert alert-danger" role="alert">{error}</div>

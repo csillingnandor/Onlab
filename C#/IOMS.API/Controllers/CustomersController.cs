@@ -28,4 +28,11 @@ public class CustomersController : ControllerBase
         var customer = await _customerService.GetByIdAsync(id, ct);
         return customer is null ? NotFound() : Ok(customer);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<CustomerData>> Create(CreateCustomerData data, CancellationToken ct)
+    {
+        var created = await _customerService.CreateAsync(data, ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 }

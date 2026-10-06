@@ -21,7 +21,7 @@ export default function ProductTable({ products, viewMode }: ProductTableProps) 
   if (viewMode === 'grid') {
     return (
       <div className="container-fluid p-0">
-        <div className="row g-3">
+        <div className="row g-3 product-grid">
           {products.map((product) => (
             <div key={product.id} className="col-12 col-md-6 col-lg-4 col-xl-3">
               <ProductCard product={product} />

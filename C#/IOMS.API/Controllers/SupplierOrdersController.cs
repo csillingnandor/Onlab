@@ -28,4 +28,11 @@ public class SupplierOrdersController : ControllerBase
         var order = await _supplierOrderService.GetByIdAsync(id, ct);
         return order is null ? NotFound() : Ok(order);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<SupplierOrderData>> Create(CreateSupplierOrderData data, CancellationToken ct)
+    {
+        var created = await _supplierOrderService.CreateAsync(data, ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 }

@@ -6,4 +6,5 @@ public interface ICustomerService
 {
     Task<IReadOnlyList<CustomerData>> GetAllAsync(CancellationToken ct = default);
     Task<CustomerData?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<CustomerData> CreateAsync(CreateCustomerData data, CancellationToken ct = default);
 }

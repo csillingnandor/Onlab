@@ -1,7 +1,7 @@
 import type { Product } from '../../util/Types.js';
 import './ProductStatusBadge.css';
 
-const statusLabels: Record<Product['status'], string> = {
+export const statusLabels: Record<Product['status'], string> = {
     'In Stock': 'Készleten',
     'Low Stock': 'Alacsony készlet',
     'Out of Stock': 'Elfogyott',

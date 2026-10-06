@@ -1,16 +1,40 @@
 import type { ViewMode } from '../../util/Types.js';
+import FilterToggle from '../filter/FilterToggle.js';
 
 type ProductHeaderProps = {
+  subtitle: string; // pl. '12 / 20 termék'
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  filterOpen: boolean;
+  activeFilterCount: number;
+  filterPanelId: string;
+  onFilterToggle: () => void;
   onAddProductClick?: () => void;
 };
 
-export default function ProductHeader({ viewMode, onViewModeChange, onAddProductClick }: ProductHeaderProps) {
+export default function ProductHeader({
+    subtitle,
+    viewMode,
+    onViewModeChange,
+    filterOpen,
+    activeFilterCount,
+    filterPanelId,
+    onFilterToggle,
+    onAddProductClick,
+}: ProductHeaderProps) {
 
     return (
         <header className="product-header">
-            <h1>Termékek</h1>
+            <div>
+                <h1>Termékek</h1>
+                <p className="product-header-subtitle">{subtitle}</p>
+            </div>
+            <FilterToggle
+                open={filterOpen}
+                activeCount={activeFilterCount}
+                controls={filterPanelId}
+                onToggle={onFilterToggle}
+            />
             <div className="view-mode-toggle">
                 <button
                     type="button"

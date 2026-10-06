@@ -27,6 +27,13 @@
   color: #f8f9fa;
 }
 
+/* Szűrő gomb a nézetváltó mellett */
+.warehouse-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .warehouse-page-subtitle {
   margin: 0.25rem 0 0;
   color: #adb5bd;

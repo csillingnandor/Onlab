@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<ISupplierOrderService, SupplierOrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<ISupplierService, SupplierService>();
 
         // Az összes AbstractValidator<T> regisztrálása ebből a projektből, magyar alapüzenetekkel
         services.AddValidatorsFromAssemblyContaining<ProductService>(includeInternalTypes: true);

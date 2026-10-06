@@ -7,3 +7,9 @@
 -IEntityTypeConfiguration
 -Kliensoldali Stock
 -UML
+
+5. konzi
+-BLL-be kerüljön a logika, egyel kevesebb absztrakciós szint
+-Automapper data projectionbe
+-Middleware validáció
+-Alapvető funkciók: adatfelvétel, módosítás

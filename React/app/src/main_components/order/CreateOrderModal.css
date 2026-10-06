@@ -1,0 +1,52 @@
+/* Új rendelés űrlap tételsorai */
+.create-order-lines {
+  margin-bottom: 0.5rem;
+  --bs-table-bg: transparent;
+}
+
+.create-order-lines th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #adb5bd;
+  white-space: nowrap;
+}
+
+.create-order-qty {
+  width: 6.5rem;
+}
+
+.create-order-price {
+  width: 10rem;
+}
+
+.create-order-total {
+  width: 8.5rem;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.create-order-grand-total {
+  font-weight: 700;
+  color: #f8f9fa;
+}
+
+.create-order-stock {
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  color: #8a939c;
+}
+
+.create-order-remove {
+  color: #adb5bd;
+}
+
+.create-order-remove:hover:not(:disabled) {
+  color: var(--bs-danger);
+}
+
+.create-order-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #8a939c;
+}

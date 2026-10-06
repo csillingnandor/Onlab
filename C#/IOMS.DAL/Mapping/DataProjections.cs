@@ -88,6 +88,14 @@ internal static class DataProjections
             .ToList(),
     };
 
+    public static readonly Expression<Func<Supplier, SupplierData>> Supplier = s => new SupplierData
+    {
+        Id = s.Id,
+        Name = s.Name,
+        Email = s.Email,
+        Phone = s.Phone,
+    };
+
     public static readonly Expression<Func<Customer, CustomerData>> Customer = c => new CustomerData
     {
         Id = c.Id,

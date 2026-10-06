@@ -1,4 +1,5 @@
-import type { CustomerOrder, CustomerOrderItem } from '../util/Types.js';
+import type { CustomerOrder, CustomerOrderItem, NewOrderItem } from '../util/Types.js';
+import { postJson } from '../util/apiErrors.js';
 
 const ORDERS_URL = import.meta.env.VITE_API_BASE_URL + '/customerorders';
 const ORDER_ITEMS_URL = import.meta.env.VITE_API_BASE_URL + '/customerorderitems';
@@ -15,6 +16,14 @@ const orderService = {
     if (!response.ok) throw new Error('Nem sikerült a rendelés betöltése.');
     return response.json();
   },
+
+  // Az egységárat a backend a termék aktuális árából veszi
+  create: (customerId: number, items: NewOrderItem[]): Promise<CustomerOrder> =>
+    postJson(
+      ORDERS_URL,
+      { customerId, items: items.map(({ productId, quantity }) => ({ productId, quantity })) },
+      'Nem sikerült a rendelés mentése.',
+    ),
 
   getAllItems: async (): Promise<CustomerOrderItem[]> => {
     const response = await fetch(ORDER_ITEMS_URL);

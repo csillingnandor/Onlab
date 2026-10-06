@@ -35,6 +35,21 @@
   color: #f8f9fa;
 }
 
+.product-header-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: #adb5bd;
+}
+
+/* A szűrő gomb tolja jobbra a gombcsoportot (a nézetváltó ilyenkor közvetlenül mellette áll) */
+.product-header .filter-toggle {
+  margin-left: auto;
+}
+
+.product-header .filter-toggle + .view-mode-toggle {
+  margin-left: 0;
+}
+
 /* Nézetváltó (lista / rács) szegmentált gombcsoport */
 .view-mode-toggle {
   display: inline-flex;
@@ -93,7 +108,7 @@
 }
 
 /* 4. Kártyák 5 oszlopos Grid elrendezése (Bootstrap felülbírálása) */
-.product-page .row {
+.product-page .product-grid {
   display: grid !important;
   grid-template-columns: repeat(5, minmax(0, 1fr)) !important; /* Pontosan 5 egyenlő oszlop */
   gap: 1rem !important;
@@ -101,7 +116,7 @@
 }
 
 /* A Bootstrap oszloposztályok törlése a Grid működéséhez */
-.product-page .row > [class*='col-'] {
+.product-page .product-grid > [class*='col-'] {
   width: 100% !important;
   max-width: 100% !important;
   padding: 0 !important;
@@ -109,19 +124,19 @@
 
 /* Reszponzivitás kisebb kijelzőkhöz */
 @media (max-width: 1400px) {
-  .product-page .row {
+  .product-page .product-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important; /* Kisebb monitoron 4 oszlop */
   }
 }
 
 @media (max-width: 1100px) {
-  .product-page .row {
+  .product-page .product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important; /* Tableten 3 oszlop */
   }
 }
 
 @media (max-width: 768px) {
-  .product-page .row {
+  .product-page .product-grid {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important; /* Mobilon 1 oszlop */
   }
 }

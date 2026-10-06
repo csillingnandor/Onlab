@@ -1,6 +1,5 @@
 using IOMS.DAL.Entities;
 using IOMS.DAL.Mapping;
-using IOMS.DAL.QueryResults;
 using IOMS.DTO;
 using Microsoft.EntityFrameworkCore;
 using OrderStatus = IOMS.DAL.Entities.OrderStatus;
@@ -90,7 +89,7 @@ public class CustomerOrderRepository : ICustomerOrderRepository
             to.AddDays(1).ToDateTime(TimeOnly.MinValue),
             ct);
 
-        var salesByDay = sales.ToDictionary(s => DateOnly.FromDateTime(s.Date));
+        var salesByDay = sales.ToDictionary(s => s.Date);
 
         // Az eladás nélküli napok is szerepeljenek (0 értékkel), hogy a diagram folytonos legyen.
         var daily = new List<DailyProductSaleData>();
@@ -123,7 +122,7 @@ public class CustomerOrderRepository : ICustomerOrderRepository
     }
 
     // Csak a kiszállított (Delivered) rendelések számítanak eladásnak; az intervallum [from, toExclusive).
-    private async Task<IReadOnlyList<DailySalesResult>> GetDailySalesForProductAsync(
+    private async Task<IReadOnlyList<DailyProductSaleData>> GetDailySalesForProductAsync(
         int productId, DateTime from, DateTime toExclusive, CancellationToken ct = default)
     {
         return await _context.CustomerOrderItems
@@ -133,9 +132,9 @@ public class CustomerOrderRepository : ICustomerOrderRepository
                      && i.CustomerOrder.OrderDate >= from
                      && i.CustomerOrder.OrderDate < toExclusive)
             .GroupBy(i => i.CustomerOrder.OrderDate.Date)
-            .Select(g => new DailySalesResult
+            .Select(g => new DailyProductSaleData
             {
-                Date = g.Key,
+                Date = DateOnly.FromDateTime(g.Key),
                 Quantity = g.Sum(i => i.Quantity),
                 Revenue = g.Sum(i => i.Quantity * i.UnitPrice),
                 // Egy rendelésben egy termék csak egy tételként szerepel, így tétel = rendelés.
