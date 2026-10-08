@@ -3,7 +3,7 @@ import type { OrderStatus } from '../../util/Types.js';
 import type { StatusCount } from '../../util/dashboardStats.js';
 import { statusLabels } from '../order/OrderStatusBadge.js';
 
-// Ugyanazok a színek, mint a rendelés státuszjelvényein (OrderStatusBadge.css)
+// Ugyanazok a színek, mint a rendelés státuszjelvényein (common/badge/StatusBadge.css)
 const statusColors: Record<OrderStatus, string> = {
   Pending: '#ffc107',
   Shipped: '#0d6efd',

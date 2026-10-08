@@ -1448,6 +1448,143 @@ namespace IOMS.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.Inventory", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "WarehouseId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("Inventories", t =>
+                        {
+                            t.HasCheckConstraint("CK_Inventory_Quantity", "[Quantity] >= 0");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            WarehouseId = 1,
+                            Quantity = 42
+                        },
+                        new
+                        {
+                            ProductId = 2,
+                            WarehouseId = 1,
+                            Quantity = 6
+                        },
+                        new
+                        {
+                            ProductId = 4,
+                            WarehouseId = 1,
+                            Quantity = 25
+                        },
+                        new
+                        {
+                            ProductId = 5,
+                            WarehouseId = 1,
+                            Quantity = 12
+                        },
+                        new
+                        {
+                            ProductId = 6,
+                            WarehouseId = 1,
+                            Quantity = 3
+                        },
+                        new
+                        {
+                            ProductId = 7,
+                            WarehouseId = 1,
+                            Quantity = 18
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            WarehouseId = 1,
+                            Quantity = 9
+                        },
+                        new
+                        {
+                            ProductId = 9,
+                            WarehouseId = 1,
+                            Quantity = 35
+                        },
+                        new
+                        {
+                            ProductId = 10,
+                            WarehouseId = 1,
+                            Quantity = 14
+                        },
+                        new
+                        {
+                            ProductId = 11,
+                            WarehouseId = 1,
+                            Quantity = 4
+                        },
+                        new
+                        {
+                            ProductId = 12,
+                            WarehouseId = 1,
+                            Quantity = 40
+                        },
+                        new
+                        {
+                            ProductId = 13,
+                            WarehouseId = 1,
+                            Quantity = 7
+                        },
+                        new
+                        {
+                            ProductId = 14,
+                            WarehouseId = 1,
+                            Quantity = 22
+                        },
+                        new
+                        {
+                            ProductId = 15,
+                            WarehouseId = 1,
+                            Quantity = 6
+                        },
+                        new
+                        {
+                            ProductId = 16,
+                            WarehouseId = 1,
+                            Quantity = 50
+                        },
+                        new
+                        {
+                            ProductId = 17,
+                            WarehouseId = 1,
+                            Quantity = 300
+                        },
+                        new
+                        {
+                            ProductId = 18,
+                            WarehouseId = 1,
+                            Quantity = 80
+                        },
+                        new
+                        {
+                            ProductId = 19,
+                            WarehouseId = 1,
+                            Quantity = 18
+                        },
+                        new
+                        {
+                            ProductId = 20,
+                            WarehouseId = 1,
+                            Quantity = 5
+                        });
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -1477,9 +1614,6 @@ namespace IOMS.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("StockQuantity")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SKU")
@@ -1495,8 +1629,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 10,
                             Name = "Logitech MX Master 3S egér",
                             Price = 39990m,
-                            SKU = "PER-MX3S",
-                            StockQuantity = 42
+                            SKU = "PER-MX3S"
                         },
                         new
                         {
@@ -1505,8 +1638,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 8,
                             Name = "Keychron K2 billentyűzet",
                             Price = 34990m,
-                            SKU = "PER-K2",
-                            StockQuantity = 6
+                            SKU = "PER-K2"
                         },
                         new
                         {
@@ -1515,8 +1647,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 5,
                             Name = "Dell P2723D 27\" monitor",
                             Price = 104990m,
-                            SKU = "PER-P2723D",
-                            StockQuantity = 0
+                            SKU = "PER-P2723D"
                         },
                         new
                         {
@@ -1525,8 +1656,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 10,
                             Name = "Samsung 990 Pro 1TB SSD",
                             Price = 49990m,
-                            SKU = "STO-990P-1T",
-                            StockQuantity = 25
+                            SKU = "STO-990P-1T"
                         },
                         new
                         {
@@ -1535,8 +1665,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 6,
                             Name = "WD Red Plus 4TB HDD",
                             Price = 44990m,
-                            SKU = "STO-WDRP-4T",
-                            StockQuantity = 12
+                            SKU = "STO-WDRP-4T"
                         },
                         new
                         {
@@ -1545,8 +1674,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 15,
                             Name = "SanDisk Ultra 128GB pendrive",
                             Price = 5990m,
-                            SKU = "STO-SDU-128",
-                            StockQuantity = 3
+                            SKU = "STO-SDU-128"
                         },
                         new
                         {
@@ -1555,8 +1683,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 5,
                             Name = "TP-Link Archer AX55 router",
                             Price = 32990m,
-                            SKU = "NET-AX55",
-                            StockQuantity = 18
+                            SKU = "NET-AX55"
                         },
                         new
                         {
@@ -1565,8 +1692,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 4,
                             Name = "Ubiquiti UniFi Switch Lite 8",
                             Price = 42990m,
-                            SKU = "NET-USL8",
-                            StockQuantity = 9
+                            SKU = "NET-USL8"
                         },
                         new
                         {
@@ -1575,8 +1701,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 10,
                             Name = "Logitech K380 billentyűzet",
                             Price = 14990m,
-                            SKU = "PER-K380",
-                            StockQuantity = 35
+                            SKU = "PER-K380"
                         },
                         new
                         {
@@ -1585,8 +1710,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 6,
                             Name = "Razer DeathAdder V3 egér",
                             Price = 29990m,
-                            SKU = "PER-DAV3",
-                            StockQuantity = 14
+                            SKU = "PER-DAV3"
                         },
                         new
                         {
@@ -1595,8 +1719,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 3,
                             Name = "LG 27GP850 27\" monitor",
                             Price = 159990m,
-                            SKU = "PER-27GP850",
-                            StockQuantity = 4
+                            SKU = "PER-27GP850"
                         },
                         new
                         {
@@ -1605,8 +1728,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 15,
                             Name = "Kingston NV2 1TB SSD",
                             Price = 24990m,
-                            SKU = "STO-NV2-1T",
-                            StockQuantity = 40
+                            SKU = "STO-NV2-1T"
                         },
                         new
                         {
@@ -1615,8 +1737,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 4,
                             Name = "Seagate IronWolf 8TB HDD",
                             Price = 89990m,
-                            SKU = "STO-IW-8T",
-                            StockQuantity = 7
+                            SKU = "STO-IW-8T"
                         },
                         new
                         {
@@ -1625,8 +1746,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 8,
                             Name = "TP-Link TL-SG108 switch",
                             Price = 9990m,
-                            SKU = "NET-SG108",
-                            StockQuantity = 22
+                            SKU = "NET-SG108"
                         },
                         new
                         {
@@ -1635,8 +1755,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 5,
                             Name = "Ubiquiti U6 Lite access point",
                             Price = 44990m,
-                            SKU = "NET-U6L",
-                            StockQuantity = 6
+                            SKU = "NET-U6L"
                         },
                         new
                         {
@@ -1645,8 +1764,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 20,
                             Name = "UGREEN USB-C hub 7 az 1-ben",
                             Price = 12990m,
-                            SKU = "KAB-UGH7",
-                            StockQuantity = 50
+                            SKU = "KAB-UGH7"
                         },
                         new
                         {
@@ -1655,8 +1773,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 100,
                             Name = "Cat6 patchkábel 2 m",
                             Price = 990m,
-                            SKU = "KAB-CAT6-2",
-                            StockQuantity = 300
+                            SKU = "KAB-CAT6-2"
                         },
                         new
                         {
@@ -1665,8 +1782,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 30,
                             Name = "HDMI 2.1 kábel 2 m",
                             Price = 3990m,
-                            SKU = "KAB-HDMI21",
-                            StockQuantity = 80
+                            SKU = "KAB-HDMI21"
                         },
                         new
                         {
@@ -1675,8 +1791,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 6,
                             Name = "Corsair Vengeance 32GB DDR5",
                             Price = 39990m,
-                            SKU = "ALK-CV32D5",
-                            StockQuantity = 18
+                            SKU = "ALK-CV32D5"
                         },
                         new
                         {
@@ -1685,8 +1800,7 @@ namespace IOMS.DAL.Migrations
                             MinStockLevel = 3,
                             Name = "AMD Ryzen 7 7700X processzor",
                             Price = 109990m,
-                            SKU = "ALK-R77700X",
-                            StockQuantity = 5
+                            SKU = "ALK-R77700X"
                         });
                 });
 
@@ -2112,6 +2226,25 @@ namespace IOMS.DAL.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.Inventory", b =>
+                {
+                    b.HasOne("IOMS.DAL.Entities.Product", "Product")
+                        .WithMany("Inventories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IOMS.DAL.Entities.Warehouse", "Warehouse")
+                        .WithMany("Inventories")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.SupplierOrder", b =>
                 {
                     b.HasOne("IOMS.DAL.Entities.Supplier", "Supplier")
@@ -2154,6 +2287,8 @@ namespace IOMS.DAL.Migrations
 
             modelBuilder.Entity("IOMS.DAL.Entities.Product", b =>
                 {
+                    b.Navigation("Inventories");
+
                     b.Navigation("OrderItems");
                 });
 
@@ -2165,6 +2300,11 @@ namespace IOMS.DAL.Migrations
             modelBuilder.Entity("IOMS.DAL.Entities.SupplierOrder", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("IOMS.DAL.Entities.Warehouse", b =>
+                {
+                    b.Navigation("Inventories");
                 });
 #pragma warning restore 612, 618
         }

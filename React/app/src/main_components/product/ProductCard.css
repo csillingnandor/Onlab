@@ -39,11 +39,24 @@
   color: #6ea8fe;
 }
 
-/* Készlet állapot jelvény a kép jobb felső sarkában (színek: ProductStatusBadge.css) */
+/* Készlet állapot jelvény a kép jobb felső sarkában (színek: common/badge/StatusBadge.css) */
 .product-card-status {
   position: absolute;
   top: 0.6rem;
   right: 0.6rem;
+}
+
+/* Módosítás / törlés gombok a kép bal felső sarkában (a jelvénnyel szemben) */
+.product-card-actions {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+}
+
+/* A kártya ikon-szabálya (.product-card-image .bi) ne nagyítsa fel a gombok ikonjait */
+.product-card-image .product-card-actions .bi {
+  font-size: 0.95rem;
+  color: inherit;
 }
 
 /* Szöveges tartalom */

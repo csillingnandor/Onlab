@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import warehouseService from '../../services/warehouseService.js';
 import type { Warehouse } from '../../util/Types.js';
-import { countActive } from '../../util/filterUtils.js';
+import { countActive } from '../../common/filter/filterUtils.js';
 import { emptyWarehouseFilter, filterWarehouses, type WarehouseFilter } from '../../util/warehouseFilter.js';
 import WarehouseFilterPanel from './WarehouseFilterPanel.js';
 import WarehouseHeader from './WarehouseHeader.js';

@@ -1,24 +1,34 @@
-using IOMS.DAL.Repositories;
+using IOMS.BLL.Mapping;
+using IOMS.DAL;
 using IOMS.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace IOMS.BLL.Services;
 
 public class WarehouseService : IWarehouseService
 {
-    private readonly IWarehouseRepository _warehouses;
+    private readonly AppDbContext _context;
 
-    public WarehouseService(IWarehouseRepository warehouses)
+    public WarehouseService(AppDbContext context)
     {
-        _warehouses = warehouses;
+        _context = context;
     }
 
-    public Task<IReadOnlyList<WarehouseData>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<WarehouseData>> GetAllAsync(CancellationToken ct = default)
     {
-        return _warehouses.GetAllAsync(ct);
+        return await _context.Warehouses
+            .AsNoTracking()
+            .OrderBy(w => w.Name)
+            .Select(DataProjections.Warehouse)
+            .ToListAsync(ct);
     }
 
-    public Task<WarehouseData?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<WarehouseData?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return _warehouses.GetByIdAsync(id, ct);
+        return await _context.Warehouses
+            .AsNoTracking()
+            .Where(w => w.Id == id)
+            .Select(DataProjections.Warehouse)
+            .SingleOrDefaultAsync(ct);
     }
 }

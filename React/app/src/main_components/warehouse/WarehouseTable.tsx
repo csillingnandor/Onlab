@@ -1,5 +1,5 @@
 import type { Warehouse } from '../../util/Types.js';
-import '../../DataTable.css';
+import '../../common/table/DataTable.css';
 
 type WarehouseTableProps = {
   warehouses: Warehouse[];

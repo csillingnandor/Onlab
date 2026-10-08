@@ -1,8 +1,8 @@
 import { Col, Form } from 'react-bootstrap';
-import { countActive } from '../../util/filterUtils.js';
+import { countActive } from '../../common/filter/filterUtils.js';
 import type { WarehouseFilter } from '../../util/warehouseFilter.js';
-import FilterPanel from '../filter/FilterPanel.js';
-import RangeFilterField from '../filter/RangeFilterField.js';
+import FilterPanel from '../../common/filter/FilterPanel.js';
+import RangeFilterField from '../../common/filter/RangeFilterField.js';
 
 type WarehouseFilterPanelProps = {
   id: string;

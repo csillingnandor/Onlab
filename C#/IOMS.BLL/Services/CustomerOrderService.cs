@@ -1,52 +1,81 @@
-using FluentValidation;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Validation;
-using IOMS.DAL.Repositories;
+using IOMS.BLL.Mapping;
+using IOMS.DAL;
+using IOMS.DAL.Entities;
 using IOMS.DTO;
+using Microsoft.EntityFrameworkCore;
+using OrderStatus = IOMS.DAL.Entities.OrderStatus;
 
 namespace IOMS.BLL.Services;
 
 public class CustomerOrderService : ICustomerOrderService
 {
-    private readonly ICustomerOrderRepository _orders;
-    private readonly ICustomerRepository _customers;
-    private readonly IProductRepository _products;
-    private readonly IValidator<CreateCustomerOrderData> _createValidator;
+    private readonly AppDbContext _context;
 
-    public CustomerOrderService(
-        ICustomerOrderRepository orders,
-        ICustomerRepository customers,
-        IProductRepository products,
-        IValidator<CreateCustomerOrderData> createValidator)
+    public CustomerOrderService(AppDbContext context)
     {
-        _orders = orders;
-        _customers = customers;
-        _products = products;
-        _createValidator = createValidator;
+        _context = context;
     }
 
-    public Task<IReadOnlyList<CustomerOrderData>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<CustomerOrderData>> GetAllAsync(CancellationToken ct = default)
     {
-        return _orders.GetAllAsync(ct);
+        return await _context.CustomerOrders
+            .AsNoTracking()
+            .OrderByDescending(o => o.OrderDate)
+            .Select(DataProjections.CustomerOrder)
+            .ToListAsync(ct);
     }
 
-    public Task<CustomerOrderData?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<CustomerOrderData?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return _orders.GetByIdAsync(id, ct);
+        return await _context.CustomerOrders
+            .AsNoTracking()
+            .Where(o => o.Id == id)
+            .Select(DataProjections.CustomerOrder)
+            .SingleOrDefaultAsync(ct);
     }
 
+    // Új, Pending státuszú rendelés a termékek aktuális árával; az azonos termékű sorokat összevonja.
     public async Task<CustomerOrderData> CreateAsync(CreateCustomerOrderData data, CancellationToken ct = default)
     {
-        // Előbb a formai szabályok, hogy hibás kérés ne menjen az adatbázisig
-        await _createValidator.EnsureValidAsync(data, ct);
-
-        if (!await _customers.ExistsAsync(data.CustomerId, ct))
+        if (!await _context.Customers.AnyAsync(c => c.Id == data.CustomerId, ct))
             throw new BusinessValidationException(nameof(data.CustomerId), $"Nincs {data.CustomerId} azonosítójú vevő.");
 
-        var missing = await _products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
+        var missing = await _context.Products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
         if (missing.Count > 0)
             throw new BusinessValidationException(nameof(data.Items), $"Ismeretlen termék azonosító(k): {string.Join(", ", missing)}");
 
-        return await _orders.CreateAsync(data, ct);
+        // Ugyanaz a termék többször is szerepelhet a kérésben, ezeket összevonjuk egy tétellé.
+        var merged = data.Items
+            .GroupBy(l => l.ProductId)
+            .Select(g => new { ProductId = g.Key, Quantity = g.Sum(l => l.Quantity) })
+            .ToList();
+
+        var productIds = merged.Select(l => l.ProductId).ToList();
+        var prices = await _context.Products
+            .Where(p => productIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id, p => p.Price, ct);
+
+        var order = new CustomerOrder
+        {
+            CustomerId = data.CustomerId,
+            OrderDate = DateTime.UtcNow,
+            Status = OrderStatus.Pending,
+            Items = merged
+                .Select(l => new CustomerOrderItem
+                {
+                    ProductId = l.ProductId,
+                    Quantity = l.Quantity,
+                    // Az aktuális árat rögzítjük, hogy későbbi árváltozás ne írja át a rendelést.
+                    UnitPrice = prices[l.ProductId],
+                })
+                .ToList(),
+        };
+
+        _context.CustomerOrders.Add(order);
+        await _context.SaveChangesAsync(ct);
+
+        // Újratöltés, hogy a vevő- és terméknevek is benne legyenek.
+        return (await GetByIdAsync(order.Id, ct))!;
     }
 }

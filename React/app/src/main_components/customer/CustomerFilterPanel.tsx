@@ -1,8 +1,8 @@
 import { Col, Form } from 'react-bootstrap';
 import { isLastOrderRangeInvalid, type CustomerFilter } from '../../util/customerFilter.js';
-import { countActive } from '../../util/filterUtils.js';
-import FilterPanel from '../filter/FilterPanel.js';
-import RangeFilterField from '../filter/RangeFilterField.js';
+import { countActive } from '../../common/filter/filterUtils.js';
+import FilterPanel from '../../common/filter/FilterPanel.js';
+import RangeFilterField from '../../common/filter/RangeFilterField.js';
 
 type CustomerFilterPanelProps = {
   id: string;

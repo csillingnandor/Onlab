@@ -1,5 +1,6 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Alert, Button, Form, Modal } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import FormModal from '../../common/modal/FormModal.js';
 import customerService from '../../services/customerService.js';
 import type { Customer, NewCustomer } from '../../util/Types.js';
 
@@ -30,8 +31,7 @@ export default function CreateCustomerModal({ show, onCreated, onHide }: CreateC
 
   const update = (patch: Partial<NewCustomer>) => setForm((prev) => ({ ...prev, ...patch }));
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setSaving(true);
     setError(null);
     try {
@@ -50,65 +50,54 @@ export default function CreateCustomerModal({ show, onCreated, onHide }: CreateC
   };
 
   return (
-    <Modal show={show} onHide={() => { if (!saving) onHide(); }} centered>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Header closeButton={!saving}>
-          <Modal.Title>Új vevő</Modal.Title>
-        </Modal.Header>
+    <FormModal
+      show={show}
+      title="Új vevő"
+      submitLabel="Vevő mentése"
+      saving={saving}
+      error={error}
+      onSubmit={handleSubmit}
+      onHide={onHide}
+    >
+      <Form.Group controlId="create-customer-name" className="mb-3">
+        <Form.Label>Név</Form.Label>
+        <Form.Control
+          type="text"
+          maxLength={100}
+          placeholder="pl. Minta Kft."
+          value={form.name}
+          onChange={(e) => update({ name: e.target.value })}
+          required
+          autoFocus
+        />
+      </Form.Group>
 
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
+      <Form.Group controlId="create-customer-email" className="mb-3">
+        <Form.Label>E-mail</Form.Label>
+        <Form.Control
+          type="email"
+          maxLength={254}
+          placeholder="nev@ceg.hu"
+          value={form.email}
+          onChange={(e) => update({ email: e.target.value })}
+          required
+        />
+      </Form.Group>
 
-          <Form.Group controlId="create-customer-name" className="mb-3">
-            <Form.Label>Név</Form.Label>
-            <Form.Control
-              type="text"
-              maxLength={100}
-              placeholder="pl. Minta Kft."
-              value={form.name}
-              onChange={(e) => update({ name: e.target.value })}
-              required
-              autoFocus
-            />
-          </Form.Group>
-
-          <Form.Group controlId="create-customer-email" className="mb-3">
-            <Form.Label>E-mail</Form.Label>
-            <Form.Control
-              type="email"
-              maxLength={254}
-              placeholder="nev@ceg.hu"
-              value={form.email}
-              onChange={(e) => update({ email: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId="create-customer-phone">
-            <Form.Label>
-              Telefon <span className="text-muted">(nem kötelező)</span>
-            </Form.Label>
-            <Form.Control
-              type="tel"
-              maxLength={30}
-              pattern={PHONE_PATTERN}
-              title="Csak számjegyek, szóköz és + ( ) / - jelek"
-              placeholder="+36 1 234 5678"
-              value={form.phone ?? ''}
-              onChange={(e) => update({ phone: e.target.value })}
-            />
-          </Form.Group>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide} disabled={saving}>
-            Mégse
-          </Button>
-          <Button type="submit" variant="primary" disabled={saving}>
-            {saving ? 'Mentés...' : 'Vevő mentése'}
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+      <Form.Group controlId="create-customer-phone">
+        <Form.Label>
+          Telefon <span className="text-muted">(nem kötelező)</span>
+        </Form.Label>
+        <Form.Control
+          type="tel"
+          maxLength={30}
+          pattern={PHONE_PATTERN}
+          title="Csak számjegyek, szóköz és + ( ) / - jelek"
+          placeholder="+36 1 234 5678"
+          value={form.phone ?? ''}
+          onChange={(e) => update({ phone: e.target.value })}
+        />
+      </Form.Group>
+    </FormModal>
   );
 }

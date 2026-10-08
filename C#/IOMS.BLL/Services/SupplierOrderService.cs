@@ -1,52 +1,79 @@
-using FluentValidation;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Validation;
-using IOMS.DAL.Repositories;
+using IOMS.BLL.Mapping;
+using IOMS.DAL;
+using IOMS.DAL.Entities;
 using IOMS.DTO;
+using Microsoft.EntityFrameworkCore;
+using OrderStatus = IOMS.DAL.Entities.OrderStatus;
 
 namespace IOMS.BLL.Services;
 
 public class SupplierOrderService : ISupplierOrderService
 {
-    private readonly ISupplierOrderRepository _supplierOrders;
-    private readonly ISupplierRepository _suppliers;
-    private readonly IProductRepository _products;
-    private readonly IValidator<CreateSupplierOrderData> _createValidator;
+    private readonly AppDbContext _context;
 
-    public SupplierOrderService(
-        ISupplierOrderRepository supplierOrders,
-        ISupplierRepository suppliers,
-        IProductRepository products,
-        IValidator<CreateSupplierOrderData> createValidator)
+    public SupplierOrderService(AppDbContext context)
     {
-        _supplierOrders = supplierOrders;
-        _suppliers = suppliers;
-        _products = products;
-        _createValidator = createValidator;
+        _context = context;
     }
 
-    public Task<IReadOnlyList<SupplierOrderData>> GetAllAsync(CancellationToken ct = default)
+    // Legújabb rendelés elöl
+    public async Task<IReadOnlyList<SupplierOrderData>> GetAllAsync(CancellationToken ct = default)
     {
-        return _supplierOrders.GetAllAsync(ct);
+        return await _context.SupplierOrders
+            .AsNoTracking()
+            .OrderByDescending(o => o.OrderDate)
+            .Select(DataProjections.SupplierOrder)
+            .ToListAsync(ct);
     }
 
-    public Task<SupplierOrderData?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<SupplierOrderData?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return _supplierOrders.GetByIdAsync(id, ct);
+        return await _context.SupplierOrders
+            .AsNoTracking()
+            .Where(o => o.Id == id)
+            .Select(DataProjections.SupplierOrder)
+            .SingleOrDefaultAsync(ct);
     }
 
+    // Új, Pending státuszú beszerzési rendelés; az azonos termékű sorokat összevonja (súlyozott átlagárral).
     public async Task<SupplierOrderData> CreateAsync(CreateSupplierOrderData data, CancellationToken ct = default)
     {
-        // Előbb a formai szabályok, hogy hibás kérés ne menjen az adatbázisig
-        await _createValidator.EnsureValidAsync(data, ct);
-
-        if (!await _suppliers.ExistsAsync(data.SupplierId, ct))
+        if (!await _context.Suppliers.AnyAsync(s => s.Id == data.SupplierId, ct))
             throw new BusinessValidationException(nameof(data.SupplierId), $"Nincs {data.SupplierId} azonosítójú beszállító.");
 
-        var missing = await _products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
+        var missing = await _context.Products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
         if (missing.Count > 0)
             throw new BusinessValidationException(nameof(data.Items), $"Ismeretlen termék azonosító(k): {string.Join(", ", missing)}");
 
-        return await _supplierOrders.CreateAsync(data, ct);
+        // Ugyanaz a termék többször is szerepelhet a kérésben; egy tétellé vonjuk össze,
+        // az egységár a sorok mennyiséggel súlyozott átlaga, így a rendelés végösszege nem változik.
+        var merged = data.Items
+            .GroupBy(l => l.ProductId)
+            .Select(g =>
+            {
+                var quantity = g.Sum(l => l.Quantity);
+                return new SupplierOrderItem
+                {
+                    ProductId = g.Key,
+                    Quantity = quantity,
+                    UnitCost = Math.Round(g.Sum(l => l.UnitCost * l.Quantity) / quantity, 2),
+                };
+            })
+            .ToList();
+
+        var order = new SupplierOrder
+        {
+            SupplierId = data.SupplierId,
+            OrderDate = DateTime.UtcNow,
+            Status = OrderStatus.Pending,
+            Items = merged,
+        };
+
+        _context.SupplierOrders.Add(order);
+        await _context.SaveChangesAsync(ct);
+
+        // Újratöltés, hogy a beszállító- és terméknevek is benne legyenek.
+        return (await GetByIdAsync(order.Id, ct))!;
     }
 }

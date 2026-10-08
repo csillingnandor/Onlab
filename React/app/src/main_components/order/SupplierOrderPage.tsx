@@ -5,8 +5,8 @@ import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } 
 import CreateOrderModal from './CreateOrderModal.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
-import FilterToggle from '../filter/FilterToggle.js';
-import '../../DataTable.css';
+import FilterToggle from '../../common/filter/FilterToggle.js';
+import '../../common/table/DataTable.css';
 import './CustomerOrderPage.css';
 
 // Stabil referencia, hogy a modal ne töltse újra a listát minden rendereléskor

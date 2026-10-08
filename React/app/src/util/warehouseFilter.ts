@@ -1,5 +1,5 @@
 import type { Warehouse } from './Types.js';
-import { inRange, matchesText, normalizeText } from './filterUtils.js';
+import { inRange, matchesText, normalizeText } from '../common/filter/filterUtils.js';
 
 // Kliensoldali raktárszűrő: a táblázat és a térkép nézetre is érvényes.
 export type WarehouseFilter = {

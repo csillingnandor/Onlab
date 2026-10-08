@@ -1,5 +1,8 @@
+using System.Globalization;
 using System.Text.Json.Serialization;
+using FluentValidation;
 using IOMS.API.Infrastructure;
+using IOMS.API.Validation;
 using IOMS.BLL;
 using IOMS.DAL;
 
@@ -17,6 +20,10 @@ builder.Services.AddExceptionHandler<BusinessExceptionHandler>();
 builder.Services
     .AddDal(builder.Configuration.GetConnectionString("DefaultConnection"))
     .AddBll();
+
+// A kontrollerek által futtatott validátorok regisztrálása, magyar alapüzenetekkel
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDataValidator>();
+ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("hu");
 
 var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>

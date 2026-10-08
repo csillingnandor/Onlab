@@ -1,19 +1,26 @@
-using IOMS.DAL.Repositories;
+using IOMS.BLL.Mapping;
+using IOMS.DAL;
 using IOMS.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace IOMS.BLL.Services;
 
 public class SupplierService : ISupplierService
 {
-    private readonly ISupplierRepository _suppliers;
+    private readonly AppDbContext _context;
 
-    public SupplierService(ISupplierRepository suppliers)
+    public SupplierService(AppDbContext context)
     {
-        _suppliers = suppliers;
+        _context = context;
     }
 
-    public Task<IReadOnlyList<SupplierData>> GetAllAsync(CancellationToken ct = default)
+    // Név szerint rendezve
+    public async Task<IReadOnlyList<SupplierData>> GetAllAsync(CancellationToken ct = default)
     {
-        return _suppliers.GetAllAsync(ct);
+        return await _context.Suppliers
+            .AsNoTracking()
+            .OrderBy(s => s.Name)
+            .Select(DataProjections.Supplier)
+            .ToListAsync(ct);
     }
 }

@@ -1,7 +1,7 @@
 import { Col, Form } from 'react-bootstrap';
 import type { OrderStatus } from '../../util/Types.js';
 import { countActiveFilters, isDateRangeInvalid, type OrderFilter } from '../../util/orderFilter.js';
-import FilterPanel from '../filter/FilterPanel.js';
+import FilterPanel from '../../common/filter/FilterPanel.js';
 import { statusLabels } from './OrderStatusBadge.js';
 
 type OrderFilterPanelProps = {

@@ -1,5 +1,5 @@
+import StatusBadge, { type StatusTone } from '../../common/badge/StatusBadge.js';
 import type { Product } from '../../util/Types.js';
-import './ProductStatusBadge.css';
 
 export const statusLabels: Record<Product['status'], string> = {
     'In Stock': 'Készleten',
@@ -7,10 +7,10 @@ export const statusLabels: Record<Product['status'], string> = {
     'Out of Stock': 'Elfogyott',
 };
 
-const statusClasses: Record<Product['status'], string> = {
-    'In Stock': 'in-stock',
-    'Low Stock': 'low-stock',
-    'Out of Stock': 'out-of-stock',
+const statusTones: Record<Product['status'], StatusTone> = {
+    'In Stock': 'success',
+    'Low Stock': 'warning',
+    'Out of Stock': 'danger',
 };
 
 type ProductStatusBadgeProps = {
@@ -18,10 +18,6 @@ type ProductStatusBadgeProps = {
     className?: string;
 };
 
-export default function ProductStatusBadge({ status, className = '' }: ProductStatusBadgeProps) {
-    return (
-        <span className={`product-status ${statusClasses[status]} ${className}`}>
-            {statusLabels[status]}
-        </span>
-    );
+export default function ProductStatusBadge({ status, className }: ProductStatusBadgeProps) {
+    return <StatusBadge label={statusLabels[status]} tone={statusTones[status]} className={className} />;
 }

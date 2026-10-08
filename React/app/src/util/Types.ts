@@ -3,11 +3,22 @@ export type Product = {
     name: string;
     sku: string;
     category: string;
-    stockQuantity: number;
+    stockQuantity: number; // összkészlet: a raktáronkénti mennyiségek összege
     minStockLevel: number;
     price: number;
     status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+    stocks: ProductStock[]; // raktáronkénti bontás, raktárnév szerint (csak ahol van készlet)
 };
+
+// A backend ProductStockData-jának megfelelő alak
+export type ProductStock = {
+    warehouseId: number;
+    warehouseName: string;
+    quantity: number;
+};
+
+// Termék létrehozásakor / módosításakor küldött mezők; a készletet a beszállítói rendelések beérkezése állítja
+export type ProductInput = Omit<Product, 'id' | 'status' | 'stockQuantity' | 'stocks'>;
 
 export type ViewMode = 'list' | 'grid';
 

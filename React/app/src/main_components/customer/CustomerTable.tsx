@@ -1,6 +1,6 @@
 import type { Customer } from '../../util/Types.js';
 import { dateFormatter, priceFormatter } from '../../util/format.js';
-import '../../DataTable.css';
+import '../../common/table/DataTable.css';
 
 type CustomerTableProps = {
   customers: Customer[];

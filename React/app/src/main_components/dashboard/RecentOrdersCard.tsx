@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { CustomerOrder } from '../../util/Types.js';
 import { dateFormatter, priceFormatter } from '../../util/format.js';
 import OrderStatusBadge from '../order/OrderStatusBadge.js';
-import '../../DataTable.css';
+import '../../common/table/DataTable.css';
 
 type RecentOrdersCardProps = {
   orders: CustomerOrder[];

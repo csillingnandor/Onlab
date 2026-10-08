@@ -1,5 +1,11 @@
 import type { ViewMode } from '../../util/Types.js';
-import FilterToggle from '../filter/FilterToggle.js';
+import ViewModeToggle, { type ViewModeOption } from '../../common/button/ViewModeToggle.js';
+import FilterToggle from '../../common/filter/FilterToggle.js';
+
+const viewModeOptions: ViewModeOption<ViewMode>[] = [
+  { value: 'list', label: 'Lista nézet', icon: 'bi-list' },
+  { value: 'grid', label: 'Rács nézet', icon: 'bi-grid' },
+];
 
 type ProductHeaderProps = {
   subtitle: string; // pl. '12 / 20 termék'
@@ -35,28 +41,7 @@ export default function ProductHeader({
                 controls={filterPanelId}
                 onToggle={onFilterToggle}
             />
-            <div className="view-mode-toggle">
-                <button
-                    type="button"
-                    className={viewMode === 'list' ? 'active' : ''}
-                    onClick={() => onViewModeChange('list')}
-                    aria-pressed={viewMode === 'list'}
-                    aria-label="Lista nézet"
-                    title="Lista nézet"
-                >
-                    <i className="bi bi-list"></i>
-                </button>
-                <button
-                    type="button"
-                    className={viewMode === 'grid' ? 'active' : ''}
-                    onClick={() => onViewModeChange('grid')}
-                    aria-pressed={viewMode === 'grid'}
-                    aria-label="Rács nézet"
-                    title="Rács nézet"
-                >
-                    <i className="bi bi-grid"></i>
-                </button>
-            </div>
+            <ViewModeToggle options={viewModeOptions} value={viewMode} onChange={onViewModeChange} />
             <button className="add-product-btn" onClick={onAddProductClick}>
                 Új termék hozzáadása
             </button>

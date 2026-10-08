@@ -1,5 +1,6 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Alert, Button, Form, Modal, Spinner, Table } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Button, Form, Spinner, Table } from 'react-bootstrap';
+import FormModal from '../../common/modal/FormModal.js';
 import productService from '../../services/productService.js';
 import type { NewOrderItem, Product } from '../../util/Types.js';
 import { priceFormatter } from '../../util/format.js';
@@ -95,8 +96,7 @@ export default function CreateOrderModal({
   const canSubmit = !listsLoading && !saving && partyId !== '' && lines.every(lineValid);
   const total = lines.reduce((sum, line) => sum + (lineTotal(line) ?? 0), 0);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!canSubmit) return;
 
     setSaving(true);
@@ -118,154 +118,145 @@ export default function CreateOrderModal({
   };
 
   return (
-    <Modal show={show} onHide={() => { if (!saving) onHide(); }} size="lg" centered>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Header closeButton={!saving}>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
+    <FormModal
+      show={show}
+      title={title}
+      submitLabel="Rendelés mentése"
+      saving={saving}
+      error={error}
+      onSubmit={handleSubmit}
+      onHide={onHide}
+      submitDisabled={!canSubmit}
+      size="lg"
+    >
+      {listsLoading ? (
+        <div className="text-center py-4">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Listák betöltése...</span>
+          </Spinner>
+        </div>
+      ) : (
+        <>
+          <Form.Group controlId="create-order-party" className="mb-3">
+            <Form.Label>{partyLabel}</Form.Label>
+            <Form.Select value={partyId} onChange={(e) => setPartyId(e.target.value)} required>
+              <option value="">Válassz…</option>
+              {parties.map((party) => (
+                <option key={party.id} value={party.id}>{party.name}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-
-          {listsLoading ? (
-            <div className="text-center py-4">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Listák betöltése...</span>
-              </Spinner>
-            </div>
-          ) : (
-            <>
-              <Form.Group controlId="create-order-party" className="mb-3">
-                <Form.Label>{partyLabel}</Form.Label>
-                <Form.Select value={partyId} onChange={(e) => setPartyId(e.target.value)} required>
-                  <option value="">Válassz…</option>
-                  {parties.map((party) => (
-                    <option key={party.id} value={party.id}>{party.name}</option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-
-              <Table size="sm" className="create-order-lines align-middle">
-                <thead>
-                  <tr>
-                    <th>Termék</th>
-                    <th className="create-order-qty">Mennyiség</th>
-                    <th className="create-order-price">{priceMode === 'manual' ? 'Beszerzési ár (Ft)' : 'Egységár'}</th>
-                    <th className="create-order-total">Összesen</th>
-                    <th aria-label="Műveletek"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lines.map((line, index) => {
-                    const product = productById.get(Number(line.productId));
-                    const lineSum = lineTotal(line);
-                    return (
-                      <tr key={line.key}>
-                        <td>
-                          <Form.Select
-                            size="sm"
-                            aria-label={`${index + 1}. tétel terméke`}
-                            value={line.productId}
-                            onChange={(e) => updateLine(line.key, { productId: e.target.value })}
-                            required
-                          >
-                            <option value="">Válassz terméket…</option>
-                            {products.map((p) => (
-                              <option key={p.id} value={p.id}>
-                                {p.name} ({p.sku})
-                              </option>
-                            ))}
-                          </Form.Select>
-                          {product && (
-                            <div className="create-order-stock">Készleten: {product.stockQuantity} db</div>
-                          )}
-                        </td>
-                        <td>
-                          <Form.Control
-                            type="number"
-                            size="sm"
-                            min={1}
-                            step={1}
-                            aria-label={`${index + 1}. tétel mennyisége`}
-                            value={line.quantity}
-                            onChange={(e) => updateLine(line.key, { quantity: e.target.value })}
-                            isInvalid={line.quantity !== '' && !isPositiveInt(line.quantity)}
-                            required
-                          />
-                        </td>
-                        <td>
-                          {priceMode === 'manual' ? (
-                            <Form.Control
-                              type="number"
-                              size="sm"
-                              min={0}
-                              step="0.01"
-                              aria-label={`${index + 1}. tétel beszerzési ára`}
-                              value={line.unitCost}
-                              onChange={(e) => updateLine(line.key, { unitCost: e.target.value })}
-                              required
-                            />
-                          ) : (
-                            <span className="numeric">{product ? priceFormatter.format(product.price) : '–'}</span>
-                          )}
-                        </td>
-                        <td className="create-order-total">
-                          {lineSum !== null ? priceFormatter.format(lineSum) : '–'}
-                        </td>
-                        <td>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="create-order-remove"
-                            onClick={() => setLines((prev) => prev.filter((l) => l.key !== line.key))}
-                            disabled={lines.length === 1}
-                            aria-label={`${index + 1}. tétel törlése`}
-                            title="Tétel törlése"
-                          >
-                            <i className="bi bi-trash" aria-hidden="true"></i>
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colSpan={3}>
-                      <Button
-                        variant="outline-light"
+          <Table size="sm" className="create-order-lines align-middle">
+            <thead>
+              <tr>
+                <th>Termék</th>
+                <th className="create-order-qty">Mennyiség</th>
+                <th className="create-order-price">{priceMode === 'manual' ? 'Beszerzési ár (Ft)' : 'Egységár'}</th>
+                <th className="create-order-total">Összesen</th>
+                <th aria-label="Műveletek"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.map((line, index) => {
+                const product = productById.get(Number(line.productId));
+                const lineSum = lineTotal(line);
+                return (
+                  <tr key={line.key}>
+                    <td>
+                      <Form.Select
                         size="sm"
-                        onClick={() => setLines((prev) => [...prev, emptyLine()])}
+                        aria-label={`${index + 1}. tétel terméke`}
+                        value={line.productId}
+                        onChange={(e) => updateLine(line.key, { productId: e.target.value })}
+                        required
                       >
-                        <i className="bi bi-plus-lg me-1" aria-hidden="true"></i>
-                        Tétel hozzáadása
+                        <option value="">Válassz terméket…</option>
+                        {products.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.name} ({p.sku})
+                          </option>
+                        ))}
+                      </Form.Select>
+                      {product && (
+                        <div className="create-order-stock">Készleten: {product.stockQuantity} db</div>
+                      )}
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="number"
+                        size="sm"
+                        min={1}
+                        step={1}
+                        aria-label={`${index + 1}. tétel mennyisége`}
+                        value={line.quantity}
+                        onChange={(e) => updateLine(line.key, { quantity: e.target.value })}
+                        isInvalid={line.quantity !== '' && !isPositiveInt(line.quantity)}
+                        required
+                      />
+                    </td>
+                    <td>
+                      {priceMode === 'manual' ? (
+                        <Form.Control
+                          type="number"
+                          size="sm"
+                          min={0}
+                          step="0.01"
+                          aria-label={`${index + 1}. tétel beszerzési ára`}
+                          value={line.unitCost}
+                          onChange={(e) => updateLine(line.key, { unitCost: e.target.value })}
+                          required
+                        />
+                      ) : (
+                        <span className="numeric">{product ? priceFormatter.format(product.price) : '–'}</span>
+                      )}
+                    </td>
+                    <td className="create-order-total">
+                      {lineSum !== null ? priceFormatter.format(lineSum) : '–'}
+                    </td>
+                    <td>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="create-order-remove"
+                        onClick={() => setLines((prev) => prev.filter((l) => l.key !== line.key))}
+                        disabled={lines.length === 1}
+                        aria-label={`${index + 1}. tétel törlése`}
+                        title="Tétel törlése"
+                      >
+                        <i className="bi bi-trash" aria-hidden="true"></i>
                       </Button>
                     </td>
-                    <td className="create-order-total create-order-grand-total">{priceFormatter.format(total)}</td>
-                    <td></td>
                   </tr>
-                </tfoot>
-              </Table>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3}>
+                  <Button
+                    variant="outline-light"
+                    size="sm"
+                    onClick={() => setLines((prev) => [...prev, emptyLine()])}
+                  >
+                    <i className="bi bi-plus-lg me-1" aria-hidden="true"></i>
+                    Tétel hozzáadása
+                  </Button>
+                </td>
+                <td className="create-order-total create-order-grand-total">{priceFormatter.format(total)}</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </Table>
 
-              {priceMode === 'catalog' && (
-                <p className="create-order-hint">A rendelés a termékek mentéskori árával jön létre, Függőben státusszal.</p>
-              )}
-              {priceMode === 'manual' && (
-                <p className="create-order-hint">A rendelés Függőben státusszal jön létre.</p>
-              )}
-            </>
+          {priceMode === 'catalog' && (
+            <p className="create-order-hint">A rendelés a termékek mentéskori árával jön létre, Függőben státusszal.</p>
           )}
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide} disabled={saving}>
-            Mégse
-          </Button>
-          <Button type="submit" variant="primary" disabled={!canSubmit}>
-            {saving ? 'Mentés...' : 'Rendelés mentése'}
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+          {priceMode === 'manual' && (
+            <p className="create-order-hint">A rendelés Függőben státusszal jön létre.</p>
+          )}
+        </>
+      )}
+    </FormModal>
   );
 }

@@ -1,6 +1,6 @@
 namespace IOMS.BLL.Exceptions;
 
-// Validációs vagy üzleti szabály sérült (pl. hiányzó név, nem létező vevő);
+// Üzleti szabály sérült (pl. nem létező vevő, foglalt SKU);
 // az API 400-as ValidationProblem-ként adja vissza.
 public class BusinessValidationException : Exception
 {

@@ -11,4 +11,7 @@ public class Warehouse
     // null, ha nincs megadva hely
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+
+    // A raktárban tárolt termékek készlete
+    public ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
 }

@@ -8,26 +8,26 @@ internal static class SeedData
 {
     public static Product[] Products =>
     [
-        new Product { Id = 1, Name = "Logitech MX Master 3S egér", SKU = "PER-MX3S", Category = "Perifériák", StockQuantity = 42, MinStockLevel = 10, Price = 39990m },
-        new Product { Id = 2, Name = "Keychron K2 billentyűzet", SKU = "PER-K2", Category = "Perifériák", StockQuantity = 6, MinStockLevel = 8, Price = 34990m },
-        new Product { Id = 3, Name = "Dell P2723D 27\" monitor", SKU = "PER-P2723D", Category = "Perifériák", StockQuantity = 0, MinStockLevel = 5, Price = 104990m },
-        new Product { Id = 4, Name = "Samsung 990 Pro 1TB SSD", SKU = "STO-990P-1T", Category = "Tárolóeszközök", StockQuantity = 25, MinStockLevel = 10, Price = 49990m },
-        new Product { Id = 5, Name = "WD Red Plus 4TB HDD", SKU = "STO-WDRP-4T", Category = "Tárolóeszközök", StockQuantity = 12, MinStockLevel = 6, Price = 44990m },
-        new Product { Id = 6, Name = "SanDisk Ultra 128GB pendrive", SKU = "STO-SDU-128", Category = "Tárolóeszközök", StockQuantity = 3, MinStockLevel = 15, Price = 5990m },
-        new Product { Id = 7, Name = "TP-Link Archer AX55 router", SKU = "NET-AX55", Category = "Hálózati eszközök", StockQuantity = 18, MinStockLevel = 5, Price = 32990m },
-        new Product { Id = 8, Name = "Ubiquiti UniFi Switch Lite 8", SKU = "NET-USL8", Category = "Hálózati eszközök", StockQuantity = 9, MinStockLevel = 4, Price = 42990m },
-        new Product { Id = 9, Name = "Logitech K380 billentyűzet", SKU = "PER-K380", Category = "Perifériák", StockQuantity = 35, MinStockLevel = 10, Price = 14990m },
-        new Product { Id = 10, Name = "Razer DeathAdder V3 egér", SKU = "PER-DAV3", Category = "Perifériák", StockQuantity = 14, MinStockLevel = 6, Price = 29990m },
-        new Product { Id = 11, Name = "LG 27GP850 27\" monitor", SKU = "PER-27GP850", Category = "Perifériák", StockQuantity = 4, MinStockLevel = 3, Price = 159990m },
-        new Product { Id = 12, Name = "Kingston NV2 1TB SSD", SKU = "STO-NV2-1T", Category = "Tárolóeszközök", StockQuantity = 40, MinStockLevel = 15, Price = 24990m },
-        new Product { Id = 13, Name = "Seagate IronWolf 8TB HDD", SKU = "STO-IW-8T", Category = "Tárolóeszközök", StockQuantity = 7, MinStockLevel = 4, Price = 89990m },
-        new Product { Id = 14, Name = "TP-Link TL-SG108 switch", SKU = "NET-SG108", Category = "Hálózati eszközök", StockQuantity = 22, MinStockLevel = 8, Price = 9990m },
-        new Product { Id = 15, Name = "Ubiquiti U6 Lite access point", SKU = "NET-U6L", Category = "Hálózati eszközök", StockQuantity = 6, MinStockLevel = 5, Price = 44990m },
-        new Product { Id = 16, Name = "UGREEN USB-C hub 7 az 1-ben", SKU = "KAB-UGH7", Category = "Kábelek és adapterek", StockQuantity = 50, MinStockLevel = 20, Price = 12990m },
-        new Product { Id = 17, Name = "Cat6 patchkábel 2 m", SKU = "KAB-CAT6-2", Category = "Kábelek és adapterek", StockQuantity = 300, MinStockLevel = 100, Price = 990m },
-        new Product { Id = 18, Name = "HDMI 2.1 kábel 2 m", SKU = "KAB-HDMI21", Category = "Kábelek és adapterek", StockQuantity = 80, MinStockLevel = 30, Price = 3990m },
-        new Product { Id = 19, Name = "Corsair Vengeance 32GB DDR5", SKU = "ALK-CV32D5", Category = "Számítógép-alkatrészek", StockQuantity = 18, MinStockLevel = 6, Price = 39990m },
-        new Product { Id = 20, Name = "AMD Ryzen 7 7700X processzor", SKU = "ALK-R77700X", Category = "Számítógép-alkatrészek", StockQuantity = 5, MinStockLevel = 3, Price = 109990m },
+        new Product { Id = 1, Name = "Logitech MX Master 3S egér", SKU = "PER-MX3S", Category = "Perifériák", MinStockLevel = 10, Price = 39990m },
+        new Product { Id = 2, Name = "Keychron K2 billentyűzet", SKU = "PER-K2", Category = "Perifériák", MinStockLevel = 8, Price = 34990m },
+        new Product { Id = 3, Name = "Dell P2723D 27\" monitor", SKU = "PER-P2723D", Category = "Perifériák", MinStockLevel = 5, Price = 104990m },
+        new Product { Id = 4, Name = "Samsung 990 Pro 1TB SSD", SKU = "STO-990P-1T", Category = "Tárolóeszközök", MinStockLevel = 10, Price = 49990m },
+        new Product { Id = 5, Name = "WD Red Plus 4TB HDD", SKU = "STO-WDRP-4T", Category = "Tárolóeszközök", MinStockLevel = 6, Price = 44990m },
+        new Product { Id = 6, Name = "SanDisk Ultra 128GB pendrive", SKU = "STO-SDU-128", Category = "Tárolóeszközök", MinStockLevel = 15, Price = 5990m },
+        new Product { Id = 7, Name = "TP-Link Archer AX55 router", SKU = "NET-AX55", Category = "Hálózati eszközök", MinStockLevel = 5, Price = 32990m },
+        new Product { Id = 8, Name = "Ubiquiti UniFi Switch Lite 8", SKU = "NET-USL8", Category = "Hálózati eszközök", MinStockLevel = 4, Price = 42990m },
+        new Product { Id = 9, Name = "Logitech K380 billentyűzet", SKU = "PER-K380", Category = "Perifériák", MinStockLevel = 10, Price = 14990m },
+        new Product { Id = 10, Name = "Razer DeathAdder V3 egér", SKU = "PER-DAV3", Category = "Perifériák", MinStockLevel = 6, Price = 29990m },
+        new Product { Id = 11, Name = "LG 27GP850 27\" monitor", SKU = "PER-27GP850", Category = "Perifériák", MinStockLevel = 3, Price = 159990m },
+        new Product { Id = 12, Name = "Kingston NV2 1TB SSD", SKU = "STO-NV2-1T", Category = "Tárolóeszközök", MinStockLevel = 15, Price = 24990m },
+        new Product { Id = 13, Name = "Seagate IronWolf 8TB HDD", SKU = "STO-IW-8T", Category = "Tárolóeszközök", MinStockLevel = 4, Price = 89990m },
+        new Product { Id = 14, Name = "TP-Link TL-SG108 switch", SKU = "NET-SG108", Category = "Hálózati eszközök", MinStockLevel = 8, Price = 9990m },
+        new Product { Id = 15, Name = "Ubiquiti U6 Lite access point", SKU = "NET-U6L", Category = "Hálózati eszközök", MinStockLevel = 5, Price = 44990m },
+        new Product { Id = 16, Name = "UGREEN USB-C hub 7 az 1-ben", SKU = "KAB-UGH7", Category = "Kábelek és adapterek", MinStockLevel = 20, Price = 12990m },
+        new Product { Id = 17, Name = "Cat6 patchkábel 2 m", SKU = "KAB-CAT6-2", Category = "Kábelek és adapterek", MinStockLevel = 100, Price = 990m },
+        new Product { Id = 18, Name = "HDMI 2.1 kábel 2 m", SKU = "KAB-HDMI21", Category = "Kábelek és adapterek", MinStockLevel = 30, Price = 3990m },
+        new Product { Id = 19, Name = "Corsair Vengeance 32GB DDR5", SKU = "ALK-CV32D5", Category = "Számítógép-alkatrészek", MinStockLevel = 6, Price = 39990m },
+        new Product { Id = 20, Name = "AMD Ryzen 7 7700X processzor", SKU = "ALK-R77700X", Category = "Számítógép-alkatrészek", MinStockLevel = 3, Price = 109990m },
     ];
 
     public static Customer[] Customers =>
@@ -266,5 +266,30 @@ internal static class SeedData
         new SupplierOrderItem { Id = 16, SupplierOrderId = 7, ProductId = 3, Quantity = 10, UnitCost = 76000m },
         new SupplierOrderItem { Id = 17, SupplierOrderId = 8, ProductId = 19, Quantity = 10, UnitCost = 27500m },
         new SupplierOrderItem { Id = 18, SupplierOrderId = 8, ProductId = 13, Quantity = 6, UnitCost = 64000m },
+    ];
+
+    // Kezdetben minden készlet a budapesti központi raktárban (Id = 1).
+    // A 3-as terméknek nincs készlete, ezért nincs sora.
+    public static Inventory[] Inventories =>
+    [
+        new Inventory { ProductId = 1, WarehouseId = 1, Quantity = 42 },
+        new Inventory { ProductId = 2, WarehouseId = 1, Quantity = 6 },
+        new Inventory { ProductId = 4, WarehouseId = 1, Quantity = 25 },
+        new Inventory { ProductId = 5, WarehouseId = 1, Quantity = 12 },
+        new Inventory { ProductId = 6, WarehouseId = 1, Quantity = 3 },
+        new Inventory { ProductId = 7, WarehouseId = 1, Quantity = 18 },
+        new Inventory { ProductId = 8, WarehouseId = 1, Quantity = 9 },
+        new Inventory { ProductId = 9, WarehouseId = 1, Quantity = 35 },
+        new Inventory { ProductId = 10, WarehouseId = 1, Quantity = 14 },
+        new Inventory { ProductId = 11, WarehouseId = 1, Quantity = 4 },
+        new Inventory { ProductId = 12, WarehouseId = 1, Quantity = 40 },
+        new Inventory { ProductId = 13, WarehouseId = 1, Quantity = 7 },
+        new Inventory { ProductId = 14, WarehouseId = 1, Quantity = 22 },
+        new Inventory { ProductId = 15, WarehouseId = 1, Quantity = 6 },
+        new Inventory { ProductId = 16, WarehouseId = 1, Quantity = 50 },
+        new Inventory { ProductId = 17, WarehouseId = 1, Quantity = 300 },
+        new Inventory { ProductId = 18, WarehouseId = 1, Quantity = 80 },
+        new Inventory { ProductId = 19, WarehouseId = 1, Quantity = 18 },
+        new Inventory { ProductId = 20, WarehouseId = 1, Quantity = 5 },
     ];
 }

@@ -1,3 +1,5 @@
+using FluentValidation;
+using IOMS.API.Validation;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +11,12 @@ namespace IOMS.API.Controllers;
 public class CustomerOrdersController : ControllerBase
 {
     private readonly ICustomerOrderService _orderService;
+    private readonly IValidator<CreateCustomerOrderData> _createValidator;
 
-    public CustomerOrdersController(ICustomerOrderService orderService)
+    public CustomerOrdersController(ICustomerOrderService orderService, IValidator<CreateCustomerOrderData> createValidator)
     {
         _orderService = orderService;
+        _createValidator = createValidator;
     }
 
     // GET api/customerorders
@@ -32,6 +36,11 @@ public class CustomerOrdersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<CustomerOrderData>> Create(CreateCustomerOrderData data, CancellationToken ct)
     {
+        // Formai szabályok; az adatbázist igénylő ellenőrzések (létezés, egyediség) a service-ben vannak.
+        var validation = await _createValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
         var created = await _orderService.CreateAsync(data, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }

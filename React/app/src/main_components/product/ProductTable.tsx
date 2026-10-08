@@ -1,15 +1,20 @@
 import type { Product, ViewMode } from '../../util/Types.js';
+import ActionButtons from '../../common/button/ActionButtons.js';
 import ProductCard from './ProductCard.js';
 import ProductStatusBadge from './ProductStatusBadge.js';
+import { stockAction } from './stockAction.js';
 import { priceFormatter } from '../../util/format.js';
-import '../../DataTable.css';
+import '../../common/table/DataTable.css';
 
 type ProductTableProps = {
   products: Product[];
   viewMode: ViewMode;
+  onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
+  onStock: (product: Product) => void;
 };
 
-export default function ProductTable({ products, viewMode }: ProductTableProps) {
+export default function ProductTable({ products, viewMode, onEdit, onDelete, onStock }: ProductTableProps) {
   if (!products || products.length === 0) {
     return (
       <div className="alert alert-info text-center my-4" role="alert">
@@ -24,7 +29,7 @@ export default function ProductTable({ products, viewMode }: ProductTableProps) 
         <div className="row g-3 product-grid">
           {products.map((product) => (
             <div key={product.id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-              <ProductCard product={product} />
+              <ProductCard product={product} onEdit={onEdit} onDelete={onDelete} onStock={onStock} />
             </div>
           ))}
         </div>
@@ -43,6 +48,7 @@ export default function ProductTable({ products, viewMode }: ProductTableProps) 
             <th className="numeric">Készlet</th>
             <th className="numeric">Ár</th>
             <th>Állapot</th>
+            <th className="actions" aria-label="Műveletek"></th>
           </tr>
         </thead>
         <tbody>
@@ -59,6 +65,14 @@ export default function ProductTable({ products, viewMode }: ProductTableProps) 
               <td className="numeric">{priceFormatter.format(product.price)}</td>
               <td>
                 <ProductStatusBadge status={product.status} />
+              </td>
+              <td className="actions">
+                <ActionButtons
+                  itemLabel={product.name}
+                  onEdit={() => onEdit(product)}
+                  onDelete={() => onDelete(product)}
+                  extraActions={[stockAction(product, onStock)]}
+                />
               </td>
             </tr>
           ))}

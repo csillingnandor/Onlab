@@ -1,5 +1,5 @@
 import type { Product } from './Types.js';
-import { inRange, matchesText, normalizeText } from './filterUtils.js';
+import { inRange, matchesText, normalizeText } from '../common/filter/filterUtils.js';
 
 // Kliensoldali termékszűrő: a már betöltött listát szűri, a backendhez nem fordul.
 export type ProductFilter = {

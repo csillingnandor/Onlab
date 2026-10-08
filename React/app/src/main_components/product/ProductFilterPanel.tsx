@@ -1,9 +1,9 @@
 import { Col, Form } from 'react-bootstrap';
 import type { Product } from '../../util/Types.js';
-import { countActive } from '../../util/filterUtils.js';
+import { countActive } from '../../common/filter/filterUtils.js';
 import type { ProductFilter } from '../../util/productFilter.js';
-import FilterPanel from '../filter/FilterPanel.js';
-import RangeFilterField from '../filter/RangeFilterField.js';
+import FilterPanel from '../../common/filter/FilterPanel.js';
+import RangeFilterField from '../../common/filter/RangeFilterField.js';
 import { statusLabels } from './ProductStatusBadge.js';
 
 type ProductFilterPanelProps = {

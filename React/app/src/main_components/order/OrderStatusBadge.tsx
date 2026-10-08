@@ -1,5 +1,5 @@
+import StatusBadge, { type StatusTone } from '../../common/badge/StatusBadge.js';
 import type { OrderStatus } from '../../util/Types.js';
-import './OrderStatusBadge.css';
 
 export const statusLabels: Record<OrderStatus, string> = {
   Pending: 'Függőben',
@@ -8,10 +8,13 @@ export const statusLabels: Record<OrderStatus, string> = {
   Cancelled: 'Törölve',
 };
 
+const statusTones: Record<OrderStatus, StatusTone> = {
+  Pending: 'warning',
+  Shipped: 'info',
+  Delivered: 'success',
+  Cancelled: 'neutral',
+};
+
 export default function OrderStatusBadge({ status }: { status: OrderStatus }) {
-  return (
-    <span className={`order-status order-status-${status.toLowerCase()}`}>
-      {statusLabels[status]}
-    </span>
-  );
+  return <StatusBadge label={statusLabels[status]} tone={statusTones[status]} />;
 }

@@ -1,49 +1,57 @@
-using FluentValidation;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Validation;
-using IOMS.DAL.Repositories;
+using IOMS.BLL.Mapping;
+using IOMS.DAL;
+using IOMS.DAL.Entities;
 using IOMS.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace IOMS.BLL.Services;
 
 public class CustomerService : ICustomerService
 {
-    private readonly ICustomerRepository _customers;
-    private readonly IValidator<CreateCustomerData> _createValidator;
+    private readonly AppDbContext _context;
 
-    public CustomerService(ICustomerRepository customers, IValidator<CreateCustomerData> createValidator)
+    public CustomerService(AppDbContext context)
     {
-        _customers = customers;
-        _createValidator = createValidator;
+        _context = context;
     }
 
-    public Task<IReadOnlyList<CustomerData>> GetAllAsync(CancellationToken ct = default)
+    // Név szerint rendezve, a rendelésekből számított mezőkkel
+    public async Task<IReadOnlyList<CustomerData>> GetAllAsync(CancellationToken ct = default)
     {
-        return _customers.GetAllAsync(ct);
+        return await _context.Customers
+            .AsNoTracking()
+            .OrderBy(c => c.Name)
+            .Select(DataProjections.Customer)
+            .ToListAsync(ct);
     }
 
-    public Task<CustomerData?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<CustomerData?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return _customers.GetByIdAsync(id, ct);
+        return await _context.Customers
+            .AsNoTracking()
+            .Where(c => c.Id == id)
+            .Select(DataProjections.Customer)
+            .SingleOrDefaultAsync(ct);
     }
 
     public async Task<CustomerData> CreateAsync(CreateCustomerData data, CancellationToken ct = default)
     {
         // Felesleges szóközök nélkül mentünk; az üres telefonszám null.
-        var normalized = new CreateCustomerData
+        var customer = new Customer
         {
             Name = data.Name.Trim(),
             Email = data.Email.Trim(),
             Phone = string.IsNullOrWhiteSpace(data.Phone) ? null : data.Phone.Trim(),
         };
 
-        // Előbb a formai szabályok, hogy hibás kérés ne menjen az adatbázisig
-        await _createValidator.EnsureValidAsync(normalized, ct);
-
         // Az e-mail egyedi index; előre ellenőrizzük, hogy 500 helyett érthető hibát adjunk.
-        if (await _customers.EmailExistsAsync(normalized.Email, ct))
-            throw new BusinessValidationException(nameof(data.Email), $"Már létezik vevő ezzel az e-mail címmel: {normalized.Email}");
+        if (await _context.Customers.AnyAsync(c => c.Email == customer.Email, ct))
+            throw new BusinessValidationException(nameof(data.Email), $"Már létezik vevő ezzel az e-mail címmel: {customer.Email}");
 
-        return await _customers.CreateAsync(normalized, ct);
+        _context.Customers.Add(customer);
+        await _context.SaveChangesAsync(ct);
+
+        return (await GetByIdAsync(customer.Id, ct))!;
     }
 }

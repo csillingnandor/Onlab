@@ -1,5 +1,11 @@
 import type { WarehouseViewMode } from '../../util/Types.js';
-import FilterToggle from '../filter/FilterToggle.js';
+import ViewModeToggle, { type ViewModeOption } from '../../common/button/ViewModeToggle.js';
+import FilterToggle from '../../common/filter/FilterToggle.js';
+
+const viewModeOptions: ViewModeOption<WarehouseViewMode>[] = [
+  { value: 'table', label: 'Táblázat nézet', icon: 'bi-table' },
+  { value: 'map', label: 'Térkép nézet', icon: 'bi-map' },
+];
 
 type WarehouseHeaderProps = {
   subtitle: string; // pl. '3 / 5 raktár'
@@ -35,29 +41,7 @@ export default function WarehouseHeader({
           onToggle={onFilterToggle}
         />
 
-        {/* Ugyanaz a nézetváltó, mint a termékoldalon (MainContent.css) */}
-        <div className="view-mode-toggle">
-          <button
-            type="button"
-            className={viewMode === 'table' ? 'active' : ''}
-            onClick={() => onViewModeChange('table')}
-            aria-pressed={viewMode === 'table'}
-            aria-label="Táblázat nézet"
-            title="Táblázat nézet"
-          >
-            <i className="bi bi-table"></i>
-          </button>
-          <button
-            type="button"
-            className={viewMode === 'map' ? 'active' : ''}
-            onClick={() => onViewModeChange('map')}
-            aria-pressed={viewMode === 'map'}
-            aria-label="Térkép nézet"
-            title="Térkép nézet"
-          >
-            <i className="bi bi-map"></i>
-          </button>
-        </div>
+        <ViewModeToggle options={viewModeOptions} value={viewMode} onChange={onViewModeChange} />
       </div>
     </header>
   );

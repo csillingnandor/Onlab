@@ -1,3 +1,5 @@
+using FluentValidation;
+using IOMS.API.Validation;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +11,17 @@ namespace IOMS.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
+    private readonly IValidator<CreateProductData> _createValidator;
+    private readonly IValidator<ModifyProductData> _modifyValidator;
 
-    public ProductsController(IProductService productService)
+    public ProductsController(
+        IProductService productService,
+        IValidator<CreateProductData> createValidator,
+        IValidator<ModifyProductData> modifyValidator)
     {
         _productService = productService;
+        _createValidator = createValidator;
+        _modifyValidator = modifyValidator;
     }
 
     [HttpGet]
@@ -40,7 +49,32 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductData>> Create(CreateProductData data, CancellationToken ct)
     {
+        // Formai szabályok; az adatbázist igénylő ellenőrzések (létezés, egyediség) a service-ben vannak.
+        var validation = await _createValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
         var created = await _productService.CreateAsync(data, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<ProductData>> Modify(int id, ModifyProductData data, CancellationToken ct)
+    {
+        // Az útvonalbeli azonosító a mérvadó, a törzsben küldött Id-t felülírjuk.
+        data.Id = id;
+
+        var validation = await _modifyValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
+        var modified = await _productService.ModifyProductAsync(data, ct);
+        return modified is null ? NotFound() : Ok(modified);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        return await _productService.DeleteProductAsync(id, ct) ? NoContent() : NotFound();
     }
 }

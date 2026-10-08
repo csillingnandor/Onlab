@@ -1,0 +1,33 @@
+/* Raktáronkénti készlet (csak megtekintés) */
+.product-stock-table {
+  --bs-table-bg: transparent;
+}
+
+.product-stock-table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #adb5bd;
+  white-space: nowrap;
+}
+
+.product-stock-qty {
+  width: 9rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.product-stock-name {
+  font-weight: 500;
+}
+
+.product-stock-table tfoot td {
+  font-weight: 700;
+  color: #f8f9fa;
+  border-bottom: none;
+}
+
+.product-stock-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #8a939c;
+}
