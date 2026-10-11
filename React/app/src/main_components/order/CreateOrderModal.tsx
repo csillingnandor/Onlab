@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Button, Form, Spinner, Table } from 'react-bootstrap';
+import { Button, Col, Form, Row, Spinner, Table } from 'react-bootstrap';
 import FormModal from '../../common/modal/FormModal.js';
 import productService from '../../services/productService.js';
-import type { NewOrderItem, Product } from '../../util/Types.js';
+import warehouseService from '../../services/warehouseService.js';
+import type { NewOrderItem, Product, Warehouse } from '../../util/Types.js';
 import { priceFormatter } from '../../util/format.js';
 import './CreateOrderModal.css';
 
@@ -15,7 +16,9 @@ type CreateOrderModalProps = {
   loadParties: () => Promise<Party[]>;
   // 'catalog': a termék aktuális eladási ára (vevői rendelés); 'manual': kézzel megadott beszerzési ár
   priceMode: 'catalog' | 'manual';
-  onSubmit: (partyId: number, items: NewOrderItem[]) => Promise<void>;
+  // Ha meg van adva (pl. 'Célraktár'), a partner mellett raktárt is választani kell; a választott raktár az onSubmit-be kerül
+  warehouseLabel?: string;
+  onSubmit: (partyId: number, items: NewOrderItem[], warehouseId: number | null) => Promise<void>;
   onHide: () => void;
 };
 
@@ -35,6 +38,7 @@ export default function CreateOrderModal({
   partyLabel,
   loadParties,
   priceMode,
+  warehouseLabel,
   onSubmit,
   onHide,
 }: CreateOrderModalProps) {
@@ -42,6 +46,8 @@ export default function CreateOrderModal({
   const [products, setProducts] = useState<Product[]>([]);
   const [listsLoading, setListsLoading] = useState(false);
   const [partyId, setPartyId] = useState('');
+  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+  const [warehouseId, setWarehouseId] = useState('');
   const [lines, setLines] = useState<Line[]>([emptyLine()]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,14 +58,20 @@ export default function CreateOrderModal({
     let ignore = false;
 
     setPartyId('');
+    setWarehouseId('');
     setLines([emptyLine()]);
     setError(null);
     setListsLoading(true);
 
-    Promise.all([loadParties(), productService.getAll()])
-      .then(([loadedParties, loadedProducts]) => {
+    Promise.all([
+      loadParties(),
+      productService.getAll(),
+      warehouseLabel ? warehouseService.getAll() : Promise.resolve([]),
+    ])
+      .then(([loadedParties, loadedProducts, loadedWarehouses]) => {
         if (ignore) return;
         setParties(loadedParties);
+        setWarehouses([...loadedWarehouses].sort((a, b) => a.name.localeCompare(b.name, 'hu')));
         setProducts([...loadedProducts].sort((a, b) => a.name.localeCompare(b.name, 'hu')));
       })
       .catch((err: unknown) => {
@@ -72,7 +84,7 @@ export default function CreateOrderModal({
     return () => {
       ignore = true;
     };
-  }, [show, loadParties]);
+  }, [show, loadParties, warehouseLabel]);
 
   const productById = new Map(products.map((p) => [p.id, p]));
 
@@ -93,7 +105,8 @@ export default function CreateOrderModal({
   const lineValid = (line: Line) =>
     line.productId !== '' && isPositiveInt(line.quantity) && (priceMode === 'catalog' || isPrice(line.unitCost));
 
-  const canSubmit = !listsLoading && !saving && partyId !== '' && lines.every(lineValid);
+  const canSubmit =
+    !listsLoading && !saving && partyId !== '' && (!warehouseLabel || warehouseId !== '') && lines.every(lineValid);
   const total = lines.reduce((sum, line) => sum + (lineTotal(line) ?? 0), 0);
 
   const handleSubmit = async () => {
@@ -109,6 +122,7 @@ export default function CreateOrderModal({
           quantity: Number(line.quantity),
           ...(priceMode === 'manual' ? { unitCost: Number(line.unitCost) } : {}),
         })),
+        warehouseLabel ? Number(warehouseId) : null,
       );
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Hiba történt a mentés során.');
@@ -137,15 +151,29 @@ export default function CreateOrderModal({
         </div>
       ) : (
         <>
-          <Form.Group controlId="create-order-party" className="mb-3">
-            <Form.Label>{partyLabel}</Form.Label>
-            <Form.Select value={partyId} onChange={(e) => setPartyId(e.target.value)} required>
-              <option value="">Válassz…</option>
-              {parties.map((party) => (
-                <option key={party.id} value={party.id}>{party.name}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+          <Row className="g-3 mb-3">
+            <Form.Group as={Col} sm={warehouseLabel ? 6 : 12} controlId="create-order-party">
+              <Form.Label>{partyLabel}</Form.Label>
+              <Form.Select value={partyId} onChange={(e) => setPartyId(e.target.value)} required>
+                <option value="">Válassz…</option>
+                {parties.map((party) => (
+                  <option key={party.id} value={party.id}>{party.name}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            {warehouseLabel && (
+              <Form.Group as={Col} sm={6} controlId="create-order-warehouse">
+                <Form.Label>{warehouseLabel}</Form.Label>
+                <Form.Select value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)} required>
+                  <option value="">Válassz…</option>
+                  {warehouses.map((warehouse) => (
+                    <option key={warehouse.id} value={warehouse.id}>{warehouse.name}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            )}
+          </Row>
 
           <Table size="sm" className="create-order-lines align-middle">
             <thead>
@@ -253,7 +281,9 @@ export default function CreateOrderModal({
             <p className="create-order-hint">A rendelés a termékek mentéskori árával jön létre, Függőben státusszal.</p>
           )}
           {priceMode === 'manual' && (
-            <p className="create-order-hint">A rendelés Függőben státusszal jön létre.</p>
+            <p className="create-order-hint">
+              A rendelés Függőben státusszal jön létre; beérkezéskor a célraktár készlete nő.
+            </p>
           )}
         </>
       )}

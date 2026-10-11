@@ -44,4 +44,12 @@ public class SupplierOrdersController : ControllerBase
         var created = await _supplierOrderService.CreateAsync(data, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    // POST api/supplierorders/5/receive: beérkeztetés a célraktárba (409, ha már beérkezett vagy le van mondva)
+    [HttpPost("{id:int}/receive")]
+    public async Task<ActionResult<SupplierOrderData>> Receive(int id, CancellationToken ct)
+    {
+        var received = await _supplierOrderService.ReceiveAsync(id, ct);
+        return received is null ? NotFound() : Ok(received);
+    }
 }

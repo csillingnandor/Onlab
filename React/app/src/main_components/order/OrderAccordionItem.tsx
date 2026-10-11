@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { OrderStatus } from '../../util/Types.js';
 import { dateTimeFormatter, priceFormatter } from '../../util/format.js';
 import OrderStatusBadge from './OrderStatusBadge.js';
@@ -13,23 +14,28 @@ export type OrderLine = {
 type OrderAccordionItemProps = {
   id: number;
   partyName: string; // vevő vagy beszállító neve
+  warehouseName?: string; // beszerzési rendelésnél a célraktár
   orderDate: string;
   status: OrderStatus;
   totalAmount: number;
   items: OrderLine[];
   isOpen: boolean;
   onToggle: () => void;
+  // Műveletek a lenyitott rendelés alján (pl. Beérkeztetés); a fejléc gomb, ezért nem kerülhet bele másik gomb
+  actions?: ReactNode;
 };
 
 export default function OrderAccordionItem({
   id,
   partyName,
+  warehouseName,
   orderDate,
   status,
   totalAmount,
   items,
   isOpen,
   onToggle,
+  actions,
 }: OrderAccordionItemProps) {
   const panelId = `order-panel-${id}`;
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -47,7 +53,15 @@ export default function OrderAccordionItem({
         <span className="order-accordion-id">#{id}</span>
         <span className="order-accordion-customer">
           <span className="order-accordion-customer-name">{partyName}</span>
-          <span className="order-accordion-date">{dateTimeFormatter.format(new Date(orderDate))}</span>
+          <span className="order-accordion-date">
+            {dateTimeFormatter.format(new Date(orderDate))}
+            {warehouseName && (
+              <span className="order-accordion-warehouse">
+                <i className="bi bi-building" aria-hidden="true"></i>
+                {warehouseName}
+              </span>
+            )}
+          </span>
         </span>
         <span className="order-accordion-count">{items.length} tétel</span>
         <OrderStatusBadge status={status} />
@@ -90,6 +104,7 @@ export default function OrderAccordionItem({
               </table>
             </div>
           )}
+          {actions && <div className="order-accordion-actions">{actions}</div>}
         </div>
       </div>
     </section>

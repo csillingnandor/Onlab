@@ -145,6 +145,22 @@
   color: #adb5bd;
 }
 
+/* Műveletek a lenyitott rendelés alján (pl. Beérkeztetés) */
+.order-accordion-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Beszerzési rendelésnél a célraktár a dátum után */
+.order-accordion-warehouse {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.75rem;
+}
+
 .order-accordion-count {
   font-size: 0.85rem;
   color: #adb5bd;

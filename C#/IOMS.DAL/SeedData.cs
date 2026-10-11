@@ -236,14 +236,14 @@ internal static class SeedData
 
     public static SupplierOrder[] SupplierOrders =>
     [
-        new SupplierOrder { Id = 1, SupplierId = 1, OrderDate = new DateTime(2026, 9, 5, 8, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
-        new SupplierOrder { Id = 2, SupplierId = 2, OrderDate = new DateTime(2026, 9, 21, 10, 15, 0, DateTimeKind.Utc), Status = OrderStatus.Pending },
-        new SupplierOrder { Id = 3, SupplierId = 3, OrderDate = new DateTime(2026, 8, 5, 9, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
-        new SupplierOrder { Id = 4, SupplierId = 4, OrderDate = new DateTime(2026, 8, 12, 13, 30, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
-        new SupplierOrder { Id = 5, SupplierId = 1, OrderDate = new DateTime(2026, 8, 20, 10, 15, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
-        new SupplierOrder { Id = 6, SupplierId = 2, OrderDate = new DateTime(2026, 9, 2, 8, 45, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
-        new SupplierOrder { Id = 7, SupplierId = 1, OrderDate = new DateTime(2026, 9, 29, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Shipped },
-        new SupplierOrder { Id = 8, SupplierId = 4, OrderDate = new DateTime(2026, 10, 2, 14, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Pending },
+        new SupplierOrder { Id = 1, SupplierId = 1, WarehouseId = 1, OrderDate = new DateTime(2026, 9, 5, 8, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
+        new SupplierOrder { Id = 2, SupplierId = 2, WarehouseId = 1, OrderDate = new DateTime(2026, 9, 21, 10, 15, 0, DateTimeKind.Utc), Status = OrderStatus.Pending },
+        new SupplierOrder { Id = 3, SupplierId = 3, WarehouseId = 1, OrderDate = new DateTime(2026, 8, 5, 9, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
+        new SupplierOrder { Id = 4, SupplierId = 4, WarehouseId = 1, OrderDate = new DateTime(2026, 8, 12, 13, 30, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
+        new SupplierOrder { Id = 5, SupplierId = 1, WarehouseId = 1, OrderDate = new DateTime(2026, 8, 20, 10, 15, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
+        new SupplierOrder { Id = 6, SupplierId = 2, WarehouseId = 1, OrderDate = new DateTime(2026, 9, 2, 8, 45, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered },
+        new SupplierOrder { Id = 7, SupplierId = 1, WarehouseId = 1, OrderDate = new DateTime(2026, 9, 29, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Shipped },
+        new SupplierOrder { Id = 8, SupplierId = 4, WarehouseId = 1, OrderDate = new DateTime(2026, 10, 2, 14, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Pending },
     ];
 
     public static SupplierOrderItem[] SupplierOrderItems =>
@@ -291,5 +291,31 @@ internal static class SeedData
         new Inventory { ProductId = 18, WarehouseId = 1, Quantity = 80 },
         new Inventory { ProductId = 19, WarehouseId = 1, Quantity = 18 },
         new Inventory { ProductId = 20, WarehouseId = 1, Quantity = 5 },
+    ];
+
+    // Nyitókészlet: minden kezdeti készletsorhoz egy mozgás, hogy a napló összege egyezzen az Inventories táblával
+    private static readonly DateTime OpeningDate = new(2026, 9, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    public static StockMovement[] StockMovements =>
+    [
+        new StockMovement { Id = 1, ProductId = 1, WarehouseId = 1, QuantityChange = 42, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 2, ProductId = 2, WarehouseId = 1, QuantityChange = 6, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 3, ProductId = 4, WarehouseId = 1, QuantityChange = 25, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 4, ProductId = 5, WarehouseId = 1, QuantityChange = 12, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 5, ProductId = 6, WarehouseId = 1, QuantityChange = 3, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 6, ProductId = 7, WarehouseId = 1, QuantityChange = 18, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 7, ProductId = 8, WarehouseId = 1, QuantityChange = 9, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 8, ProductId = 9, WarehouseId = 1, QuantityChange = 35, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 9, ProductId = 10, WarehouseId = 1, QuantityChange = 14, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 10, ProductId = 11, WarehouseId = 1, QuantityChange = 4, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 11, ProductId = 12, WarehouseId = 1, QuantityChange = 40, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 12, ProductId = 13, WarehouseId = 1, QuantityChange = 7, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 13, ProductId = 14, WarehouseId = 1, QuantityChange = 22, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 14, ProductId = 15, WarehouseId = 1, QuantityChange = 6, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 15, ProductId = 16, WarehouseId = 1, QuantityChange = 50, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 16, ProductId = 17, WarehouseId = 1, QuantityChange = 300, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 17, ProductId = 18, WarehouseId = 1, QuantityChange = 80, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 18, ProductId = 19, WarehouseId = 1, QuantityChange = 18, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
+        new StockMovement { Id = 19, ProductId = 20, WarehouseId = 1, QuantityChange = 5, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
     ];
 }

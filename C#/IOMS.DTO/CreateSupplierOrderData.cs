@@ -1,9 +1,13 @@
 namespace IOMS.DTO;
 
-// Validáció: IOMS.BLL.Validation.CreateSupplierOrderDataValidator
+// Validáció: IOMS.API.Validation.CreateSupplierOrderDataValidator
 public class CreateSupplierOrderData
 {
     public int SupplierId { get; set; }
+
+    // Célraktár, ahová a rendelés beérkezik
+    public int WarehouseId { get; set; }
+
     public List<CreateSupplierOrderItemData> Items { get; set; } = new List<CreateSupplierOrderItemData>();
 }
 

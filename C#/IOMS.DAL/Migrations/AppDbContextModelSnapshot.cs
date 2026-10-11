@@ -1804,6 +1804,226 @@ namespace IOMS.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.StockMovement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CustomerOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityChange")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerOrderId");
+
+                    b.HasIndex("SupplierOrderId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.HasIndex("ProductId", "WarehouseId", "CreatedAt");
+
+                    b.ToTable("StockMovements", t =>
+                        {
+                            t.HasCheckConstraint("CK_StockMovement_QuantityChange", "[QuantityChange] <> 0");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 1,
+                            QuantityChange = 42,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 2,
+                            QuantityChange = 6,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 4,
+                            QuantityChange = 25,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 5,
+                            QuantityChange = 12,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 6,
+                            QuantityChange = 3,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 7,
+                            QuantityChange = 18,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 8,
+                            QuantityChange = 9,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 9,
+                            QuantityChange = 35,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 10,
+                            QuantityChange = 14,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 11,
+                            QuantityChange = 4,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 12,
+                            QuantityChange = 40,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 13,
+                            QuantityChange = 7,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 14,
+                            QuantityChange = 22,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 15,
+                            QuantityChange = 6,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 16,
+                            QuantityChange = 50,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 17,
+                            QuantityChange = 300,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 18,
+                            QuantityChange = 80,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 19,
+                            QuantityChange = 18,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CreatedAt = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            ProductId = 20,
+                            QuantityChange = 5,
+                            Type = "Opening",
+                            WarehouseId = 1
+                        });
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -1877,9 +2097,14 @@ namespace IOMS.DAL.Migrations
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SupplierId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("SupplierOrders");
 
@@ -1889,56 +2114,64 @@ namespace IOMS.DAL.Migrations
                             Id = 1,
                             OrderDate = new DateTime(2026, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc),
                             Status = "Delivered",
-                            SupplierId = 1
+                            SupplierId = 1,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 2,
                             OrderDate = new DateTime(2026, 9, 21, 10, 15, 0, 0, DateTimeKind.Utc),
                             Status = "Pending",
-                            SupplierId = 2
+                            SupplierId = 2,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 3,
                             OrderDate = new DateTime(2026, 8, 5, 9, 0, 0, 0, DateTimeKind.Utc),
                             Status = "Delivered",
-                            SupplierId = 3
+                            SupplierId = 3,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 4,
                             OrderDate = new DateTime(2026, 8, 12, 13, 30, 0, 0, DateTimeKind.Utc),
                             Status = "Delivered",
-                            SupplierId = 4
+                            SupplierId = 4,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 5,
                             OrderDate = new DateTime(2026, 8, 20, 10, 15, 0, 0, DateTimeKind.Utc),
                             Status = "Delivered",
-                            SupplierId = 1
+                            SupplierId = 1,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 6,
                             OrderDate = new DateTime(2026, 9, 2, 8, 45, 0, 0, DateTimeKind.Utc),
                             Status = "Delivered",
-                            SupplierId = 2
+                            SupplierId = 2,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 7,
                             OrderDate = new DateTime(2026, 9, 29, 11, 0, 0, 0, DateTimeKind.Utc),
                             Status = "Shipped",
-                            SupplierId = 1
+                            SupplierId = 1,
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 8,
                             OrderDate = new DateTime(2026, 10, 2, 14, 0, 0, 0, DateTimeKind.Utc),
                             Status = "Pending",
-                            SupplierId = 4
+                            SupplierId = 4,
+                            WarehouseId = 1
                         });
                 });
 
@@ -2245,6 +2478,39 @@ namespace IOMS.DAL.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.StockMovement", b =>
+                {
+                    b.HasOne("IOMS.DAL.Entities.CustomerOrder", "CustomerOrder")
+                        .WithMany()
+                        .HasForeignKey("CustomerOrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("IOMS.DAL.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IOMS.DAL.Entities.SupplierOrder", "SupplierOrder")
+                        .WithMany()
+                        .HasForeignKey("SupplierOrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("IOMS.DAL.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CustomerOrder");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SupplierOrder");
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.SupplierOrder", b =>
                 {
                     b.HasOne("IOMS.DAL.Entities.Supplier", "Supplier")
@@ -2253,7 +2519,15 @@ namespace IOMS.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("IOMS.DAL.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Supplier");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("IOMS.DAL.Entities.SupplierOrderItem", b =>

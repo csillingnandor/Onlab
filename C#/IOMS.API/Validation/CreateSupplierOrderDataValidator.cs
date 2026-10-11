@@ -3,7 +3,7 @@ using IOMS.DTO;
 
 namespace IOMS.API.Validation;
 
-// Formai szabályok; a beszállító és a termékek létezését (adatbázist igényel) a SupplierOrderService ellenőrzi.
+// Formai szabályok; a beszállító, a raktár és a termékek létezését (adatbázist igényel) a SupplierOrderService ellenőrzi.
 public class CreateSupplierOrderDataValidator : AbstractValidator<CreateSupplierOrderData>
 {
     public CreateSupplierOrderDataValidator()
@@ -11,6 +11,10 @@ public class CreateSupplierOrderDataValidator : AbstractValidator<CreateSupplier
         RuleFor(o => o.SupplierId)
             .GreaterThan(0)
             .WithName("Beszállító azonosító");
+
+        RuleFor(o => o.WarehouseId)
+            .GreaterThan(0)
+            .WithName("Raktár azonosító");
 
         RuleFor(o => o.Items)
             .NotEmpty()

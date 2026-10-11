@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Button } from 'react-bootstrap';
 import supplierOrderService from '../../services/supplierOrderService.js';
 import type { NewOrderItem, SupplierOrder } from '../../util/Types.js';
 import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } from '../../util/orderFilter.js';
@@ -6,6 +7,7 @@ import CreateOrderModal from './CreateOrderModal.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
+import ConfirmModal from '../../common/modal/ConfirmModal.js';
 import '../../common/table/DataTable.css';
 import './CustomerOrderPage.css';
 
@@ -23,6 +25,7 @@ export default function SupplierOrderPage() {
   const [filter, setFilter] = useState<OrderFilter>(emptyOrderFilter);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
+  const [receivingOrder, setReceivingOrder] = useState<SupplierOrder | null>(null);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -70,11 +73,23 @@ export default function SupplierOrderPage() {
   };
 
   // Az új rendelés a lista elejére kerül (legújabb elöl), kinyitva
-  const handleCreate = async (partyId: number, items: NewOrderItem[]) => {
-    const created = await supplierOrderService.create(partyId, items);
+  // A modal warehouseLabel-lel kötelezővé teszi a raktárt, így itt mindig van értéke
+  const handleCreate = async (partyId: number, items: NewOrderItem[], warehouseId: number | null) => {
+    const created = await supplierOrderService.create(partyId, warehouseId!, items);
     setOrders((prev) => [created, ...prev]);
     setOpenIds((prev) => new Set(prev).add(created.id));
     setCreateOpen(false);
+  };
+
+  // Csak a még meg nem érkezett (függő vagy úton lévő) rendelés érkeztethető be
+  const canReceive = (order: SupplierOrder) => order.status === 'Pending' || order.status === 'Shipped';
+
+  // Ha a backend elutasítja (pl. 409: már beérkezett), a ConfirmModal mutatja a hibaüzenetet
+  const handleConfirmReceive = async () => {
+    if (!receivingOrder) return;
+    const received = await supplierOrderService.receive(receivingOrder.id);
+    setOrders((prev) => prev.map((o) => (o.id === received.id ? received : o)));
+    setReceivingOrder(null);
   };
 
   const itemCount = visibleOrders.reduce((sum, order) => sum + order.items.length, 0);
@@ -131,6 +146,7 @@ export default function SupplierOrderPage() {
         partyLabel="Beszállító"
         loadParties={loadSuppliers}
         priceMode="manual"
+        warehouseLabel="Célraktár"
         onSubmit={handleCreate}
         onHide={() => setCreateOpen(false)}
       />
@@ -148,6 +164,7 @@ export default function SupplierOrderPage() {
               key={order.id}
               id={order.id}
               partyName={order.supplierName}
+              warehouseName={order.warehouseName}
               orderDate={order.orderDate}
               status={order.status}
               totalAmount={order.totalCost}
@@ -159,10 +176,46 @@ export default function SupplierOrderPage() {
               }))}
               isOpen={openIds.has(order.id)}
               onToggle={() => toggleOrder(order.id)}
+              actions={
+                canReceive(order) && (
+                  <Button variant="success" size="sm" onClick={() => setReceivingOrder(order)}>
+                    <i className="bi bi-box-arrow-in-down me-1" aria-hidden="true"></i>
+                    Beérkeztetés
+                  </Button>
+                )
+              }
             />
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        show={receivingOrder !== null}
+        title="Rendelés beérkeztetése"
+        confirmLabel="Beérkeztetés"
+        confirmIcon="bi-box-arrow-in-down"
+        busyLabel="Beérkeztetés..."
+        variant="primary"
+        onConfirm={handleConfirmReceive}
+        onHide={() => setReceivingOrder(null)}
+      >
+        {receivingOrder && (
+          <>
+            <p className="mb-2">
+              A <strong>#{receivingOrder.id}</strong> rendelés ({receivingOrder.supplierName}) tételei a{' '}
+              <strong>{receivingOrder.warehouseName}</strong> készletéhez adódnak:
+            </p>
+            <ul className="mb-2">
+              {receivingOrder.items.map((item) => (
+                <li key={item.id}>
+                  {item.productName}: <strong>+{item.quantity} db</strong>
+                </li>
+              ))}
+            </ul>
+            <p className="mb-0 small text-secondary">A rendelés Kézbesítve státuszba kerül; a művelet nem vonható vissza.</p>
+          </>
+        )}
+      </ConfirmModal>
     </div>
   );
 }

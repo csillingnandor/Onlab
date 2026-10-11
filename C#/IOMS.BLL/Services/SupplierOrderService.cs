@@ -42,6 +42,9 @@ public class SupplierOrderService : ISupplierOrderService
         if (!await _context.Suppliers.AnyAsync(s => s.Id == data.SupplierId, ct))
             throw new BusinessValidationException(nameof(data.SupplierId), $"Nincs {data.SupplierId} azonosítójú beszállító.");
 
+        if (!await _context.Warehouses.AnyAsync(w => w.Id == data.WarehouseId, ct))
+            throw new BusinessValidationException(nameof(data.WarehouseId), $"Nincs {data.WarehouseId} azonosítójú raktár.");
+
         var missing = await _context.Products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
         if (missing.Count > 0)
             throw new BusinessValidationException(nameof(data.Items), $"Ismeretlen termék azonosító(k): {string.Join(", ", missing)}");
@@ -65,6 +68,7 @@ public class SupplierOrderService : ISupplierOrderService
         var order = new SupplierOrder
         {
             SupplierId = data.SupplierId,
+            WarehouseId = data.WarehouseId,
             OrderDate = DateTime.UtcNow,
             Status = OrderStatus.Pending,
             Items = merged,
@@ -75,5 +79,76 @@ public class SupplierOrderService : ISupplierOrderService
 
         // Újratöltés, hogy a beszállító- és terméknevek is benne legyenek.
         return (await GetByIdAsync(order.Id, ct))!;
+    }
+
+    // Beérkeztetés: Delivered státusz, a tételek mennyisége a célraktár készletéhez adódik,
+    // és termékenként egy Receipt mozgás kerül a naplóba. Minden egy tranzakcióban történik.
+    public async Task<SupplierOrderData?> ReceiveAsync(int id, CancellationToken ct = default)
+    {
+        var order = await _context.SupplierOrders
+            .AsNoTracking()
+            .Where(o => o.Id == id)
+            .Select(o => new { o.Status, o.WarehouseId })
+            .SingleOrDefaultAsync(ct);
+
+        if (order is null)
+            return null;
+
+        if (order.Status is OrderStatus.Delivered or OrderStatus.Cancelled)
+            throw new ConflictException(nameof(id), order.Status == OrderStatus.Delivered
+                ? $"A {id} azonosítójú rendelés már beérkezett."
+                : $"A {id} azonosítójú rendelés le van mondva, nem érkeztethető be.");
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        // Feltételes, atomi státuszváltás: ha két kérés egyszerre érkeztetné be, csak az egyik jut tovább,
+        // így a készlet nem nőhet kétszer.
+        var received = await _context.SupplierOrders
+            .Where(o => o.Id == id && (o.Status == OrderStatus.Pending || o.Status == OrderStatus.Shipped))
+            .ExecuteUpdateAsync(s => s.SetProperty(o => o.Status, OrderStatus.Delivered), ct);
+
+        if (received == 0)
+            throw new ConflictException(nameof(id), $"A {id} azonosítójú rendelés állapota időközben megváltozott.");
+
+        var lines = await _context.SupplierOrderItems
+            .Where(i => i.SupplierOrderId == id)
+            .GroupBy(i => i.ProductId)
+            .Select(g => new { ProductId = g.Key, Quantity = g.Sum(i => i.Quantity) })
+            .ToListAsync(ct);
+
+        var now = DateTime.UtcNow;
+        foreach (var line in lines)
+        {
+            // Atomi növelés (Quantity = Quantity + n), hogy egy párhuzamos mozgás ne írja felül
+            var updated = await _context.Inventories
+                .Where(i => i.ProductId == line.ProductId && i.WarehouseId == order.WarehouseId)
+                .ExecuteUpdateAsync(s => s.SetProperty(i => i.Quantity, i => i.Quantity + line.Quantity), ct);
+
+            // Ebben a raktárban még nem volt ilyen termék
+            if (updated == 0)
+            {
+                _context.Inventories.Add(new Inventory
+                {
+                    ProductId = line.ProductId,
+                    WarehouseId = order.WarehouseId,
+                    Quantity = line.Quantity,
+                });
+            }
+
+            _context.StockMovements.Add(new StockMovement
+            {
+                ProductId = line.ProductId,
+                WarehouseId = order.WarehouseId,
+                QuantityChange = line.Quantity,
+                Type = StockMovementType.Receipt,
+                SupplierOrderId = id,
+                CreatedAt = now,
+            });
+        }
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return await GetByIdAsync(id, ct);
     }
 }

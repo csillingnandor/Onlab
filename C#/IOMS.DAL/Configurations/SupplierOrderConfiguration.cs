@@ -17,6 +17,12 @@ internal class SupplierOrderConfiguration : IEntityTypeConfiguration<SupplierOrd
             .HasForeignKey(o => o.SupplierId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Raktár nem törölhető, amíg beszállítói rendelés hivatkozik rá
+        builder.HasOne(o => o.Warehouse)
+            .WithMany()
+            .HasForeignKey(o => o.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasData(SeedData.SupplierOrders);
     }
 }

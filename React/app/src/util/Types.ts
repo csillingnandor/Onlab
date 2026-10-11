@@ -99,6 +99,8 @@ export type SupplierOrder = {
     id: number;
     supplierId: number;
     supplierName: string;
+    warehouseId: number; // célraktár: beérkezéskor ennek a készlete nő
+    warehouseName: string;
     orderDate: string; // ISO dátum szöveg
     status: OrderStatus;
     totalCost: number;
