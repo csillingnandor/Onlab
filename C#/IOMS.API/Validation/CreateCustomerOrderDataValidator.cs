@@ -3,7 +3,7 @@ using IOMS.DTO;
 
 namespace IOMS.API.Validation;
 
-// Formai szabályok; a vevő és a termékek létezését (adatbázist igényel) a CustomerOrderService ellenőrzi.
+// Formai szabályok; a vevő, a raktár és a termékek létezését (adatbázist igényel) a CustomerOrderService ellenőrzi.
 public class CreateCustomerOrderDataValidator : AbstractValidator<CreateCustomerOrderData>
 {
     public CreateCustomerOrderDataValidator()
@@ -11,6 +11,10 @@ public class CreateCustomerOrderDataValidator : AbstractValidator<CreateCustomer
         RuleFor(o => o.CustomerId)
             .GreaterThan(0)
             .WithName("Vevő azonosító");
+
+        RuleFor(o => o.WarehouseId)
+            .GreaterThan(0)
+            .WithName("Raktár azonosító");
 
         RuleFor(o => o.Items)
             .NotEmpty()

@@ -154,9 +154,14 @@ namespace IOMS.DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("CustomerOrders");
 
@@ -166,350 +171,400 @@ namespace IOMS.DAL.Migrations
                             Id = 1,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 9, 1, 9, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
                             OrderDate = new DateTime(2026, 9, 10, 14, 5, 0, 0, DateTimeKind.Utc),
-                            Status = "Shipped"
+                            Status = "Shipped",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 3,
                             CustomerId = 3,
                             OrderDate = new DateTime(2026, 9, 20, 11, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Pending"
+                            Status = "Pending",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 4,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 9, 22, 16, 45, 0, 0, DateTimeKind.Utc),
-                            Status = "Cancelled"
+                            Status = "Cancelled",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 5,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 8, 1, 17, 45, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 6,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 8, 2, 14, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 7,
                             CustomerId = 2,
                             OrderDate = new DateTime(2026, 8, 4, 11, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 8,
                             CustomerId = 7,
                             OrderDate = new DateTime(2026, 8, 5, 13, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 9,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 8, 7, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 10,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 8, 8, 14, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 11,
                             CustomerId = 4,
                             OrderDate = new DateTime(2026, 8, 9, 17, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 12,
                             CustomerId = 9,
                             OrderDate = new DateTime(2026, 8, 11, 8, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 13,
                             CustomerId = 2,
                             OrderDate = new DateTime(2026, 8, 12, 11, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 14,
                             CustomerId = 12,
                             OrderDate = new DateTime(2026, 8, 14, 15, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 15,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 8, 15, 11, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 16,
                             CustomerId = 12,
                             OrderDate = new DateTime(2026, 8, 16, 8, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 17,
                             CustomerId = 4,
                             OrderDate = new DateTime(2026, 8, 17, 17, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 18,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 8, 19, 10, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 19,
                             CustomerId = 2,
                             OrderDate = new DateTime(2026, 8, 20, 10, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 20,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 8, 22, 16, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 21,
                             CustomerId = 9,
                             OrderDate = new DateTime(2026, 8, 24, 10, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 22,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 8, 25, 11, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 23,
                             CustomerId = 8,
                             OrderDate = new DateTime(2026, 8, 26, 13, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 24,
                             CustomerId = 10,
                             OrderDate = new DateTime(2026, 8, 28, 8, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 25,
                             CustomerId = 10,
                             OrderDate = new DateTime(2026, 8, 28, 18, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 26,
                             CustomerId = 10,
                             OrderDate = new DateTime(2026, 8, 30, 10, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 27,
                             CustomerId = 11,
                             OrderDate = new DateTime(2026, 9, 1, 13, 45, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 28,
                             CustomerId = 12,
                             OrderDate = new DateTime(2026, 9, 2, 13, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 29,
                             CustomerId = 11,
                             OrderDate = new DateTime(2026, 9, 3, 14, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 30,
                             CustomerId = 4,
                             OrderDate = new DateTime(2026, 9, 4, 16, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 31,
                             CustomerId = 7,
                             OrderDate = new DateTime(2026, 9, 6, 9, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 32,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 9, 7, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 33,
                             CustomerId = 11,
                             OrderDate = new DateTime(2026, 9, 9, 12, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 34,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 9, 10, 12, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 35,
                             CustomerId = 8,
                             OrderDate = new DateTime(2026, 9, 12, 13, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 36,
                             CustomerId = 7,
                             OrderDate = new DateTime(2026, 9, 13, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Cancelled"
+                            Status = "Cancelled",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 37,
                             CustomerId = 12,
                             OrderDate = new DateTime(2026, 9, 15, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 38,
                             CustomerId = 2,
                             OrderDate = new DateTime(2026, 9, 16, 8, 45, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 39,
                             CustomerId = 3,
                             OrderDate = new DateTime(2026, 9, 17, 17, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 40,
                             CustomerId = 5,
                             OrderDate = new DateTime(2026, 9, 19, 11, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 41,
                             CustomerId = 8,
                             OrderDate = new DateTime(2026, 9, 19, 14, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 42,
                             CustomerId = 4,
                             OrderDate = new DateTime(2026, 9, 21, 12, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 43,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 9, 23, 11, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Cancelled"
+                            Status = "Cancelled",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 44,
                             CustomerId = 12,
                             OrderDate = new DateTime(2026, 9, 25, 8, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Shipped"
+                            Status = "Shipped",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 45,
                             CustomerId = 9,
                             OrderDate = new DateTime(2026, 9, 25, 15, 45, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 46,
                             CustomerId = 4,
                             OrderDate = new DateTime(2026, 9, 27, 14, 15, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 47,
                             CustomerId = 1,
                             OrderDate = new DateTime(2026, 9, 28, 9, 45, 0, 0, DateTimeKind.Utc),
-                            Status = "Delivered"
+                            Status = "Delivered",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 48,
                             CustomerId = 6,
                             OrderDate = new DateTime(2026, 9, 30, 8, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Shipped"
+                            Status = "Shipped",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 49,
                             CustomerId = 11,
                             OrderDate = new DateTime(2026, 10, 1, 10, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Pending"
+                            Status = "Pending",
+                            WarehouseId = 1
                         },
                         new
                         {
                             Id = 50,
                             CustomerId = 9,
                             OrderDate = new DateTime(2026, 10, 2, 18, 30, 0, 0, DateTimeKind.Utc),
-                            Status = "Pending"
+                            Status = "Pending",
+                            WarehouseId = 1
                         });
                 });
 
@@ -2437,7 +2492,15 @@ namespace IOMS.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("IOMS.DAL.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("IOMS.DAL.Entities.CustomerOrderItem", b =>

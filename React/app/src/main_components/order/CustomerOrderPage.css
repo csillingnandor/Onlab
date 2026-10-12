@@ -153,7 +153,7 @@
   margin-top: 0.75rem;
 }
 
-/* Beszerzési rendelésnél a célraktár a dátum után */
+/* A rendelés raktára (cél- vagy kiszolgáló raktár) a dátum után */
 .order-accordion-warehouse {
   display: inline-flex;
   align-items: center;

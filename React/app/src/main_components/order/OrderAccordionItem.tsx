@@ -14,7 +14,7 @@ export type OrderLine = {
 type OrderAccordionItemProps = {
   id: number;
   partyName: string; // vevő vagy beszállító neve
-  warehouseName?: string; // beszerzési rendelésnél a célraktár
+  warehouseName?: string; // beszerzésnél a célraktár, vevői rendelésnél a kiszolgáló raktár
   orderDate: string;
   status: OrderStatus;
   totalAmount: number;

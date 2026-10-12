@@ -86,6 +86,10 @@ export default function CreateOrderModal({
     };
   }, [show, loadParties, warehouseLabel]);
 
+  const selectedWarehouse = warehouses.find((w) => String(w.id) === warehouseId) ?? null;
+  const stockIn = (product: Product) =>
+    product.stocks.find((s) => s.warehouseId === selectedWarehouse?.id)?.quantity ?? 0;
+
   const productById = new Map(products.map((p) => [p.id, p]));
 
   const updateLine = (key: number, patch: Partial<Line>) =>
@@ -207,7 +211,11 @@ export default function CreateOrderModal({
                         ))}
                       </Form.Select>
                       {product && (
-                        <div className="create-order-stock">Készleten: {product.stockQuantity} db</div>
+                        <div className="create-order-stock">
+                          {selectedWarehouse
+                            ? `${selectedWarehouse.name}: ${stockIn(product)} db (összesen ${product.stockQuantity} db)`
+                            : `Készleten: ${product.stockQuantity} db`}
+                        </div>
                       )}
                     </td>
                     <td>

@@ -53,6 +53,8 @@ internal static class DataProjections
         Id = o.Id,
         CustomerId = o.CustomerId,
         CustomerName = o.Customer.Name,
+        WarehouseId = o.WarehouseId,
+        WarehouseName = o.Warehouse.Name,
         OrderDate = o.OrderDate,
         Status = ToData(o.Status),
         TotalAmount = o.Items.Sum(i => i.UnitPrice * i.Quantity),

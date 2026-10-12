@@ -44,4 +44,28 @@ public class CustomerOrdersController : ControllerBase
         var created = await _orderService.CreateAsync(data, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    // POST api/customerorders/5/ship: kiszállítás, a kiszolgáló raktár készlete csökken (409, ha nincs elég)
+    [HttpPost("{id:int}/ship")]
+    public async Task<ActionResult<CustomerOrderData>> Ship(int id, CancellationToken ct)
+    {
+        var order = await _orderService.ShipAsync(id, ct);
+        return order is null ? NotFound() : Ok(order);
+    }
+
+    // POST api/customerorders/5/deliver: kézbesítve (csak kiszállított rendelésnél)
+    [HttpPost("{id:int}/deliver")]
+    public async Task<ActionResult<CustomerOrderData>> Deliver(int id, CancellationToken ct)
+    {
+        var order = await _orderService.DeliverAsync(id, ct);
+        return order is null ? NotFound() : Ok(order);
+    }
+
+    // POST api/customerorders/5/cancel: lemondás (csak függő rendelésnél)
+    [HttpPost("{id:int}/cancel")]
+    public async Task<ActionResult<CustomerOrderData>> Cancel(int id, CancellationToken ct)
+    {
+        var order = await _orderService.CancelAsync(id, ct);
+        return order is null ? NotFound() : Ok(order);
+    }
 }

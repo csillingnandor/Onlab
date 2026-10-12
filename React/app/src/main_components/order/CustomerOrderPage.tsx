@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import orderService from '../../services/orderService.js';
+import { Button } from 'react-bootstrap';
+import orderService, { type OrderAction } from '../../services/orderService.js';
 import customerService from '../../services/customerService.js';
 import type { CustomerOrder, NewOrderItem } from '../../util/Types.js';
 import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } from '../../util/orderFilter.js';
@@ -7,6 +8,7 @@ import CreateOrderModal from './CreateOrderModal.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
+import ConfirmModal from '../../common/modal/ConfirmModal.js';
 import '../../common/table/DataTable.css';
 import './CustomerOrderPage.css';
 
@@ -14,6 +16,24 @@ import './CustomerOrderPage.css';
 const loadCustomers = () => customerService.getAll();
 
 const FILTER_PANEL_ID = 'customer-order-filter';
+
+// A státuszváltó műveletek megjelenése (gomb és megerősítő modal)
+const actionConfig: Record<OrderAction, {
+  label: string;
+  title: string;
+  icon: string;
+  buttonVariant: string;
+  confirmVariant: 'primary' | 'danger';
+  busyLabel: string;
+}> = {
+  ship: { label: 'Kiszállítás', title: 'Rendelés kiszállítása', icon: 'bi-truck', buttonVariant: 'primary', confirmVariant: 'primary', busyLabel: 'Kiszállítás...' },
+  deliver: { label: 'Kézbesítve', title: 'Rendelés kézbesítése', icon: 'bi-check2-circle', buttonVariant: 'success', confirmVariant: 'primary', busyLabel: 'Mentés...' },
+  cancel: { label: 'Lemondás', title: 'Rendelés lemondása', icon: 'bi-x-circle', buttonVariant: 'outline-danger', confirmVariant: 'danger', busyLabel: 'Lemondás...' },
+};
+
+// Állapotonként elérhető műveletek: függő -> kiszállítás / lemondás, szállítás alatt -> kézbesítve
+const actionsFor = (order: CustomerOrder): OrderAction[] =>
+  order.status === 'Pending' ? ['cancel', 'ship'] : order.status === 'Shipped' ? ['deliver'] : [];
 
 export default function CustomerOrderPage() {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
@@ -23,6 +43,7 @@ export default function CustomerOrderPage() {
   const [filter, setFilter] = useState<OrderFilter>(emptyOrderFilter);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
+  const [pending, setPending] = useState<{ order: CustomerOrder; action: OrderAction } | null>(null);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -70,11 +91,20 @@ export default function CustomerOrderPage() {
   };
 
   // Az új rendelés a lista elejére kerül (legújabb elöl), kinyitva
-  const handleCreate = async (partyId: number, items: NewOrderItem[]) => {
-    const created = await orderService.create(partyId, items);
+  // A modal warehouseLabel-lel kötelezővé teszi a raktárt, így itt mindig van értéke
+  const handleCreate = async (partyId: number, items: NewOrderItem[], warehouseId: number | null) => {
+    const created = await orderService.create(partyId, warehouseId!, items);
     setOrders((prev) => [created, ...prev]);
     setOpenIds((prev) => new Set(prev).add(created.id));
     setCreateOpen(false);
+  };
+
+  // Ha a backend elutasítja (pl. 409: nincs elég készlet), a ConfirmModal mutatja a hibaüzenetet
+  const handleConfirmAction = async () => {
+    if (!pending) return;
+    const updated = await orderService.changeStatus(pending.order.id, pending.action);
+    setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+    setPending(null);
   };
 
   const itemCount = visibleOrders.reduce((sum, order) => sum + order.items.length, 0);
@@ -129,6 +159,7 @@ export default function CustomerOrderPage() {
         show={createOpen}
         title="Új vevői rendelés"
         partyLabel="Vevő"
+        warehouseLabel="Kiszolgáló raktár"
         loadParties={loadCustomers}
         priceMode="catalog"
         onSubmit={handleCreate}
@@ -148,6 +179,7 @@ export default function CustomerOrderPage() {
               key={order.id}
               id={order.id}
               partyName={order.customerName}
+              warehouseName={order.warehouseName}
               orderDate={order.orderDate}
               status={order.status}
               totalAmount={order.totalAmount}
@@ -159,10 +191,63 @@ export default function CustomerOrderPage() {
               }))}
               isOpen={openIds.has(order.id)}
               onToggle={() => toggleOrder(order.id)}
+              actions={actionsFor(order).map((action) => (
+                <Button
+                  key={action}
+                  variant={actionConfig[action].buttonVariant}
+                  size="sm"
+                  onClick={() => setPending({ order, action })}
+                >
+                  <i className={`bi ${actionConfig[action].icon} me-1`} aria-hidden="true"></i>
+                  {actionConfig[action].label}
+                </Button>
+              ))}
             />
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        show={pending !== null}
+        title={pending ? actionConfig[pending.action].title : ''}
+        confirmLabel={pending ? actionConfig[pending.action].label : ''}
+        confirmIcon={pending ? actionConfig[pending.action].icon : 'bi-check'}
+        busyLabel={pending ? actionConfig[pending.action].busyLabel : 'Folyamatban...'}
+        variant={pending ? actionConfig[pending.action].confirmVariant : 'primary'}
+        onConfirm={handleConfirmAction}
+        onHide={() => setPending(null)}
+      >
+        {pending && (
+          <>
+            <p className="mb-2">
+              <strong>#{pending.order.id}</strong> rendelés – {pending.order.customerName}
+            </p>
+            {pending.action === 'ship' && (
+              <>
+                <p className="mb-2">
+                  A tételek a <strong>{pending.order.warehouseName}</strong> készletéből fogynak:
+                </p>
+                <ul className="mb-2">
+                  {pending.order.items.map((item) => (
+                    <li key={item.id}>
+                      {item.productName}: <strong>−{item.quantity} db</strong>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mb-0 small text-secondary">
+                  Ha valamelyik termékből nincs elég, a kiszállítás nem történik meg. A kiszállított rendelés már nem mondható le.
+                </p>
+              </>
+            )}
+            {pending.action === 'deliver' && (
+              <p className="mb-0">A rendelés Kézbesítve státuszba kerül, és ettől kezdve eladásként számít a statisztikákban.</p>
+            )}
+            {pending.action === 'cancel' && (
+              <p className="mb-0">A rendelés Törölve státuszba kerül; a készlet nem változik. A művelet nem vonható vissza.</p>
+            )}
+          </>
+        )}
+      </ConfirmModal>
     </div>
   );
 }

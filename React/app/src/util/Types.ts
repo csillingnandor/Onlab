@@ -45,6 +45,8 @@ export type CustomerOrder = {
     id: number;
     customerId: number;
     customerName: string;
+    warehouseId: number; // kiszolgáló raktár: kiszállításkor ennek a készlete csökken
+    warehouseName: string;
     orderDate: string; // ISO dátum szöveg
     status: OrderStatus;
     totalAmount: number;

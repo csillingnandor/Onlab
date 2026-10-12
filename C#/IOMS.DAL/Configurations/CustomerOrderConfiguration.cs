@@ -17,6 +17,12 @@ internal class CustomerOrderConfiguration : IEntityTypeConfiguration<CustomerOrd
             .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Raktár nem törölhető, amíg vevői rendelés hivatkozik rá
+        builder.HasOne(o => o.Warehouse)
+            .WithMany()
+            .HasForeignKey(o => o.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasData(SeedData.CustomerOrders);
     }
 }
