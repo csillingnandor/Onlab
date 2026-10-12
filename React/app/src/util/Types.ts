@@ -17,6 +17,20 @@ export type ProductStock = {
     quantity: number;
 };
 
+// A backend StockMovementData-jának megfelelő alak (készlettörténet egy sora)
+export type StockMovementType = 'Opening' | 'Receipt' | 'Shipment';
+
+export type StockMovement = {
+    id: number;
+    warehouseId: number;
+    warehouseName: string;
+    quantityChange: number; // előjeles: + beérkezés / nyitókészlet, − kiszállítás
+    type: StockMovementType;
+    supplierOrderId: number | null; // Receipt esetén
+    customerOrderId: number | null; // Shipment esetén
+    createdAt: string; // ISO dátum szöveg
+};
+
 // Termék létrehozásakor / módosításakor küldött mezők; a készletet a beszállítói rendelések beérkezése állítja
 export type ProductInput = Omit<Product, 'id' | 'status' | 'stockQuantity' | 'stocks'>;
 

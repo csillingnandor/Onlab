@@ -11,4 +11,8 @@
     <ProjectReference Include="..\IOMS.DTO\IOMS.DTO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.2.0" />
+  </ItemGroup>
+
 </Project>

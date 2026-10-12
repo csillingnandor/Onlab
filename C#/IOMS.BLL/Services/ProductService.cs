@@ -1,5 +1,6 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Mapping;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
@@ -14,10 +15,12 @@ public class ProductService : IProductService
     private const int MaxStatisticsDays = 366;
 
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public ProductService(AppDbContext context)
+    public ProductService(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<IReadOnlyList<ProductData>> GetAllAsync(CancellationToken ct = default)
@@ -26,7 +29,7 @@ public class ProductService : IProductService
         var products = await _context.Products
             .AsNoTracking()
             .OrderBy(p => p.Id)
-            .Select(DataProjections.Product(since))
+            .ProjectTo<ProductData>(_mapper.ConfigurationProvider, new { since })
             .ToListAsync(ct);
 
         foreach (var product in products)
@@ -41,7 +44,7 @@ public class ProductService : IProductService
         var product = await _context.Products
             .AsNoTracking()
             .Where(p => p.Id == id)
-            .Select(DataProjections.Product(since))
+            .ProjectTo<ProductData>(_mapper.ConfigurationProvider, new { since })
             .SingleOrDefaultAsync(ct);
 
         if (product is not null)
@@ -188,6 +191,20 @@ public class ProductService : IProductService
 
         // Újratöltés, hogy a Status és a DaysOfCover az új minimális készlettel legyen kiszámolva.
         return await GetByIdAsync(product.Id, ct);
+    }
+
+    public async Task<IReadOnlyList<StockMovementData>?> GetMovementsAsync(int id, CancellationToken ct = default)
+    {
+        if (!await _context.Products.AnyAsync(p => p.Id == id, ct))
+            return null;
+
+        return await _context.StockMovements
+            .AsNoTracking()
+            .Where(m => m.ProductId == id)
+            .OrderByDescending(m => m.CreatedAt)
+            .ThenByDescending(m => m.Id)
+            .ProjectTo<StockMovementData>(_mapper.ConfigurationProvider)
+            .ToListAsync(ct);
     }
 
     public async Task<bool> DeleteProductAsync(int id, CancellationToken ct = default)

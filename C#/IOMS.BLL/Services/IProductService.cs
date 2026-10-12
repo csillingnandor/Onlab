@@ -17,4 +17,7 @@ public interface IProductService
 
     // false, ha nincs ilyen termék; ConflictException, ha rendelés hivatkozik rá.
     Task<bool> DeleteProductAsync(int id, CancellationToken ct = default);
+
+    // A termék készlettörténete minden raktárból, legújabb elöl; null, ha nincs ilyen termék.
+    Task<IReadOnlyList<StockMovementData>?> GetMovementsAsync(int id, CancellationToken ct = default);
 }

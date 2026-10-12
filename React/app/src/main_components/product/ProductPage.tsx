@@ -32,7 +32,6 @@ export default function ProductPage() {
   );
   const activeFilterCount = countActive(filter);
 
-  // 1. Kezdeti adatbetöltés a backendről
   useEffect(() => {
     productService.getAll()
       .then((data) => {

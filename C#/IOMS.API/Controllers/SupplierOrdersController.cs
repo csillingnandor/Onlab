@@ -19,7 +19,6 @@ public class SupplierOrdersController : ControllerBase
         _createValidator = createValidator;
     }
 
-    // GET api/supplierorders
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SupplierOrderData>>> GetAll(CancellationToken ct)
     {

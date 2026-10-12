@@ -15,7 +15,6 @@ public class WarehousesController : ControllerBase
         _warehouseService = warehouseService;
     }
 
-    // GET api/warehouses
     [HttpGet]
     public async Task<ActionResult<IEnumerable<WarehouseData>>> GetAll(CancellationToken ct)
     {

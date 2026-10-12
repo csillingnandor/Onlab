@@ -31,3 +31,35 @@
   font-size: 0.8rem;
   color: #8a939c;
 }
+
+/* Szakaszcím (Raktáronként / Készlettörténet) */
+.product-stock-section {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6ea8fe;
+}
+
+/* Készlettörténet: keskenyebb számoszlopok, hogy a sor kiférjen */
+.product-stock-history .product-stock-qty {
+  width: 6.5rem;
+}
+
+.product-stock-date,
+.product-stock-ref {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: #adb5bd;
+}
+
+.product-stock-in {
+  color: #75b798;
+  font-weight: 600;
+}
+
+.product-stock-out {
+  color: #ea868f;
+  font-weight: 600;
+}

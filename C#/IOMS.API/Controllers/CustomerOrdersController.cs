@@ -19,7 +19,6 @@ public class CustomerOrdersController : ControllerBase
         _createValidator = createValidator;
     }
 
-    // GET api/customerorders
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CustomerOrderData>>> GetAll(CancellationToken ct)
     {

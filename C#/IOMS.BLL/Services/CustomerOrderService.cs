@@ -1,20 +1,24 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Mapping;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
 using Microsoft.EntityFrameworkCore;
 using OrderStatus = IOMS.DAL.Entities.OrderStatus;
+using StockMovementType = IOMS.DAL.Entities.StockMovementType;
 
 namespace IOMS.BLL.Services;
 
 public class CustomerOrderService : ICustomerOrderService
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CustomerOrderService(AppDbContext context)
+    public CustomerOrderService(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<IReadOnlyList<CustomerOrderData>> GetAllAsync(CancellationToken ct = default)
@@ -22,7 +26,7 @@ public class CustomerOrderService : ICustomerOrderService
         return await _context.CustomerOrders
             .AsNoTracking()
             .OrderByDescending(o => o.OrderDate)
-            .Select(DataProjections.CustomerOrder)
+            .ProjectTo<CustomerOrderData>(_mapper.ConfigurationProvider)
             .ToListAsync(ct);
     }
 
@@ -31,7 +35,7 @@ public class CustomerOrderService : ICustomerOrderService
         return await _context.CustomerOrders
             .AsNoTracking()
             .Where(o => o.Id == id)
-            .Select(DataProjections.CustomerOrder)
+            .ProjectTo<CustomerOrderData>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(ct);
     }
 

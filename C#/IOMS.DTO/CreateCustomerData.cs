@@ -1,6 +1,6 @@
 namespace IOMS.DTO;
 
-// Validáció: IOMS.BLL.Validation.CreateCustomerDataValidator
+// Validáció: IOMS.API.Validation.CreateCustomerDataValidator
 public class CreateCustomerData
 {
     public string Name { get; set; } = string.Empty;

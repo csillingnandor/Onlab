@@ -1,4 +1,4 @@
-import type { Product, ProductInput, ProductSaleStatistics } from '../util/Types.js';
+import type { Product, ProductInput, ProductSaleStatistics, StockMovement } from '../util/Types.js';
 import { readValidationErrors } from '../util/apiErrors.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/products';
@@ -40,6 +40,14 @@ const productService = {
     if (response.status === 404) throw new Error('A termék már nem létezik.');
     if (response.status === 409) throw new Error(await readValidationErrors(response, 'A termék nem törölhető.'));
     if (!response.ok) throw new Error('Nem sikerült a termék törlése.');
+  },
+
+  // Készlettörténet minden raktárból, legújabb elöl
+  getMovements: async (productId: number): Promise<StockMovement[]> => {
+    const response = await fetch(`${API_BASE_URL}/${productId}/movements`);
+    if (response.status === 404) throw new Error('Nincs ilyen termék.');
+    if (!response.ok) throw new Error('Nem sikerült a készlettörténet betöltése.');
+    return response.json();
   },
 
   // from / to: 'YYYY-MM-DD'; ha elhagyjuk, a backend az utolsó 30 napot adja

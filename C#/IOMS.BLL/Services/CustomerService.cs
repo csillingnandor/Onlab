@@ -1,5 +1,6 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Mapping;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
@@ -10,10 +11,12 @@ namespace IOMS.BLL.Services;
 public class CustomerService : ICustomerService
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CustomerService(AppDbContext context)
+    public CustomerService(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     // Név szerint rendezve, a rendelésekből számított mezőkkel
@@ -22,7 +25,7 @@ public class CustomerService : ICustomerService
         return await _context.Customers
             .AsNoTracking()
             .OrderBy(c => c.Name)
-            .Select(DataProjections.Customer)
+            .ProjectTo<CustomerData>(_mapper.ConfigurationProvider)
             .ToListAsync(ct);
     }
 
@@ -31,7 +34,7 @@ public class CustomerService : ICustomerService
         return await _context.Customers
             .AsNoTracking()
             .Where(c => c.Id == id)
-            .Select(DataProjections.Customer)
+            .ProjectTo<CustomerData>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(ct);
     }
 

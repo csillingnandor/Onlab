@@ -1,6 +1,4 @@
 import ProfileButton from './header_components/ProfileButton.js';
-// CSS is loaded by the bundler; TypeScript has no declaration for this side-effect import.
-// @ts-expect-error -- the bundler resolves CSS imports at runtime.
 import './Header.css';
 
 type HeaderProps = {

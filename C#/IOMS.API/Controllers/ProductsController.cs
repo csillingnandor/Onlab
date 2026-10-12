@@ -46,6 +46,14 @@ public class ProductsController : ControllerBase
         return statistics is null ? NotFound() : Ok(statistics);
     }
 
+    // GET api/products/5/movements: készlettörténet (beérkezések, kiszállítások), legújabb elöl
+    [HttpGet("{id:int}/movements")]
+    public async Task<ActionResult<IEnumerable<StockMovementData>>> GetMovements(int id, CancellationToken ct)
+    {
+        var movements = await _productService.GetMovementsAsync(id, ct);
+        return movements is null ? NotFound() : Ok(movements);
+    }
+
     [HttpPost]
     public async Task<ActionResult<ProductData>> Create(CreateProductData data, CancellationToken ct)
     {

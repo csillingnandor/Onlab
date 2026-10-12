@@ -19,7 +19,7 @@ builder.Services.AddExceptionHandler<BusinessExceptionHandler>();
 
 builder.Services
     .AddDal(builder.Configuration.GetConnectionString("DefaultConnection"))
-    .AddBll();
+    .AddBll(builder.Configuration["AutoMapper:LicenseKey"]);
 
 // A kontrollerek által futtatott validátorok regisztrálása, magyar alapüzenetekkel
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDataValidator>();
@@ -42,6 +42,9 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
+    // Induláskor kiderül, ha egy Data mezőnek nincs leképezése (különben csendben üres maradna)
+    app.Services.GetRequiredService<AutoMapper.IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
+
     app.MapOpenApi();
 }
 

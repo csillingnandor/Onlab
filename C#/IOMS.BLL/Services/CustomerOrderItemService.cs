@@ -1,4 +1,5 @@
-using IOMS.BLL.Mapping;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using IOMS.DAL;
 using IOMS.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,12 @@ namespace IOMS.BLL.Services;
 public class CustomerOrderItemService : ICustomerOrderItemService
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CustomerOrderItemService(AppDbContext context)
+    public CustomerOrderItemService(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<IReadOnlyList<CustomerOrderItemData>> GetAllAsync(CancellationToken ct = default)
@@ -19,7 +22,7 @@ public class CustomerOrderItemService : ICustomerOrderItemService
         return await _context.CustomerOrderItems
             .AsNoTracking()
             .OrderBy(i => i.Id)
-            .Select(DataProjections.CustomerOrderItem)
+            .ProjectTo<CustomerOrderItemData>(_mapper.ConfigurationProvider)
             .ToListAsync(ct);
     }
 
@@ -29,7 +32,7 @@ public class CustomerOrderItemService : ICustomerOrderItemService
             .AsNoTracking()
             .Where(i => i.CustomerOrderId == orderId)
             .OrderBy(i => i.Id)
-            .Select(DataProjections.CustomerOrderItem)
+            .ProjectTo<CustomerOrderItemData>(_mapper.ConfigurationProvider)
             .ToListAsync(ct);
     }
 }

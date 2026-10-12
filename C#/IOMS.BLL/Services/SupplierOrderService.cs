@@ -1,29 +1,32 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
-using IOMS.BLL.Mapping;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
 using Microsoft.EntityFrameworkCore;
 using OrderStatus = IOMS.DAL.Entities.OrderStatus;
+using StockMovementType = IOMS.DAL.Entities.StockMovementType;
 
 namespace IOMS.BLL.Services;
 
 public class SupplierOrderService : ISupplierOrderService
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public SupplierOrderService(AppDbContext context)
+    public SupplierOrderService(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    // Legújabb rendelés elöl
     public async Task<IReadOnlyList<SupplierOrderData>> GetAllAsync(CancellationToken ct = default)
     {
         return await _context.SupplierOrders
             .AsNoTracking()
             .OrderByDescending(o => o.OrderDate)
-            .Select(DataProjections.SupplierOrder)
+            .ProjectTo<SupplierOrderData>(_mapper.ConfigurationProvider)
             .ToListAsync(ct);
     }
 
@@ -32,7 +35,7 @@ public class SupplierOrderService : ISupplierOrderService
         return await _context.SupplierOrders
             .AsNoTracking()
             .Where(o => o.Id == id)
-            .Select(DataProjections.SupplierOrder)
+            .ProjectTo<SupplierOrderData>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(ct);
     }
 

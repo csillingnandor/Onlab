@@ -1,4 +1,5 @@
-using IOMS.BLL.Mapping;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using IOMS.DAL;
 using IOMS.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,12 @@ namespace IOMS.BLL.Services;
 public class WarehouseService : IWarehouseService
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public WarehouseService(AppDbContext context)
+    public WarehouseService(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<IReadOnlyList<WarehouseData>> GetAllAsync(CancellationToken ct = default)
@@ -19,7 +22,7 @@ public class WarehouseService : IWarehouseService
         return await _context.Warehouses
             .AsNoTracking()
             .OrderBy(w => w.Name)
-            .Select(DataProjections.Warehouse)
+            .ProjectTo<WarehouseData>(_mapper.ConfigurationProvider)
             .ToListAsync(ct);
     }
 
@@ -28,7 +31,7 @@ public class WarehouseService : IWarehouseService
         return await _context.Warehouses
             .AsNoTracking()
             .Where(w => w.Id == id)
-            .Select(DataProjections.Warehouse)
+            .ProjectTo<WarehouseData>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(ct);
     }
 }
