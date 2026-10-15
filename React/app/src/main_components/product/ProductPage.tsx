@@ -7,12 +7,14 @@ import { emptyProductFilter, filterProducts, type ProductFilter } from '../../ut
 import ProductFormModal from './ProductFormModal.js';
 import ProductFilterPanel from './ProductFilterPanel.js';
 import ProductHeader from './ProductHeader.js';
+import { useAuth } from '../../auth/useAuth.js';
 import ProductStockModal from './ProductStockModal.js';
 import ProductTable from './ProductTable.js';
 
 const FILTER_PANEL_ID = 'product-filter';
 
 export default function ProductPage() {
+  const { hasAction } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [formOpen, setFormOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -72,7 +74,7 @@ export default function ProductPage() {
     setDeletingProduct(null);
   };
 
-  if (loading) return <div className="p-4 text-white">Termékek betöltése...</div>;
+  if (loading) return <div className="p-4">Termékek betöltése...</div>;
 
   return (
     <div className="product-page">
@@ -84,7 +86,7 @@ export default function ProductPage() {
         activeFilterCount={activeFilterCount}
         filterPanelId={FILTER_PANEL_ID}
         onFilterToggle={() => setFilterOpen((prev) => !prev)}
-        onAddProductClick={openCreateForm}
+        onAddProductClick={hasAction('products.create') ? openCreateForm : undefined}
       />
       {filterOpen && (
         <ProductFilterPanel
@@ -101,8 +103,8 @@ export default function ProductPage() {
         <ProductTable
           products={filteredProducts}
           viewMode={viewMode}
-          onEdit={openEditForm}
-          onDelete={setDeletingProduct}
+          onEdit={hasAction('products.edit') ? openEditForm : undefined}
+          onDelete={hasAction('products.delete') ? setDeletingProduct : undefined}
           onStock={setStockProduct}
         />
       )}

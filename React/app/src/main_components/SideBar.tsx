@@ -1,62 +1,26 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import './SideBar.css';
 import { NavLink, useLocation } from 'react-router-dom';
-
-type NavItem = {
-  to: string;
-  label: string;
-  icon: string;
-};
-
-type NavSection = {
-  id: string;
-  title: string;
-  icon: string;
-  items: NavItem[];
-};
-
-const sections: NavSection[] = [
-  {
-    id: 'dashboard',
-    title: 'Műszerfal',
-    icon: 'bi-speedometer2',
-    items: [{ to: '/dashboard', label: 'Fő Műszerfal & Riportok', icon: 'bi-graph-up' }],
-  },
-  {
-    id: 'warehouse',
-    title: 'Raktár',
-    icon: 'bi-boxes',
-    items: [
-      { to: '/products', label: 'Termékek', icon: 'bi-box-seam' },
-      { to: '/warehouse', label: 'Raktárak', icon: 'bi-building' },
-    ],
-  },
-  {
-    id: 'sales',
-    title: 'Eladások',
-    icon: 'bi-cart3',
-    items: [{ to: '/customer-orders', label: 'Vevői rendelések', icon: 'bi-receipt' }],
-  },
-  {
-    id: 'purchasing',
-    title: 'Beszerzés',
-    icon: 'bi-truck',
-    items: [{ to: '/supplier-orders', label: 'Beszerzési rendelések', icon: 'bi-file-earmark-text' }],
-  },
-  {
-    id: 'master-data',
-    title: 'Törzsadatok',
-    icon: 'bi-database',
-    items: [{ to: '/customers', label: 'Vevők', icon: 'bi-people' }],
-  },
-];
+import { useAuth } from '../auth/useAuth.js';
+import { navSections } from '../util/pages.js';
+import { useI18n } from '../i18n/useI18n.js';
 
 export default function SideBar() {
   const { pathname } = useLocation();
+  const { hasPage } = useAuth();
+  const { t } = useI18n();
+
+  // Csak a jogosultsággal elérhető oldalak, az üresen maradó szekciók nélkül
+  const sections = useMemo(
+    () => navSections
+      .map((section) => ({ ...section, pages: section.pages.filter((page) => hasPage(page.key)) }))
+      .filter((section) => section.pages.length > 0),
+    [hasPage],
+  );
 
   // Induláskor az aktuális oldalt tartalmazó szekció legyen nyitva
   const [openSections, setOpenSections] = useState<Set<string>>(() => {
-    const active = sections.find((s) => s.items.some((item) => pathname.startsWith(item.to)));
+    const active = sections.find((s) => s.pages.some((page) => pathname.startsWith(page.path)));
     return new Set(active ? [active.id] : []);
   });
 
@@ -74,7 +38,7 @@ export default function SideBar() {
       <nav>
         {sections.map((section) => {
           const isOpen = openSections.has(section.id);
-          const hasActiveItem = section.items.some((item) => pathname.startsWith(item.to));
+          const hasActiveItem = section.pages.some((page) => pathname.startsWith(page.path));
 
           return (
             <div key={section.id} className={`sidebar-section ${isOpen ? 'open' : ''}`}>
@@ -87,23 +51,23 @@ export default function SideBar() {
               >
                 <span className="sidebar-nav-item-content">
                   <i className={`bi ${section.icon} sidebar-nav-icon`}></i>
-                  <span>{section.title}</span>
+                  <span>{t(section.title)}</span>
                 </span>
                 <i className="bi bi-chevron-down sidebar-chevron"></i>
               </button>
 
               <div id={`sidebar-section-${section.id}`} className="sidebar-collapse">
                 <ul className="sidebar-nav-list">
-                  {section.items.map((item) => (
-                    <li key={item.to}>
+                  {section.pages.map((page) => (
+                    <li key={page.key}>
                       <NavLink
-                        to={item.to}
+                        to={page.path}
                         tabIndex={isOpen ? 0 : -1}
                         className={({ isActive }) => `sidebar-nav-button ${isActive ? 'active' : ''}`}
                       >
                         <span className="sidebar-nav-item-content">
-                          <i className={`bi ${item.icon} sidebar-nav-icon`}></i>
-                          <span>{item.label}</span>
+                          <i className={`bi ${page.icon} sidebar-nav-icon`}></i>
+                          <span>{t(page.label)}</span>
                         </span>
                       </NavLink>
                     </li>

@@ -1,3 +1,5 @@
+import type { ActionKey, PageKey } from './pages.js';
+
 export type Product = {
     id: number;
     name: string;
@@ -153,4 +155,61 @@ export type ProductSaleStatistics = {
     totalRevenue: number;
     averageUnitPrice: number | null; // null, ha az időszakban nem volt eladás
     daily: DailyProductSale[];
+};
+
+// A backend CurrentUserData-jának megfelelő alak (a bejelentkezett felhasználó a token alapján)
+export type CurrentUser = {
+    id: string;
+    userName: string;
+    displayName: string;
+    roles: string[];
+    pages: PageKey[]; // a szerepkörei alapján elérhető oldalak
+    actions?: ActionKey[]; // az oldalakon engedélyezett műveletek (régebbi tárolt munkamenetben hiányozhat)
+};
+
+// A backend LoginResultData-jának megfelelő alak; a kliens ezt tárolja (auth/authStorage.ts)
+export type AuthSession = {
+    token: string;
+    expiresAt: string; // ISO dátum szöveg
+    user: CurrentUser;
+};
+
+// A backend UserData-jának megfelelő alak
+export type User = {
+    id: string;
+    userName: string;
+    displayName: string;
+    roles: string[];
+};
+
+// A backend CreateUserData-jának megfelelő alak
+export type NewUser = {
+    userName: string;
+    displayName: string;
+    password: string;
+    roles: string[];
+};
+
+// A backend ModifyUserData-jának megfelelő alak; a bejelentkezési név nem módosítható
+export type UserUpdate = {
+    displayName: string;
+    newPassword: string | null; // null: a jelszó marad
+    roles: string[];
+};
+
+// A backend RoleData-jának megfelelő alak
+export type Role = {
+    id: string;
+    name: string;
+    pages: PageKey[];
+    actions: ActionKey[]; // csak a pages oldalaihoz tartozhatnak
+    userCount: number;
+    isSystem: boolean; // adminisztrátor: nem módosítható, nem törölhető, mindent elér
+};
+
+// A backend SaveRoleData-jának megfelelő alak
+export type RoleInput = {
+    name: string;
+    pages: PageKey[];
+    actions: ActionKey[];
 };

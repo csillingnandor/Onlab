@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from 'react';
 import { Alert, Button, Form, Modal, Spinner } from 'react-bootstrap';
+import { useI18n } from '../../i18n/useI18n.js';
 
 type FormModalProps = {
   show: boolean;
@@ -30,6 +31,7 @@ export default function FormModal({
   noValidate,
   children,
 }: FormModalProps) {
+  const { t } = useI18n();
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!saving) onSubmit();
@@ -49,13 +51,13 @@ export default function FormModal({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={onHide} disabled={saving}>
-            Mégse
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="primary" disabled={saving || submitDisabled}>
             {saving ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" aria-hidden="true" />
-                Mentés...
+                {t('common.saving')}
               </>
             ) : (
               submitLabel

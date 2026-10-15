@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IOMS.API.Infrastructure;
 
 // A BLL kivételeit ugyanolyan ValidationProblem válasszá alakítja, mint a kontrollerek validációja:
-// üzleti szabály sérülése 400, ütközés az adatok állapotával 409.
+// üzleti szabály sérülése 400, ütközés az adatok állapotával 409, sikertelen bejelentkezés 401.
 public class BusinessExceptionHandler : IExceptionHandler
 {
     private readonly IProblemDetailsService _problemDetailsService;
@@ -21,6 +21,7 @@ public class BusinessExceptionHandler : IExceptionHandler
         {
             BusinessValidationException e => (StatusCodes.Status400BadRequest, e.Errors),
             ConflictException e => (StatusCodes.Status409Conflict, e.Errors),
+            AuthenticationFailedException e => (StatusCodes.Status401Unauthorized, e.Errors),
             _ => (0, null),
         };
 

@@ -17,45 +17,20 @@
   flex-wrap: wrap;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #2d3238;
+  border-bottom: 1px solid var(--app-divider);
 }
 
 .order-page-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
-  color: #f8f9fa;
+  color: var(--app-heading);
 }
 
 .order-page-subtitle {
   margin: 0.25rem 0 0;
   font-size: 0.85rem;
-  color: #adb5bd;
-}
-
-.order-expand-all {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.9rem;
-  background-color: #212529;
-  color: #dee2e6;
-  border: 1px solid #495057;
-  border-radius: 0.375rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-}
-
-.order-expand-all:hover:not(:disabled) {
-  background-color: #2c3036;
-  border-color: #6c757d;
-  color: #ffffff;
-}
-
-.order-expand-all:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  color: var(--app-text-muted);
 }
 
 /* Fejléc gombjai: szűrő ikon az „Összes kinyitása” mellett */
@@ -73,8 +48,8 @@
 }
 
 .order-accordion {
-  background-color: #212529;
-  border: 1px solid #343a40;
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border-subtle);
   border-radius: 0.5rem;
   overflow: hidden;
   transition: border-color 0.2s ease-in-out;
@@ -94,14 +69,14 @@
   padding: 0.85rem 1.1rem;
   background: transparent;
   border: none;
-  color: #dee2e6;
+  color: var(--app-text);
   text-align: left;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 }
 
 .order-accordion-toggle:hover {
-  background-color: #2c3036;
+  background-color: var(--app-surface-hover);
 }
 
 .order-accordion-toggle:focus-visible {
@@ -111,19 +86,19 @@
 
 .order-accordion-chevron {
   font-size: 0.85rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
   transition: transform 0.25s ease-in-out;
 }
 
 .order-accordion.open .order-accordion-chevron {
   transform: rotate(90deg);
-  color: #6ea8fe;
+  color: var(--app-accent-text);
 }
 
 .order-accordion-id {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 0.85rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 .order-accordion-customer {
@@ -134,7 +109,7 @@
 
 .order-accordion-customer-name {
   font-weight: 600;
-  color: #f8f9fa;
+  color: var(--app-heading);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -142,7 +117,7 @@
 
 .order-accordion-date {
   font-size: 0.8rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 /* Műveletek a lenyitott rendelés alján (pl. Beérkeztetés) */
@@ -163,14 +138,14 @@
 
 .order-accordion-count {
   font-size: 0.85rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
   white-space: nowrap;
 }
 
 .order-accordion-total {
   text-align: right;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--app-emphasis);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -198,7 +173,7 @@
 .order-accordion-empty {
   margin: 0;
   padding: 0.75rem 0;
-  color: #adb5bd;
+  color: var(--app-text-muted);
   font-size: 0.9rem;
 }
 

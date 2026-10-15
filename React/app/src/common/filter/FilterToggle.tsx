@@ -1,4 +1,6 @@
+import '../button/HeaderButton.css';
 import './Filter.css';
+import { useI18n } from '../../i18n/useI18n.js';
 
 type FilterToggleProps = {
   open: boolean;
@@ -9,12 +11,13 @@ type FilterToggleProps = {
 
 // Ikongomb az oldal fejlécében; jelzi, hány szűrő aktív (a panel becsukva is).
 export default function FilterToggle({ open, activeCount, controls, onToggle }: FilterToggleProps) {
-  const label = activeCount > 0 ? `Szűrők (${activeCount} aktív)` : 'Szűrők';
+  const { t } = useI18n();
+  const label = activeCount > 0 ? t('filter.activeCount', { count: activeCount }) : t('filter.filters');
 
   return (
     <button
       type="button"
-      className={`filter-toggle ${open ? 'active' : ''}`}
+      className={`header-btn filter-toggle ${open ? 'active' : ''}`}
       onClick={onToggle}
       aria-expanded={open}
       aria-controls={controls}

@@ -1,0 +1,47 @@
+/* Felhasználók oldal: kitölti a jobb oldali területet (mint a .customer-page) */
+.user-admin-page {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.user-admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--app-divider);
+}
+
+.user-admin-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--app-heading);
+}
+
+.user-admin-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--app-text-muted);
+}
+
+/* Szerepkör szerkesztő: oldalanként a műveletek behúzva az oldal alatt */
+.role-form-page {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--app-border, #343a40);
+}
+
+.role-form-page:last-child {
+  border-bottom: none;
+}
+
+.role-form-actions {
+  margin: 0.15rem 0 0 1.75rem;
+  font-size: 0.875rem;
+}

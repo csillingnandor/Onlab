@@ -17,14 +17,14 @@
   flex-wrap: wrap;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #2d3238;
+  border-bottom: 1px solid var(--app-divider);
 }
 
 .warehouse-page-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
-  color: #f8f9fa;
+  color: var(--app-heading);
 }
 
 /* Szűrő gomb a nézetváltó mellett */
@@ -36,32 +36,32 @@
 
 .warehouse-page-subtitle {
   margin: 0.25rem 0 0;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 /* A Leaflet-térképnek fix magasság kell, különben 0 magas lesz */
 .warehouse-map {
   height: 520px;
-  border: 1px solid #2d3238;
+  border: 1px solid var(--app-divider);
   border-radius: 0.5rem;
 }
 
-/* Sötét térkép a Darkly témához: csak a csempéket invertáljuk, a markereket és a popupot nem */
-.warehouse-map .leaflet-tile-pane {
+/* Sötét témában sötét térkép: csak a csempéket invertáljuk, a markereket és a popupot nem */
+:root[data-theme='dark'] .warehouse-map .leaflet-tile-pane {
   filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
 }
 
 .warehouse-map.leaflet-container {
-  background: #1f2226;
+  background: var(--app-map-bg);
 }
 
 .warehouse-map-note {
   margin: 0.75rem 0 0;
   font-size: 0.875rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
-/* A popup világos hátterén ne a Darkly világos szövegszíne öröklődjön */
+/* A popup világos hátterén ne a sötét téma világos szövegszíne öröklődjön */
 .warehouse-map .leaflet-popup-content {
   color: #212529;
 }

@@ -1,5 +1,7 @@
 using FluentValidation;
+using IOMS.API.Infrastructure;
 using IOMS.API.Validation;
+using IOMS.BLL.Auth;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -25,12 +27,14 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
+    [RequirePage(AppPages.Products, AppPages.Dashboard, AppPages.CustomerOrders, AppPages.SupplierOrders)]
     public async Task<ActionResult<IEnumerable<ProductData>>> GetAll(CancellationToken ct)
     {
         return Ok(await _productService.GetAllAsync(ct));
     }
 
     [HttpGet("{id:int}")]
+    [RequirePage(AppPages.Products, AppPages.Dashboard, AppPages.CustomerOrders, AppPages.SupplierOrders)]
     public async Task<ActionResult<ProductData>> GetById(int id, CancellationToken ct)
     {
         var product = await _productService.GetByIdAsync(id, ct);
@@ -39,6 +43,7 @@ public class ProductsController : ControllerBase
 
     // GET api/products/5/sales?from=2026-09-01&to=2026-09-30
     [HttpGet("{id:int}/sales")]
+    [RequirePage(AppPages.Products, AppPages.Dashboard)]
     public async Task<ActionResult<ProductSaleStatisticsData>> GetSaleStatistics(
         int id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to, CancellationToken ct)
     {
@@ -48,6 +53,7 @@ public class ProductsController : ControllerBase
 
     // GET api/products/5/movements: készlettörténet (beérkezések, kiszállítások), legújabb elöl
     [HttpGet("{id:int}/movements")]
+    [RequirePage(AppPages.Products)]
     public async Task<ActionResult<IEnumerable<StockMovementData>>> GetMovements(int id, CancellationToken ct)
     {
         var movements = await _productService.GetMovementsAsync(id, ct);
@@ -55,6 +61,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [RequireAction(AppActions.ProductsCreate)]
     public async Task<ActionResult<ProductData>> Create(CreateProductData data, CancellationToken ct)
     {
         // Formai szabályok; az adatbázist igénylő ellenőrzések (létezés, egyediség) a service-ben vannak.
@@ -67,6 +74,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [RequireAction(AppActions.ProductsEdit)]
     public async Task<ActionResult<ProductData>> Modify(int id, ModifyProductData data, CancellationToken ct)
     {
         // Az útvonalbeli azonosító a mérvadó, a törzsben küldött Id-t felülírjuk.
@@ -81,6 +89,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [RequireAction(AppActions.ProductsDelete)]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         return await _productService.DeleteProductAsync(id, ct) ? NoContent() : NotFound();

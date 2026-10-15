@@ -8,11 +8,13 @@ import FilterToggle from '../../common/filter/FilterToggle.js';
 import CreateCustomerModal from './CreateCustomerModal.js';
 import CustomerFilterPanel from './CustomerFilterPanel.js';
 import CustomerTable from './CustomerTable.js';
+import { useAuth } from '../../auth/useAuth.js';
 import './CustomerPage.css';
 
 const FILTER_PANEL_ID = 'customer-filter';
 
 export default function CustomerPage() {
+  const { hasAction } = useAuth();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,10 +91,12 @@ export default function CustomerPage() {
             controls={FILTER_PANEL_ID}
             onToggle={() => setFilterOpen((prev) => !prev)}
           />
-          <button type="button" className="add-product-btn" onClick={() => setCreateOpen(true)}>
-            <i className="bi bi-plus-lg me-1" aria-hidden="true"></i>
-            Új vevő
-          </button>
+          {hasAction('customers.create') && (
+            <button type="button" className="header-btn header-btn-primary" onClick={() => setCreateOpen(true)}>
+              <i className="bi bi-plus-lg" aria-hidden="true"></i>
+              Új vevő
+            </button>
+          )}
         </div>
       </header>
       <CreateCustomerModal show={createOpen} onCreated={handleCreated} onHide={() => setCreateOpen(false)} />

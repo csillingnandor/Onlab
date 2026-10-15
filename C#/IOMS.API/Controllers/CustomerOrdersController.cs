@@ -1,5 +1,7 @@
 using FluentValidation;
+using IOMS.API.Infrastructure;
 using IOMS.API.Validation;
+using IOMS.BLL.Auth;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,14 @@ public class CustomerOrdersController : ControllerBase
     }
 
     [HttpGet]
+    [RequirePage(AppPages.CustomerOrders, AppPages.Dashboard)]
     public async Task<ActionResult<IEnumerable<CustomerOrderData>>> GetAll(CancellationToken ct)
     {
         return Ok(await _orderService.GetAllAsync(ct));
     }
 
     [HttpGet("{id:int}")]
+    [RequirePage(AppPages.CustomerOrders, AppPages.Dashboard)]
     public async Task<ActionResult<CustomerOrderData>> GetById(int id, CancellationToken ct)
     {
         var order = await _orderService.GetByIdAsync(id, ct);
@@ -33,6 +37,7 @@ public class CustomerOrdersController : ControllerBase
     }
 
     [HttpPost]
+    [RequireAction(AppActions.CustomerOrdersCreate)]
     public async Task<ActionResult<CustomerOrderData>> Create(CreateCustomerOrderData data, CancellationToken ct)
     {
         // Formai szabályok; az adatbázist igénylő ellenőrzések (létezés, egyediség) a service-ben vannak.
@@ -46,6 +51,7 @@ public class CustomerOrdersController : ControllerBase
 
     // POST api/customerorders/5/ship: kiszállítás, a kiszolgáló raktár készlete csökken (409, ha nincs elég)
     [HttpPost("{id:int}/ship")]
+    [RequireAction(AppActions.CustomerOrdersShip)]
     public async Task<ActionResult<CustomerOrderData>> Ship(int id, CancellationToken ct)
     {
         var order = await _orderService.ShipAsync(id, ct);
@@ -54,6 +60,7 @@ public class CustomerOrdersController : ControllerBase
 
     // POST api/customerorders/5/deliver: kézbesítve (csak kiszállított rendelésnél)
     [HttpPost("{id:int}/deliver")]
+    [RequireAction(AppActions.CustomerOrdersDeliver)]
     public async Task<ActionResult<CustomerOrderData>> Deliver(int id, CancellationToken ct)
     {
         var order = await _orderService.DeliverAsync(id, ct);
@@ -62,6 +69,7 @@ public class CustomerOrdersController : ControllerBase
 
     // POST api/customerorders/5/cancel: lemondás (csak függő rendelésnél)
     [HttpPost("{id:int}/cancel")]
+    [RequireAction(AppActions.CustomerOrdersCancel)]
     public async Task<ActionResult<CustomerOrderData>> Cancel(int id, CancellationToken ct)
     {
         var order = await _orderService.CancelAsync(id, ct);

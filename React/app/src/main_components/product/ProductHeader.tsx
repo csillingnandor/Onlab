@@ -15,7 +15,7 @@ type ProductHeaderProps = {
   activeFilterCount: number;
   filterPanelId: string;
   onFilterToggle: () => void;
-  onAddProductClick?: () => void;
+  onAddProductClick?: (() => void) | undefined; // nincs megadva: nincs létrehozási jog, a gomb nem látszik
 };
 
 export default function ProductHeader({
@@ -42,9 +42,12 @@ export default function ProductHeader({
                 onToggle={onFilterToggle}
             />
             <ViewModeToggle options={viewModeOptions} value={viewMode} onChange={onViewModeChange} />
-            <button className="add-product-btn" onClick={onAddProductClick}>
-                Új termék hozzáadása
-            </button>
+            {onAddProductClick && (
+                <button type="button" className="header-btn header-btn-primary" onClick={onAddProductClick}>
+                    <i className="bi bi-plus-lg" aria-hidden="true"></i>
+                    Új termék hozzáadása
+                </button>
+            )}
         </header>
     )
 }

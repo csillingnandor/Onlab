@@ -1,3 +1,5 @@
+using IOMS.API.Infrastructure;
+using IOMS.BLL.Auth;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ namespace IOMS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[RequirePage(AppPages.Warehouses, AppPages.CustomerOrders, AppPages.SupplierOrders)]
 public class WarehousesController : ControllerBase
 {
     private readonly IWarehouseService _warehouseService;

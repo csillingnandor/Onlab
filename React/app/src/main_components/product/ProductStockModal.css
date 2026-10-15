@@ -6,7 +6,7 @@
 .product-stock-table th {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #adb5bd;
+  color: var(--app-text-muted);
   white-space: nowrap;
 }
 
@@ -22,14 +22,14 @@
 
 .product-stock-table tfoot td {
   font-weight: 700;
-  color: #f8f9fa;
+  color: var(--app-heading);
   border-bottom: none;
 }
 
 .product-stock-hint {
   margin: 0;
   font-size: 0.8rem;
-  color: #8a939c;
+  color: var(--app-text-faint);
 }
 
 /* Szakaszcím (Raktáronként / Készlettörténet) */
@@ -39,7 +39,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #6ea8fe;
+  color: var(--app-accent-text);
 }
 
 /* Készlettörténet: keskenyebb számoszlopok, hogy a sor kiférjen */
@@ -51,15 +51,15 @@
 .product-stock-ref {
   white-space: nowrap;
   font-size: 0.8rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 .product-stock-in {
-  color: #75b798;
+  color: var(--app-success-text);
   font-weight: 600;
 }
 
 .product-stock-out {
-  color: #ea868f;
+  color: var(--app-danger-text);
   font-weight: 600;
 }

@@ -1,12 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Button, Modal, Spinner } from 'react-bootstrap';
+import { useI18n } from '../../i18n/useI18n.js';
 
 type ConfirmModalProps = {
   show: boolean;
   title: string; // pl. 'Termék törlése'
   confirmLabel: string; // pl. 'Törlés'
   confirmIcon?: string; // Bootstrap Icons osztály, pl. 'bi-trash'
-  busyLabel?: string; // a megerősítő gomb felirata a művelet közben
+  busyLabel?: string; // a megerősítő gomb felirata a művelet közben (alapértelmezés: „Folyamatban...”)
   variant?: 'danger' | 'primary';
   // Ha hibát dob, az üzenete a modalban jelenik meg, és a megerősítő gomb letiltódik
   // (pl. a backend 409-cel elutasította a törlést; újrapróbálni ugyanígy nincs értelme).
@@ -21,12 +22,13 @@ export default function ConfirmModal({
   title,
   confirmLabel,
   confirmIcon,
-  busyLabel = 'Folyamatban...',
+  busyLabel,
   variant = 'danger',
   onConfirm,
   onHide,
   children,
 }: ConfirmModalProps) {
+  const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +43,7 @@ export default function ConfirmModal({
     try {
       await onConfirm();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Hiba történt a művelet során.');
+      setError(err instanceof Error ? err.message : t('common.genericError'));
     } finally {
       setBusy(false);
     }
@@ -60,13 +62,13 @@ export default function ConfirmModal({
 
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide} disabled={busy}>
-          Mégse
+          {t('common.cancel')}
         </Button>
         <Button variant={variant} onClick={handleConfirm} disabled={busy || error !== null}>
           {busy ? (
             <>
               <Spinner animation="border" size="sm" className="me-2" aria-hidden="true" />
-              {busyLabel}
+              {busyLabel ?? t('common.inProgress')}
             </>
           ) : (
             <>

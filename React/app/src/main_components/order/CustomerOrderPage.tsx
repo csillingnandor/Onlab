@@ -9,6 +9,7 @@ import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
 import ConfirmModal from '../../common/modal/ConfirmModal.js';
+import { useAuth } from '../../auth/useAuth.js';
 import '../../common/table/DataTable.css';
 import './CustomerOrderPage.css';
 
@@ -36,6 +37,7 @@ const actionsFor = (order: CustomerOrder): OrderAction[] =>
   order.status === 'Pending' ? ['cancel', 'ship'] : order.status === 'Shipped' ? ['deliver'] : [];
 
 export default function CustomerOrderPage() {
+  const { hasAction } = useAuth();
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +111,7 @@ export default function CustomerOrderPage() {
 
   const itemCount = visibleOrders.reduce((sum, order) => sum + order.items.length, 0);
 
-  if (loading) return <div className="p-4 text-white">Rendelések betöltése...</div>;
+  if (loading) return <div className="p-4">Rendelések betöltése...</div>;
 
   return (
     <div className="order-page">
@@ -131,17 +133,19 @@ export default function CustomerOrderPage() {
           />
           <button
             type="button"
-            className="order-expand-all"
+            className="header-btn"
             onClick={toggleAll}
             disabled={visibleOrders.length === 0}
           >
             <i className={`bi ${allOpen ? 'bi-arrows-collapse' : 'bi-arrows-expand'}`} aria-hidden="true"></i>
             {allOpen ? 'Összes becsukása' : 'Összes kinyitása'}
           </button>
-          <button type="button" className="add-product-btn" onClick={() => setCreateOpen(true)}>
-            <i className="bi bi-plus-lg me-1" aria-hidden="true"></i>
-            Új rendelés
-          </button>
+          {hasAction('customer-orders.create') && (
+            <button type="button" className="header-btn header-btn-primary" onClick={() => setCreateOpen(true)}>
+              <i className="bi bi-plus-lg" aria-hidden="true"></i>
+              Új rendelés
+            </button>
+          )}
         </div>
       </header>
 
@@ -191,7 +195,7 @@ export default function CustomerOrderPage() {
               }))}
               isOpen={openIds.has(order.id)}
               onToggle={() => toggleOrder(order.id)}
-              actions={actionsFor(order).map((action) => (
+              actions={actionsFor(order).filter((action) => hasAction(`customer-orders.${action}` as const)).map((action) => (
                 <Button
                   key={action}
                   variant={actionConfig[action].buttonVariant}

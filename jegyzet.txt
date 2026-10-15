@@ -13,3 +13,15 @@
 -Automapper data projectionbe
 -Middleware validáció
 -Alapvető funkciók: adatfelvétel, módosítás
+
+6. konzi
+-E-mail értesítés
+-Ütemezett összefoglaló
+-További alapvető funckió kiegészítés
+-Quick action gombok a dashboardra
+-Szerepkörök, login, csoportonként, page hozzá
+-Adat exportálás
+-Excel import, táblázatban preview és séma/egyéb hibák előre kijelzése
+-Raktárforgalom chart
+
+

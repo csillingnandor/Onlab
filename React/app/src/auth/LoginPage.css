@@ -1,0 +1,48 @@
+/* Teljes képernyős, középre igazított bejelentkező kártya (fejléc és oldalsáv nélkül) */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--app-bg);
+}
+
+/* Téma- és nyelvváltó a jobb felső sarokban */
+.login-page-actions {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 2rem;
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1.5rem var(--app-shadow);
+  text-align: left;
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-brand h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0.5rem 0 0;
+  color: var(--app-heading);
+}
+
+.login-brand p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.9rem;
+}

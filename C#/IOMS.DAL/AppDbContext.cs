@@ -1,9 +1,11 @@
 ﻿using IOMS.DAL.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace IOMS.DAL;
 
-public class AppDbContext : DbContext
+// Az Identity táblák (AspNetUsers, AspNetRoles, AspNetRoleClaims...) is ebben a kontextusban vannak
+public class AppDbContext : IdentityDbContext<AppUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

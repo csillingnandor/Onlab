@@ -1,5 +1,6 @@
 import { Form } from 'react-bootstrap';
 import { isRangeInvalid } from './filterUtils.js';
+import { useI18n } from '../../i18n/useI18n.js';
 
 type RangeFilterFieldProps = {
   id: string;
@@ -12,6 +13,7 @@ type RangeFilterFieldProps = {
 
 // Számintervallum (tól–ig) két mezővel; bármelyik határ üresen hagyható.
 export default function RangeFilterField({ id, label, min, max, onChange, step = '1' }: RangeFilterFieldProps) {
+  const { t } = useI18n();
   const invalid = isRangeInvalid(min, max);
 
   return (
@@ -24,8 +26,8 @@ export default function RangeFilterField({ id, label, min, max, onChange, step =
           size="sm"
           min={0}
           step={step}
-          placeholder="tól"
-          aria-label={`${label} – legalább`}
+          placeholder={t('filter.rangeFrom')}
+          aria-label={t('filter.rangeMin', { label })}
           value={min}
           onChange={(e) => onChange(e.target.value, max)}
         />
@@ -36,8 +38,8 @@ export default function RangeFilterField({ id, label, min, max, onChange, step =
           size="sm"
           min={0}
           step={step}
-          placeholder="ig"
-          aria-label={`${label} – legfeljebb`}
+          placeholder={t('filter.rangeTo')}
+          aria-label={t('filter.rangeMax', { label })}
           value={max}
           onChange={(e) => onChange(min, e.target.value)}
           isInvalid={invalid}

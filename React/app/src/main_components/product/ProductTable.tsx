@@ -9,8 +9,8 @@ import '../../common/table/DataTable.css';
 type ProductTableProps = {
   products: Product[];
   viewMode: ViewMode;
-  onEdit: (product: Product) => void;
-  onDelete: (product: Product) => void;
+  onEdit?: ((product: Product) => void) | undefined; // nincs megadva: nincs módosítási jog
+  onDelete?: ((product: Product) => void) | undefined;
   onStock: (product: Product) => void;
 };
 
@@ -69,8 +69,8 @@ export default function ProductTable({ products, viewMode, onEdit, onDelete, onS
               <td className="actions">
                 <ActionButtons
                   itemLabel={product.name}
-                  onEdit={() => onEdit(product)}
-                  onDelete={() => onDelete(product)}
+                  onEdit={onEdit && (() => onEdit(product))}
+                  onDelete={onDelete && (() => onDelete(product))}
                   extraActions={[stockAction(product, onStock)]}
                 />
               </td>

@@ -1,17 +1,26 @@
 /* Header konténer és elrendezés */
 .app-header {
-  background-color: #212529;
-  color: #ffffff;
-  border-bottom: 1px solid #495057;
+  background-color: var(--app-surface);
+  color: var(--app-emphasis);
+  border-bottom: 1px solid var(--app-border);
   padding: 0.5rem 1.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
+/* Három oszlop: a két szélső egyforma széles, így a cím a fejléc közepén áll,
+   akármilyen széles a logó és a jobb oldali gombsor */
 .app-header-container {
   padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header-brand {
+  justify-self: start;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 /* Alkalmazás címe középen */
@@ -21,64 +30,63 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #f8f9fa;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--app-heading);
 }
 
-/* ProfileButton egyedi stílusai */
-.profile-btn {
-  background-color: #212529;
-  color: #ffffff;
-  border: 1px solid #495057;
-  border-radius: 0.375rem;
-  padding: 0.5rem 0.75rem;
+/* Jobb oldali vezérlők: témaváltó, nyelvválasztó, profil (mind .header-btn, egyforma magasak) */
+.app-header-actions {
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
-.profile-btn:hover {
-  background-color: #2c3036;
-  border-color: #6c757d;
+/* ProfileButton: a .header-btn magasságába férő avatar + név / szerepkör */
+.profile-btn {
+  padding-left: 0.375rem;
 }
 
 /* ProfileAvatar (Kép vagy Monogram) */
-.profile-avatar-img {
-  width: 40px;
-  height: 40px;
+.profile-avatar-img,
+.profile-avatar-fallback {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
   border-radius: 50%;
-  border: 1px solid #f8f9fa;
+}
+
+.profile-avatar-img {
+  border: 1px solid var(--app-heading);
   object-fit: cover;
 }
 
 .profile-avatar-fallback {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   background-color: #0d6efd;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 /* Felhasználói név és szerepkör szövegek */
 .profile-info {
   text-align: left;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .profile-name {
   font-weight: 600;
-  color: #ffffff;
-  font-size: 0.95rem;
+  color: var(--app-emphasis);
+  font-size: 0.85rem;
 }
 
 .profile-role {
   display: block;
-  color: #adb5bd;
-  font-size: 0.75rem;
+  color: var(--app-text-muted);
+  font-size: 0.7rem;
+  font-weight: 400;
 }

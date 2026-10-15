@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, Dropdown, Form } from 'react-bootstrap';
+import '../../common/button/HeaderButton.css';
 import {
   formatIsoDate,
   presetLabels,
@@ -53,8 +54,8 @@ export default function DateRangeMenu({ value, onChange }: DateRangeMenuProps) {
   return (
     // autoClose="outside": a menün belüli kattintás (pl. a dátummezők) nem zárja be; mi zárjuk választáskor
     <Dropdown show={open} onToggle={handleToggle} autoClose="outside" align="end">
-      <Dropdown.Toggle variant="outline-light" size="sm">
-        <i className="bi bi-calendar3 me-2" aria-hidden="true"></i>
+      <Dropdown.Toggle as="button" type="button" className="header-btn">
+        <i className="bi bi-calendar3" aria-hidden="true"></i>
         {label}
       </Dropdown.Toggle>
 

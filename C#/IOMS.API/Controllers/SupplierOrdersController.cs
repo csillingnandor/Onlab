@@ -1,5 +1,7 @@
 using FluentValidation;
+using IOMS.API.Infrastructure;
 using IOMS.API.Validation;
+using IOMS.BLL.Auth;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,7 @@ namespace IOMS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[RequirePage(AppPages.SupplierOrders)]
 public class SupplierOrdersController : ControllerBase
 {
     private readonly ISupplierOrderService _supplierOrderService;
@@ -33,6 +36,7 @@ public class SupplierOrdersController : ControllerBase
     }
 
     [HttpPost]
+    [RequireAction(AppActions.SupplierOrdersCreate)]
     public async Task<ActionResult<SupplierOrderData>> Create(CreateSupplierOrderData data, CancellationToken ct)
     {
         // Formai szabályok; az adatbázist igénylő ellenőrzések (létezés, egyediség) a service-ben vannak.
@@ -46,6 +50,7 @@ public class SupplierOrdersController : ControllerBase
 
     // POST api/supplierorders/5/receive: beérkeztetés a célraktárba (409, ha már beérkezett vagy le van mondva)
     [HttpPost("{id:int}/receive")]
+    [RequireAction(AppActions.SupplierOrdersReceive)]
     public async Task<ActionResult<SupplierOrderData>> Receive(int id, CancellationToken ct)
     {
         var received = await _supplierOrderService.ReceiveAsync(id, ct);

@@ -1,3 +1,4 @@
+import './HeaderButton.css';
 import './ViewModeToggle.css';
 
 export type ViewModeOption<T extends string> = {

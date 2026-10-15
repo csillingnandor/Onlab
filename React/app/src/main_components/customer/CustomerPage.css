@@ -16,14 +16,14 @@
   flex-wrap: wrap;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #2d3238;
+  border-bottom: 1px solid var(--app-divider);
 }
 
 .customer-page-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
-  color: #f8f9fa;
+  color: var(--app-heading);
 }
 
 /* Szűrő gomb + „Új vevő” a fejléc jobb oldalán */
@@ -35,15 +35,15 @@
 
 .customer-page-subtitle {
   margin: 0.25rem 0 0;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 .customer-email {
-  color: #adb5bd;
+  color: var(--app-text-muted);
   text-decoration: none;
 }
 
 .customer-email:hover {
-  color: #ffffff;
+  color: var(--app-emphasis);
   text-decoration: underline;
 }

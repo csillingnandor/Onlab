@@ -8,6 +8,7 @@ import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
 import ConfirmModal from '../../common/modal/ConfirmModal.js';
+import { useAuth } from '../../auth/useAuth.js';
 import '../../common/table/DataTable.css';
 import './CustomerOrderPage.css';
 
@@ -18,6 +19,7 @@ const FILTER_PANEL_ID = 'supplier-order-filter';
 
 // A vevői rendelések oldalának párja: ugyanaz az elrendezés és harmonika, beszállítóval és beszerzési árral.
 export default function SupplierOrderPage() {
+  const { hasAction } = useAuth();
   const [orders, setOrders] = useState<SupplierOrder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +96,7 @@ export default function SupplierOrderPage() {
 
   const itemCount = visibleOrders.reduce((sum, order) => sum + order.items.length, 0);
 
-  if (loading) return <div className="p-4 text-white">Beszerzési rendelések betöltése...</div>;
+  if (loading) return <div className="p-4">Beszerzési rendelések betöltése...</div>;
 
   return (
     <div className="order-page">
@@ -116,17 +118,19 @@ export default function SupplierOrderPage() {
           />
           <button
             type="button"
-            className="order-expand-all"
+            className="header-btn"
             onClick={toggleAll}
             disabled={visibleOrders.length === 0}
           >
             <i className={`bi ${allOpen ? 'bi-arrows-collapse' : 'bi-arrows-expand'}`} aria-hidden="true"></i>
             {allOpen ? 'Összes becsukása' : 'Összes kinyitása'}
           </button>
-          <button type="button" className="add-product-btn" onClick={() => setCreateOpen(true)}>
-            <i className="bi bi-plus-lg me-1" aria-hidden="true"></i>
-            Új rendelés
-          </button>
+          {hasAction('supplier-orders.create') && (
+            <button type="button" className="header-btn header-btn-primary" onClick={() => setCreateOpen(true)}>
+              <i className="bi bi-plus-lg" aria-hidden="true"></i>
+              Új rendelés
+            </button>
+          )}
         </div>
       </header>
 
@@ -177,7 +181,7 @@ export default function SupplierOrderPage() {
               isOpen={openIds.has(order.id)}
               onToggle={() => toggleOrder(order.id)}
               actions={
-                canReceive(order) && (
+                canReceive(order) && hasAction('supplier-orders.receive') && (
                   <Button variant="success" size="sm" onClick={() => setReceivingOrder(order)}>
                     <i className="bi bi-box-arrow-in-down me-1" aria-hidden="true"></i>
                     Beérkeztetés

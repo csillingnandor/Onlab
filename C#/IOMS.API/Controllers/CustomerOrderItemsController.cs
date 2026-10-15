@@ -1,3 +1,5 @@
+using IOMS.API.Infrastructure;
+using IOMS.BLL.Auth;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ namespace IOMS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[RequirePage(AppPages.CustomerOrders, AppPages.Dashboard)]
 public class CustomerOrderItemsController : ControllerBase
 {
     private readonly ICustomerOrderItemService _itemService;

@@ -1,0 +1,66 @@
+/* Az alkalmazás saját színei világos és sötét témában. A <html> data-theme attribútumát a
+   theme/themeDom.ts állítja (a Bootstrap data-bs-theme attribútumával és stíluslapjával együtt).
+   A saját CSS-fájlok csak ezeket a változókat használják, beégetett színt nem. */
+:root,
+:root[data-theme='dark'] {
+  --app-bg: #121212; /* oldal háttere a fejléc és az oldalsáv mögött */
+  --app-surface: #212529; /* kártyák, panelek, fejléc, oldalsáv */
+  --app-surface-sunken: #1a1d20; /* táblázatfejléc, összesítő sor */
+  --app-surface-hover: #2c3036; /* sor / gomb hover */
+  --app-border: #495057; /* gombok, fejléc, oldalsáv kerete */
+  --app-border-subtle: #343a40; /* kártyák, táblázatok kerete */
+  --app-border-hover: #6c757d;
+  --app-divider: #2d3238; /* oldalfejlécek alatti vonal */
+  --app-text: #dee2e6;
+  --app-heading: #f8f9fa; /* címek, kiemelt értékek */
+  --app-emphasis: #ffffff; /* legerősebb szöveg (hover, összegek) */
+  --app-text-muted: #adb5bd;
+  --app-text-faint: #8a939c;
+  --app-text-subtle: #6c757d;
+  --app-accent-text: #6ea8fe; /* kék szöveg / ikon */
+  --app-accent-text-hover: #9ec5fe;
+  --app-success-text: #75b798;
+  --app-warning-text: #ffda6a;
+  --app-danger-text: #ea868f;
+  --app-shadow: rgba(0, 0, 0, 0.4);
+  --app-map-bg: #1f2226;
+}
+
+:root[data-theme='light'] {
+  --app-bg: #f0f2f5;
+  --app-surface: #ffffff;
+  --app-surface-sunken: #f1f3f5;
+  --app-surface-hover: #e9ecef;
+  --app-border: #ced4da;
+  --app-border-subtle: #dee2e6;
+  --app-border-hover: #adb5bd;
+  --app-divider: #dee2e6;
+  --app-text: #343a40;
+  --app-heading: #212529;
+  --app-emphasis: #212529;
+  --app-text-muted: #6c757d;
+  --app-text-faint: #6c757d;
+  --app-text-subtle: #868e96;
+  --app-accent-text: #0a58ca;
+  --app-accent-text-hover: #084298;
+  --app-success-text: #146c43;
+  --app-warning-text: #997404;
+  --app-danger-text: #b02a37;
+  --app-shadow: rgba(0, 0, 0, 0.12);
+  --app-map-bg: #e9ecef;
+}
+
+/* Világos témában az outline-light gombok (szűrőtörlés, váltógombok) fehéren fehérek lennének:
+   ott a semleges szürke változatot kapják */
+:root[data-theme='light'] .btn-outline-light {
+  --bs-btn-color: #495057;
+  --bs-btn-border-color: #ced4da;
+  --bs-btn-hover-color: #212529;
+  --bs-btn-hover-bg: #e9ecef;
+  --bs-btn-hover-border-color: #adb5bd;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #495057;
+  --bs-btn-active-border-color: #495057;
+  --bs-btn-disabled-color: #adb5bd;
+  --bs-btn-disabled-border-color: #dee2e6;
+}

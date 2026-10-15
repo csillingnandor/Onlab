@@ -2,8 +2,8 @@
 .data-table-wrapper {
   width: 100%;
   overflow-x: auto;
-  background-color: #212529;
-  border: 1px solid #343a40;
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border-subtle);
   border-radius: 0.5rem;
 }
 
@@ -12,14 +12,14 @@
   border-collapse: collapse;
   text-align: left;
   font-size: 0.9rem;
-  color: #dee2e6;
+  color: var(--app-text);
 }
 
 .data-table th {
   padding: 0.75rem 1rem;
-  background-color: #1a1d20;
-  border-bottom: 1px solid #343a40;
-  color: #adb5bd;
+  background-color: var(--app-surface-sunken);
+  border-bottom: 1px solid var(--app-border-subtle);
+  color: var(--app-text-muted);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -29,7 +29,7 @@
 
 .data-table td {
   padding: 0.7rem 1rem;
-  border-bottom: 1px solid #2c3036;
+  border-bottom: 1px solid var(--app-surface-hover);
   vertical-align: middle;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .data-table tbody tr:hover {
-  background-color: #2c3036;
+  background-color: var(--app-surface-hover);
 }
 
 /* Számok jobbra igazítva, azonos szélességű számjegyekkel */
@@ -54,28 +54,28 @@
 
 .data-table-strong {
   font-weight: 600;
-  color: #f8f9fa;
+  color: var(--app-heading);
 }
 
 .data-table-mono {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 0.8rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 /* Figyelmeztető érték (pl. készlet a minimum szint alatt) */
 .data-table-warning {
-  color: #ffda6a;
+  color: var(--app-warning-text);
   font-weight: 600;
 }
 
 /* Összesítő sor a táblázat alján */
 .data-table tfoot td {
   padding: 0.75rem 1rem;
-  background-color: #1a1d20;
-  border-top: 1px solid #343a40;
+  background-color: var(--app-surface-sunken);
+  border-top: 1px solid var(--app-border-subtle);
   font-weight: 700;
-  color: #f8f9fa;
+  color: var(--app-heading);
 }
 
 /* Művelet gombok oszlopa a sor végén: csak a gombok szélességét foglalja */

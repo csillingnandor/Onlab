@@ -1,5 +1,7 @@
 using FluentValidation;
+using IOMS.API.Infrastructure;
 using IOMS.API.Validation;
+using IOMS.BLL.Auth;
 using IOMS.BLL.Services;
 using IOMS.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,14 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet]
+    [RequirePage(AppPages.Customers, AppPages.CustomerOrders)]
     public async Task<ActionResult<IEnumerable<CustomerData>>> GetAll(CancellationToken ct)
     {
         return Ok(await _customerService.GetAllAsync(ct));
     }
 
     [HttpGet("{id:int}")]
+    [RequirePage(AppPages.Customers, AppPages.CustomerOrders)]
     public async Task<ActionResult<CustomerData>> GetById(int id, CancellationToken ct)
     {
         var customer = await _customerService.GetByIdAsync(id, ct);
@@ -33,6 +37,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
+    [RequireAction(AppActions.CustomersCreate)]
     public async Task<ActionResult<CustomerData>> Create(CreateCustomerData data, CancellationToken ct)
     {
         // Formai szabályok; az adatbázist igénylő ellenőrzések (létezés, egyediség) a service-ben vannak.

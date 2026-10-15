@@ -3,9 +3,9 @@
   height: 100%; /* A rács sorában minden kártya egyforma magas */
   display: flex;
   flex-direction: column;
-  background-color: #212529;
-  color: #ffffff;
-  border: 1px solid #343a40;
+  background-color: var(--app-surface);
+  color: var(--app-emphasis);
+  border: 1px solid var(--app-border-subtle);
   border-radius: 0.5rem;
   overflow: hidden;
   text-align: left;
@@ -15,7 +15,7 @@
 .product-card:hover {
   transform: translateY(-3px);
   border-color: #0d6efd;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0.5rem 1rem var(--app-shadow);
 }
 
 /* Kép / ikon helyőrző */
@@ -25,18 +25,18 @@
   align-items: center;
   justify-content: center;
   height: 120px;
-  background: linear-gradient(135deg, #2c3036 0%, #1a1d20 100%);
-  border-bottom: 1px solid #343a40;
+  background: linear-gradient(135deg, var(--app-surface-hover) 0%, var(--app-surface-sunken) 100%);
+  border-bottom: 1px solid var(--app-border-subtle);
 }
 
 .product-card-image .bi {
   font-size: 3rem;
-  color: #6c757d;
+  color: var(--app-text-subtle);
   transition: color 0.2s ease-in-out;
 }
 
 .product-card:hover .product-card-image .bi {
-  color: #6ea8fe;
+  color: var(--app-accent-text);
 }
 
 /* Készlet állapot jelvény a kép jobb felső sarkában (színek: common/badge/StatusBadge.css) */
@@ -73,7 +73,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #6ea8fe;
+  color: var(--app-accent-text);
 }
 
 .product-card-name {
@@ -81,7 +81,7 @@
   font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.3;
-  color: #f8f9fa;
+  color: var(--app-heading);
   /* Hosszú név: legfeljebb 2 sor, utána "..." */
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -94,7 +94,7 @@
   margin: 0;
   font-family: ui-monospace, Consolas, monospace;
   font-size: 0.8rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }
 
 /* Lábléc: ár és készlet */
@@ -103,13 +103,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1rem;
-  border-top: 1px solid #343a40;
+  border-top: 1px solid var(--app-border-subtle);
 }
 
 .product-card-price {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--app-emphasis);
 }
 
 .product-card-stock {
@@ -117,5 +117,5 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.85rem;
-  color: #adb5bd;
+  color: var(--app-text-muted);
 }

@@ -7,8 +7,8 @@ import './ProductCard.css';
 
 type ProductCardProps = {
     product: Product;
-    onEdit: (product: Product) => void;
-    onDelete: (product: Product) => void;
+    onEdit?: ((product: Product) => void) | undefined; // nincs megadva: nincs módosítási jog
+    onDelete?: ((product: Product) => void) | undefined;
     onStock: (product: Product) => void;
 };
 
@@ -20,8 +20,8 @@ export default function ProductCard({ product, onEdit, onDelete, onStock }: Prod
                 <ProductStatusBadge status={product.status} className="product-card-status" />
                 <ActionButtons
                     itemLabel={product.name}
-                    onEdit={() => onEdit(product)}
-                    onDelete={() => onDelete(product)}
+                    onEdit={onEdit && (() => onEdit(product))}
+                    onDelete={onDelete && (() => onDelete(product))}
                     extraActions={[stockAction(product, onStock)]}
                     className="product-card-actions"
                 />
