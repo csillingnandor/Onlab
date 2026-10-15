@@ -164,7 +164,7 @@ export type CurrentUser = {
     displayName: string;
     roles: string[];
     pages: PageKey[]; // a szerepkörei alapján elérhető oldalak
-    actions?: ActionKey[]; // az oldalakon engedélyezett műveletek (régebbi tárolt munkamenetben hiányozhat)
+    actions: ActionKey[]; // az oldalakon engedélyezett műveletek
 };
 
 // A backend LoginResultData-jának megfelelő alak; a kliens ezt tárolja (auth/authStorage.ts)

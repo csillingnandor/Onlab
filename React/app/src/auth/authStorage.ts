@@ -12,6 +12,9 @@ export function loadSession(): AuthSession | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const session: AuthSession = JSON.parse(raw);
+    // A műveletek (user.actions) bevezetése előtti token nem tartalmazza a műveleteket, így minden
+    // módosító gomb rejtve maradna: ilyenkor újra be kell jelentkezni
+    if (!Array.isArray(session.user?.actions)) return null;
     // A lejárt tokennel úgyis 401 jönne, ezért el sem kezdjük használni
     return new Date(session.expiresAt).getTime() > Date.now() ? session : null;
   } catch {
