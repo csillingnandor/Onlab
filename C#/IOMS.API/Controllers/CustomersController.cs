@@ -48,4 +48,25 @@ public class CustomersController : ControllerBase
         var created = await _customerService.CreateAsync(data, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    // A módosítás ugyanazokat a mezőket és szabályokat használja, mint a felvétel
+    [HttpPut("{id:int}")]
+    [RequireAction(AppActions.CustomersEdit)]
+    public async Task<ActionResult<CustomerData>> Modify(int id, CreateCustomerData data, CancellationToken ct)
+    {
+        var validation = await _createValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
+        var modified = await _customerService.ModifyAsync(id, data, ct);
+        return modified is null ? NotFound() : Ok(modified);
+    }
+
+    // 409: a vevőnek vannak rendelései
+    [HttpDelete("{id:int}")]
+    [RequireAction(AppActions.CustomersDelete)]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        return await _customerService.DeleteAsync(id, ct) ? NoContent() : NotFound();
+    }
 }

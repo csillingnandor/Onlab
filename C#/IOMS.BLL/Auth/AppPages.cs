@@ -13,8 +13,9 @@ public static class AppPages
     public const string CustomerOrders = "customer-orders";
     public const string SupplierOrders = "supplier-orders";
     public const string Customers = "customers";
+    public const string Suppliers = "suppliers";
     public const string Users = "users";
 
     public static readonly IReadOnlyList<string> All =
-        [Dashboard, Products, Warehouses, CustomerOrders, SupplierOrders, Customers, Users];
+        [Dashboard, Products, Warehouses, CustomerOrders, SupplierOrders, Customers, Suppliers, Users];
 }

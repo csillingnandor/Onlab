@@ -8,11 +8,20 @@ import WarehouseFilterPanel from './WarehouseFilterPanel.js';
 import WarehouseHeader from './WarehouseHeader.js';
 import WarehouseMap from './WarehouseMap.js';
 import WarehouseTable from './WarehouseTable.js';
+import WarehouseFormModal from './WarehouseFormModal.js';
+import ConfirmModal from '../../common/modal/ConfirmModal.js';
+import { useAuth } from '../../auth/useAuth.js';
 import './WarehousePage.css';
 
 const FILTER_PANEL_ID = 'warehouse-filter';
 
+const byName = (a: Warehouse, b: Warehouse) => a.name.localeCompare(b.name, 'hu');
+
 export default function WarehousePage() {
+  const { hasAction } = useAuth();
+  // undefined: zárva, null: új raktár, egyébként a szerkesztett
+  const [editing, setEditing] = useState<Warehouse | null | undefined>(undefined);
+  const [deleting, setDeleting] = useState<Warehouse | null>(null);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +52,19 @@ export default function WarehousePage() {
   const visibleWarehouses = useMemo(() => filterWarehouses(warehouses, filter), [warehouses, filter]);
   const activeFilterCount = countActive(filter);
 
+  const handleSaved = (warehouse: Warehouse) => {
+    setWarehouses((prev) => [...prev.filter((w) => w.id !== warehouse.id), warehouse].sort(byName));
+    setEditing(undefined);
+  };
+
+  // 409 (készlet / rendelés hivatkozik rá) esetén a ConfirmModal mutatja a hibaüzenetet
+  const handleConfirmDelete = async () => {
+    if (!deleting) return;
+    await warehouseService.delete(deleting.id);
+    setWarehouses((prev) => prev.filter((w) => w.id !== deleting.id));
+    setDeleting(null);
+  };
+
   const renderContent = () => {
     if (loading) {
       return (
@@ -66,7 +88,13 @@ export default function WarehousePage() {
 
     // Feltételes renderelés (nem CSS-es elrejtés): a térkép rejtett konténerben rossz méretet venne fel.
     return viewMode === 'table'
-      ? <WarehouseTable warehouses={visibleWarehouses} />
+      ? (
+        <WarehouseTable
+          warehouses={visibleWarehouses}
+          onEdit={hasAction('warehouses.edit') ? setEditing : undefined}
+          onDelete={hasAction('warehouses.delete') ? setDeleting : undefined}
+        />
+      )
       : <WarehouseMap warehouses={visibleWarehouses} />;
   };
 
@@ -80,6 +108,7 @@ export default function WarehousePage() {
         activeFilterCount={activeFilterCount}
         filterPanelId={FILTER_PANEL_ID}
         onFilterToggle={() => setFilterOpen((prev) => !prev)}
+        onAddClick={hasAction('warehouses.create') ? () => setEditing(null) : undefined}
       />
       {filterOpen && (
         <WarehouseFilterPanel
@@ -90,6 +119,32 @@ export default function WarehousePage() {
         />
       )}
       {renderContent()}
+
+      <WarehouseFormModal
+        show={editing !== undefined}
+        warehouse={editing ?? null}
+        onSaved={handleSaved}
+        onHide={() => setEditing(undefined)}
+      />
+      <ConfirmModal
+        show={deleting !== null}
+        title="Raktár törlése"
+        confirmLabel="Törlés"
+        confirmIcon="bi-trash"
+        busyLabel="Törlés..."
+        onConfirm={handleConfirmDelete}
+        onHide={() => setDeleting(null)}
+      >
+        {deleting && (
+          <>
+            <p className="mb-2">Biztosan törlöd ezt a raktárat?</p>
+            <p className="mb-2"><strong>{deleting.name}</strong></p>
+            <p className="mb-0 small text-secondary">
+              Csak olyan raktár törölhető, amelyben nincs készlet, és amelyre rendelés vagy készletmozgás sem hivatkozik.
+            </p>
+          </>
+        )}
+      </ConfirmModal>
     </div>
   );
 }

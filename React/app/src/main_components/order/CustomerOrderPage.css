@@ -128,6 +128,11 @@
   margin-top: 0.75rem;
 }
 
+/* Ha a felhasználónak egyik művelethez sincs joga, ne maradjon üres sáv */
+.order-accordion-actions:empty {
+  display: none;
+}
+
 /* A rendelés raktára (cél- vagy kiszolgáló raktár) a dátum után */
 .order-accordion-warehouse {
   display: inline-flex;

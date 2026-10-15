@@ -26,7 +26,8 @@ public class MappingProfile : Profile
         CreateProjection<EntityMovementType, DataMovementType>().ConvertUsing(t =>
             t == EntityMovementType.Opening ? DataMovementType.Opening
             : t == EntityMovementType.Receipt ? DataMovementType.Receipt
-            : DataMovementType.Shipment);
+            : t == EntityMovementType.Shipment ? DataMovementType.Shipment
+            : DataMovementType.Adjustment);
 
         // ---------- Termék
         // A 'since' időpontot a ProductService adja át a ProjectTo paramétereként (az utolsó 7 nap kezdete)
@@ -66,7 +67,8 @@ public class MappingProfile : Profile
             .ForMember(d => d.Items, o => o.MapFrom(ord => ord.Items.OrderBy(i => i.Id)));
 
         // ---------- Beszállító, beszerzési rendelés
-        CreateProjection<Supplier, SupplierData>();
+        CreateProjection<Supplier, SupplierData>()
+            .ForMember(d => d.OrderCount, o => o.MapFrom(s => s.Orders.Count()));
 
         CreateProjection<SupplierOrderItem, SupplierOrderItemData>();
 

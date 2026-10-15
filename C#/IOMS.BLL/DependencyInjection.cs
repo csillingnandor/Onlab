@@ -1,5 +1,7 @@
 using IOMS.BLL.Auth;
+using IOMS.BLL.Excel;
 using IOMS.BLL.Mapping;
+using IOMS.BLL.Notifications;
 using IOMS.BLL.Services;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
@@ -39,6 +41,18 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRoleService, RoleService>();
+
+        // E-mail: a kérések sorba teszik a leveleket, a háttérszolgáltatás küldi őket (beállítások: EmailOptions)
+        services.AddSingleton<IEmailQueue, EmailQueue>();
+        services.AddSingleton<IEmailSender, EmailSender>();
+        services.AddHostedService<EmailBackgroundService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IDailySummaryService, DailySummaryService>();
+        services.AddHostedService<DailySummaryBackgroundService>();
+
+        // Excel export és termékimport (ClosedXML)
+        services.AddScoped<IExportService, ExportService>();
+        services.AddScoped<IProductImportService, ProductImportService>();
 
         return services;
     }

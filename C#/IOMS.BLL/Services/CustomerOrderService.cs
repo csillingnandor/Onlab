@@ -1,6 +1,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
+using IOMS.BLL.Notifications;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
@@ -14,11 +15,13 @@ public class CustomerOrderService : ICustomerOrderService
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly INotificationService _notifications;
 
-    public CustomerOrderService(AppDbContext context, IMapper mapper)
+    public CustomerOrderService(AppDbContext context, IMapper mapper, INotificationService notifications)
     {
         _context = context;
         _mapper = mapper;
+        _notifications = notifications;
     }
 
     public async Task<IReadOnlyList<CustomerOrderData>> GetAllAsync(CancellationToken ct = default)
@@ -42,21 +45,10 @@ public class CustomerOrderService : ICustomerOrderService
     // Új, Pending státuszú rendelés a termékek aktuális árával; az azonos termékű sorokat összevonja.
     public async Task<CustomerOrderData> CreateAsync(CreateCustomerOrderData data, CancellationToken ct = default)
     {
-        if (!await _context.Customers.AnyAsync(c => c.Id == data.CustomerId, ct))
-            throw new BusinessValidationException(nameof(data.CustomerId), $"Nincs {data.CustomerId} azonosítójú vevő.");
-
-        if (!await _context.Warehouses.AnyAsync(w => w.Id == data.WarehouseId, ct))
-            throw new BusinessValidationException(nameof(data.WarehouseId), $"Nincs {data.WarehouseId} azonosítójú raktár.");
-
-        var missing = await _context.Products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
-        if (missing.Count > 0)
-            throw new BusinessValidationException(nameof(data.Items), $"Ismeretlen termék azonosító(k): {string.Join(", ", missing)}");
+        await ValidateReferencesAsync(data, ct);
 
         // Ugyanaz a termék többször is szerepelhet a kérésben, ezeket összevonjuk egy tétellé.
-        var merged = data.Items
-            .GroupBy(l => l.ProductId)
-            .Select(g => new { ProductId = g.Key, Quantity = g.Sum(l => l.Quantity) })
-            .ToList();
+        var merged = MergeLines(data);
 
         var productIds = merged.Select(l => l.ProductId).ToList();
         var prices = await _context.Products
@@ -84,8 +76,79 @@ public class CustomerOrderService : ICustomerOrderService
         await _context.SaveChangesAsync(ct);
 
         // Újratöltés, hogy a vevő- és terméknevek is benne legyenek.
-        return (await GetByIdAsync(order.Id, ct))!;
+        var created = (await GetByIdAsync(order.Id, ct))!;
+        await _notifications.CustomerOrderCreatedAsync(created, ct);
+        return created;
     }
+
+    public async Task<CustomerOrderData?> ModifyAsync(int id, CreateCustomerOrderData data, CancellationToken ct = default)
+    {
+        var status = await _context.CustomerOrders
+            .Where(o => o.Id == id)
+            .Select(o => (OrderStatus?)o.Status)
+            .SingleOrDefaultAsync(ct);
+        if (status is null)
+            return null;
+        if (status != OrderStatus.Pending)
+            throw StatusConflict(id, status.Value, "nem módosítható");
+
+        await ValidateReferencesAsync(data, ct);
+        var merged = MergeLines(data);
+
+        // A már rendelt termékek az eredeti egységárukat tartják meg, az újak az aktuális árat kapják
+        var existingPrices = await _context.CustomerOrderItems
+            .Where(i => i.CustomerOrderId == id)
+            .GroupBy(i => i.ProductId)
+            .Select(g => new { ProductId = g.Key, UnitPrice = g.Max(i => i.UnitPrice) })
+            .ToDictionaryAsync(x => x.ProductId, x => x.UnitPrice, ct);
+        var newIds = merged.Select(l => l.ProductId).Where(pid => !existingPrices.ContainsKey(pid)).ToList();
+        var currentPrices = await _context.Products
+            .Where(p => newIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id, p => p.Price, ct);
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        // Feltételes módosítás: ha közben kiszállították / lemondták, nem írjuk át
+        var updated = await _context.CustomerOrders
+            .Where(o => o.Id == id && o.Status == OrderStatus.Pending)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(o => o.CustomerId, data.CustomerId)
+                .SetProperty(o => o.WarehouseId, data.WarehouseId), ct);
+        if (updated == 0)
+            throw new ConflictException(nameof(id), $"A {id} azonosítójú rendelés állapota időközben megváltozott.");
+
+        await _context.CustomerOrderItems.Where(i => i.CustomerOrderId == id).ExecuteDeleteAsync(ct);
+        _context.CustomerOrderItems.AddRange(merged.Select(l => new CustomerOrderItem
+        {
+            CustomerOrderId = id,
+            ProductId = l.ProductId,
+            Quantity = l.Quantity,
+            UnitPrice = existingPrices.TryGetValue(l.ProductId, out var price) ? price : currentPrices[l.ProductId],
+        }));
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return await GetByIdAsync(id, ct);
+    }
+
+    private async Task ValidateReferencesAsync(CreateCustomerOrderData data, CancellationToken ct)
+    {
+        if (!await _context.Customers.AnyAsync(c => c.Id == data.CustomerId, ct))
+            throw new BusinessValidationException(nameof(data.CustomerId), $"Nincs {data.CustomerId} azonosítójú vevő.");
+
+        if (!await _context.Warehouses.AnyAsync(w => w.Id == data.WarehouseId, ct))
+            throw new BusinessValidationException(nameof(data.WarehouseId), $"Nincs {data.WarehouseId} azonosítójú raktár.");
+
+        var missing = await _context.Products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
+        if (missing.Count > 0)
+            throw new BusinessValidationException(nameof(data.Items), $"Ismeretlen termék azonosító(k): {string.Join(", ", missing)}");
+    }
+
+    private static List<(int ProductId, int Quantity)> MergeLines(CreateCustomerOrderData data) =>
+        data.Items
+            .GroupBy(l => l.ProductId)
+            .Select(g => (g.Key, g.Sum(l => l.Quantity)))
+            .ToList();
 
     // Kiszállítás: Pending -> Shipped. A kiszolgáló raktár készlete csökken, termékenként egy Shipment mozgás
     // kerül a naplóba. Ha bármelyik termékből nincs elég, semmi sem változik. Minden egy tranzakcióban történik.
@@ -165,7 +228,10 @@ public class CustomerOrderService : ICustomerOrderService
         await _context.SaveChangesAsync(ct);
         await transaction.CommitAsync(ct);
 
-        return await GetByIdAsync(id, ct);
+        var result = (await GetByIdAsync(id, ct))!;
+        await _notifications.CustomerOrderStatusChangedAsync(result, ct);
+        await _notifications.StockDecreasedAsync(lines.ToDictionary(l => l.ProductId, l => l.Quantity), ct);
+        return result;
     }
 
     // Kézbesítés: Shipped -> Delivered. Csak státuszváltás, a készlet a kiszállításkor már csökkent;
@@ -202,7 +268,10 @@ public class CustomerOrderService : ICustomerOrderService
             throw StatusConflict(id, current.Value, notAllowed);
         }
 
-        return await GetByIdAsync(id, ct);
+        var result = await GetByIdAsync(id, ct);
+        if (result is not null)
+            await _notifications.CustomerOrderStatusChangedAsync(result, ct);
+        return result;
     }
 
     private static ConflictException StatusConflict(int id, OrderStatus current, string notAllowed)

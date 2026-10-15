@@ -1,8 +1,12 @@
+import ActionButtons from '../../common/button/ActionButtons.js';
 import type { Warehouse } from '../../util/Types.js';
 import '../../common/table/DataTable.css';
 
 type WarehouseTableProps = {
   warehouses: Warehouse[];
+  // Nincs megadva: nincs hozzá jogosultság, a gomb nem jelenik meg (ha egyik sincs, az oszlop sem)
+  onEdit?: ((warehouse: Warehouse) => void) | undefined;
+  onDelete?: ((warehouse: Warehouse) => void) | undefined;
 };
 
 function formatCoordinates(warehouse: Warehouse) {
@@ -13,7 +17,9 @@ function formatCoordinates(warehouse: Warehouse) {
   return `${warehouse.latitude.toFixed(4)}, ${warehouse.longitude.toFixed(4)}`;
 }
 
-export default function WarehouseTable({ warehouses }: WarehouseTableProps) {
+export default function WarehouseTable({ warehouses, onEdit, onDelete }: WarehouseTableProps) {
+  const showActions = onEdit !== undefined || onDelete !== undefined;
+
   return (
     <div className="data-table-wrapper">
       <table className="data-table">
@@ -23,6 +29,7 @@ export default function WarehouseTable({ warehouses }: WarehouseTableProps) {
             <th>Cím</th>
             <th className="numeric">Kapacitás</th>
             <th>Koordináták</th>
+            {showActions && <th className="numeric">Műveletek</th>}
           </tr>
         </thead>
         <tbody>
@@ -32,6 +39,15 @@ export default function WarehouseTable({ warehouses }: WarehouseTableProps) {
               <td>{warehouse.address || <span className="text-muted">–</span>}</td>
               <td className="numeric">{warehouse.capacity.toLocaleString('hu-HU')} hely</td>
               <td className="data-table-mono">{formatCoordinates(warehouse)}</td>
+              {showActions && (
+                <td className="numeric">
+                  <ActionButtons
+                    itemLabel={warehouse.name}
+                    onEdit={onEdit && (() => onEdit(warehouse))}
+                    onDelete={onDelete && (() => onDelete(warehouse))}
+                  />
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

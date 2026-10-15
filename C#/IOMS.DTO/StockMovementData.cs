@@ -16,6 +16,9 @@ public class StockMovementData
     public int? CustomerOrderId { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    // Kézi korrekció indoka
+    public string? Note { get; set; }
 }
 
 // Az API-n kiadott mozgástípus; szándékosan független a DAL entitás enumjától.
@@ -24,4 +27,5 @@ public enum StockMovementType
     Opening,
     Receipt,
     Shipment,
+    Adjustment,
 }

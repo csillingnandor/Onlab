@@ -1,14 +1,20 @@
+import ActionButtons from '../../common/button/ActionButtons.js';
 import type { Customer } from '../../util/Types.js';
 import { dateFormatter, priceFormatter } from '../../util/format.js';
 import '../../common/table/DataTable.css';
 
 type CustomerTableProps = {
   customers: Customer[];
+  // Nincs megadva: nincs hozzá jogosultság, a gomb nem jelenik meg (ha egyik sincs, az oszlop sem)
+  onEdit?: ((customer: Customer) => void) | undefined;
+  onDelete?: ((customer: Customer) => void) | undefined;
 };
 
 const missing = <span className="text-muted">–</span>;
 
-export default function CustomerTable({ customers }: CustomerTableProps) {
+export default function CustomerTable({ customers, onEdit, onDelete }: CustomerTableProps) {
+  const showActions = onEdit !== undefined || onDelete !== undefined;
+
   return (
     <div className="data-table-wrapper">
       <table className="data-table">
@@ -20,6 +26,7 @@ export default function CustomerTable({ customers }: CustomerTableProps) {
             <th className="numeric">Rendelések</th>
             <th className="numeric" title="Csak a kiszállított rendelések">Vásárlás összesen</th>
             <th>Utolsó rendelés</th>
+            {showActions && <th className="numeric">Műveletek</th>}
           </tr>
         </thead>
         <tbody>
@@ -35,6 +42,15 @@ export default function CustomerTable({ customers }: CustomerTableProps) {
               <td>
                 {customer.lastOrderDate ? dateFormatter.format(new Date(customer.lastOrderDate)) : missing}
               </td>
+              {showActions && (
+                <td className="numeric">
+                  <ActionButtons
+                    itemLabel={customer.name}
+                    onEdit={onEdit && (() => onEdit(customer))}
+                    onDelete={onDelete && (() => onDelete(customer))}
+                  />
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

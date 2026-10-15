@@ -6,6 +6,7 @@ using IOMS.API.Infrastructure;
 using IOMS.API.Validation;
 using IOMS.BLL;
 using IOMS.BLL.Auth;
+using IOMS.BLL.Notifications;
 using IOMS.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,13 @@ ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("hu");
 // Bejelentkezés: az AuthService által kiadott JWT az Authorization: Bearer fejlécben
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
 builder.Services.Configure<JwtOptions>(jwtSection);
+// E-mail: a relatív PickupDirectory (fejlesztéshez: "mails") a projekt mappájához képest értendő
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.SectionName));
+builder.Services.PostConfigure<EmailOptions>(options =>
+{
+    if (!string.IsNullOrWhiteSpace(options.PickupDirectory) && !Path.IsPathRooted(options.PickupDirectory))
+        options.PickupDirectory = Path.Combine(builder.Environment.ContentRootPath, options.PickupDirectory);
+});
 var jwtOptions = jwtSection.Get<JwtOptions>() ?? new JwtOptions();
 if (jwtOptions.Key.Length < 32)
     throw new InvalidOperationException("A Jwt:Key beállítás hiányzik vagy rövidebb 32 karakternél.");

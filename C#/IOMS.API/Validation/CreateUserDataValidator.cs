@@ -18,6 +18,12 @@ public class CreateUserDataValidator : AbstractValidator<CreateUserData>
             .MaximumLength(100)
             .WithName("Teljes név");
 
+        RuleFor(u => u.Email)
+            .MaximumLength(254)
+            .EmailAddress()
+            .When(u => !string.IsNullOrWhiteSpace(u.Email))
+            .WithName("E-mail");
+
         RuleFor(u => u.Password)
             .NotEmpty()
             .WithName("Jelszó");

@@ -9,6 +9,7 @@ export type PageKey =
   | 'customer-orders'
   | 'supplier-orders'
   | 'customers'
+  | 'suppliers'
   | 'users';
 
 export type AppPage = {
@@ -57,7 +58,10 @@ export const navSections: NavSection[] = [
     id: 'master-data',
     title: 'nav.section.masterData',
     icon: 'bi-database',
-    pages: [{ key: 'customers', path: '/customers', label: 'nav.page.customers', icon: 'bi-people' }],
+    pages: [
+      { key: 'customers', path: '/customers', label: 'nav.page.customers', icon: 'bi-people' },
+      { key: 'suppliers', path: '/suppliers', label: 'nav.page.suppliers', icon: 'bi-truck-front' },
+    ],
   },
   {
     id: 'admin',
@@ -76,13 +80,25 @@ export type ActionKey =
   | 'products.create'
   | 'products.edit'
   | 'products.delete'
+  | 'products.adjust-stock'
+  | 'products.import'
+  | 'warehouses.create'
+  | 'warehouses.edit'
+  | 'warehouses.delete'
   | 'customer-orders.create'
+  | 'customer-orders.edit'
   | 'customer-orders.ship'
   | 'customer-orders.deliver'
   | 'customer-orders.cancel'
   | 'supplier-orders.create'
+  | 'supplier-orders.edit'
   | 'supplier-orders.receive'
-  | 'customers.create';
+  | 'customers.create'
+  | 'customers.edit'
+  | 'customers.delete'
+  | 'suppliers.create'
+  | 'suppliers.edit'
+  | 'suppliers.delete';
 
 export type PageAction = {
   key: ActionKey;
@@ -94,18 +110,36 @@ export const pageActions: Partial<Record<PageKey, PageAction[]>> = {
     { key: 'products.create', label: 'action.products.create' },
     { key: 'products.edit', label: 'action.products.edit' },
     { key: 'products.delete', label: 'action.products.delete' },
+    { key: 'products.adjust-stock', label: 'action.products.adjustStock' },
+    { key: 'products.import', label: 'action.products.import' },
+  ],
+  warehouses: [
+    { key: 'warehouses.create', label: 'action.warehouses.create' },
+    { key: 'warehouses.edit', label: 'action.warehouses.edit' },
+    { key: 'warehouses.delete', label: 'action.warehouses.delete' },
   ],
   'customer-orders': [
     { key: 'customer-orders.create', label: 'action.customerOrders.create' },
+    { key: 'customer-orders.edit', label: 'action.customerOrders.edit' },
     { key: 'customer-orders.ship', label: 'action.customerOrders.ship' },
     { key: 'customer-orders.deliver', label: 'action.customerOrders.deliver' },
     { key: 'customer-orders.cancel', label: 'action.customerOrders.cancel' },
   ],
   'supplier-orders': [
     { key: 'supplier-orders.create', label: 'action.supplierOrders.create' },
+    { key: 'supplier-orders.edit', label: 'action.supplierOrders.edit' },
     { key: 'supplier-orders.receive', label: 'action.supplierOrders.receive' },
   ],
-  customers: [{ key: 'customers.create', label: 'action.customers.create' }],
+  customers: [
+    { key: 'customers.create', label: 'action.customers.create' },
+    { key: 'customers.edit', label: 'action.customers.edit' },
+    { key: 'customers.delete', label: 'action.customers.delete' },
+  ],
+  suppliers: [
+    { key: 'suppliers.create', label: 'action.suppliers.create' },
+    { key: 'suppliers.edit', label: 'action.suppliers.edit' },
+    { key: 'suppliers.delete', label: 'action.suppliers.delete' },
+  ],
 };
 
 // Menüsorrendben, a felirattal együtt

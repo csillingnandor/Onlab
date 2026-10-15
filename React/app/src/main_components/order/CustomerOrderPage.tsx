@@ -4,7 +4,9 @@ import orderService, { type OrderAction } from '../../services/orderService.js';
 import customerService from '../../services/customerService.js';
 import type { CustomerOrder, NewOrderItem } from '../../util/Types.js';
 import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } from '../../util/orderFilter.js';
-import CreateOrderModal from './CreateOrderModal.js';
+import CreateOrderModal, { type OrderDraft } from './CreateOrderModal.js';
+import ExportButton from '../../common/button/ExportButton.js';
+import { useQueryFlag } from '../../util/useQueryFlag.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
@@ -46,6 +48,22 @@ export default function CustomerOrderPage() {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
   const [pending, setPending] = useState<{ order: CustomerOrder; action: OrderAction } | null>(null);
+  const [editing, setEditing] = useState<CustomerOrder | null>(null);
+  const [newRequested, consumeNew] = useQueryFlag('new');
+
+  // A műszerfal gyorsgombja (?new=1) rögtön az új rendelés űrlapot nyitja
+  useEffect(() => {
+    if (!newRequested) return;
+    if (hasAction('customer-orders.create')) setCreateOpen(true);
+    consumeNew();
+  }, [newRequested, consumeNew, hasAction]);
+
+  // Stabil referencia, hogy a modal csak megnyitáskor töltse újra az űrlapot
+  const editDraft = useMemo<OrderDraft | null>(() => editing && {
+    partyId: editing.customerId,
+    warehouseId: editing.warehouseId,
+    items: editing.items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+  }, [editing]);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -101,6 +119,14 @@ export default function CustomerOrderPage() {
     setCreateOpen(false);
   };
 
+  // A módosított rendelés a helyén marad a listában
+  const handleEdit = async (partyId: number, items: NewOrderItem[], warehouseId: number | null) => {
+    if (!editing) return;
+    const updated = await orderService.update(editing.id, partyId, warehouseId!, items);
+    setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+    setEditing(null);
+  };
+
   // Ha a backend elutasítja (pl. 409: nincs elég készlet), a ConfirmModal mutatja a hibaüzenetet
   const handleConfirmAction = async () => {
     if (!pending) return;
@@ -140,6 +166,7 @@ export default function CustomerOrderPage() {
             <i className={`bi ${allOpen ? 'bi-arrows-collapse' : 'bi-arrows-expand'}`} aria-hidden="true"></i>
             {allOpen ? 'Összes becsukása' : 'Összes kinyitása'}
           </button>
+          <ExportButton kind="customer-orders" />
           {hasAction('customer-orders.create') && (
             <button type="button" className="header-btn header-btn-primary" onClick={() => setCreateOpen(true)}>
               <i className="bi bi-plus-lg" aria-hidden="true"></i>
@@ -169,6 +196,18 @@ export default function CustomerOrderPage() {
         onSubmit={handleCreate}
         onHide={() => setCreateOpen(false)}
       />
+      <CreateOrderModal
+        show={editing !== null}
+        title={editing ? `#${editing.id} rendelés módosítása` : 'Rendelés módosítása'}
+        submitLabel="Módosítások mentése"
+        partyLabel="Vevő"
+        warehouseLabel="Kiszolgáló raktár"
+        loadParties={loadCustomers}
+        priceMode="catalog"
+        initial={editDraft}
+        onSubmit={handleEdit}
+        onHide={() => setEditing(null)}
+      />
 
       {error ? (
         <div className="alert alert-danger" role="alert">{error}</div>
@@ -195,17 +234,27 @@ export default function CustomerOrderPage() {
               }))}
               isOpen={openIds.has(order.id)}
               onToggle={() => toggleOrder(order.id)}
-              actions={actionsFor(order).filter((action) => hasAction(`customer-orders.${action}` as const)).map((action) => (
-                <Button
-                  key={action}
-                  variant={actionConfig[action].buttonVariant}
-                  size="sm"
-                  onClick={() => setPending({ order, action })}
-                >
-                  <i className={`bi ${actionConfig[action].icon} me-1`} aria-hidden="true"></i>
-                  {actionConfig[action].label}
-                </Button>
-              ))}
+              actions={
+                <>
+                  {order.status === 'Pending' && hasAction('customer-orders.edit') && (
+                    <Button variant="outline-secondary" size="sm" onClick={() => setEditing(order)}>
+                      <i className="bi bi-pencil me-1" aria-hidden="true"></i>
+                      Módosítás
+                    </Button>
+                  )}
+                  {actionsFor(order).filter((action) => hasAction(`customer-orders.${action}` as const)).map((action) => (
+                    <Button
+                      key={action}
+                      variant={actionConfig[action].buttonVariant}
+                      size="sm"
+                      onClick={() => setPending({ order, action })}
+                    >
+                      <i className={`bi ${actionConfig[action].icon} me-1`} aria-hidden="true"></i>
+                      {actionConfig[action].label}
+                    </Button>
+                  ))}
+                </>
+              }
             />
           ))}
         </div>

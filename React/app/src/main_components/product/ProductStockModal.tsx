@@ -3,18 +3,22 @@ import { Alert, Button, Modal, Spinner, Table } from 'react-bootstrap';
 import productService from '../../services/productService.js';
 import type { Product, StockMovement, StockMovementType } from '../../util/Types.js';
 import { dateTimeFormatter } from '../../util/format.js';
+import StockAdjustmentForm from './StockAdjustmentForm.js';
 import './ProductStockModal.css';
 
 type ProductStockModalProps = {
   // null: zárva; egyébként ennek a terméknek a készletét mutatjuk
   product: Product | null;
   onHide: () => void;
+  // Megadva (van hozzá jogosultság): kézi korrekció is rögzíthető; a frissített terméket kapja meg
+  onAdjusted?: ((product: Product) => void) | undefined;
 };
 
 const typeLabels: Record<StockMovementType, string> = {
   Opening: 'Nyitókészlet',
   Receipt: 'Beérkezés',
   Shipment: 'Kiszállítás',
+  Adjustment: 'Korrekció',
 };
 
 // Mozgás + a mozgás utáni készlet abban a raktárban (a naplóból visszaszámolva)
@@ -49,12 +53,15 @@ function mismatchedWarehouses(product: Product, rows: HistoryRow[]): string[] {
   return [...names];
 }
 
+// Rendelés, illetve kézi korrekciónál az indoklás
 const reference = (m: StockMovement) =>
-  m.supplierOrderId !== null ? `#${m.supplierOrderId} beszerzés` : m.customerOrderId !== null ? `#${m.customerOrderId} rendelés` : '–';
+  m.supplierOrderId !== null ? `#${m.supplierOrderId} beszerzés`
+  : m.customerOrderId !== null ? `#${m.customerOrderId} rendelés`
+  : m.note ?? '–';
 
-// Egy termék készlete raktáranként és a készlettörténete, csak megtekintésre.
-// A készletet nem lehet kézzel módosítani: a beérkezés növeli, a kiszállítás csökkenti.
-export default function ProductStockModal({ product, onHide }: ProductStockModalProps) {
+// Egy termék készlete raktáranként és a készlettörténete. A készletet a beérkezés növeli, a kiszállítás csökkenti;
+// jogosultsággal kézi korrekció (leltáreltérés) is rögzíthető, ami szintén a naplóba kerül.
+export default function ProductStockModal({ product, onHide, onAdjusted }: ProductStockModalProps) {
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -124,6 +131,13 @@ export default function ProductStockModal({ product, onHide }: ProductStockModal
           <p className="product-stock-hint mb-3">
             Minimális készlet: {product.minStockLevel} db. A készletet a beérkezés növeli, a kiszállítás csökkenti.
           </p>
+
+          {onAdjusted && (
+            <>
+              <h2 className="product-stock-section">Készletkorrekció</h2>
+              <StockAdjustmentForm product={product} onAdjusted={onAdjusted} />
+            </>
+          )}
 
           <h2 className="product-stock-section">Készlettörténet</h2>
           {loading ? (

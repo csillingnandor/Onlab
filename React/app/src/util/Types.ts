@@ -20,7 +20,7 @@ export type ProductStock = {
 };
 
 // A backend StockMovementData-jának megfelelő alak (készlettörténet egy sora)
-export type StockMovementType = 'Opening' | 'Receipt' | 'Shipment';
+export type StockMovementType = 'Opening' | 'Receipt' | 'Shipment' | 'Adjustment';
 
 export type StockMovement = {
     id: number;
@@ -31,6 +31,7 @@ export type StockMovement = {
     supplierOrderId: number | null; // Receipt esetén
     customerOrderId: number | null; // Shipment esetén
     createdAt: string; // ISO dátum szöveg
+    note: string | null; // kézi korrekció (Adjustment) indoka
 };
 
 // Termék létrehozásakor / módosításakor küldött mezők; a készletet a beszállítói rendelések beérkezése állítja
@@ -93,6 +94,56 @@ export type Supplier = {
     name: string;
     email: string | null;
     phone: string | null;
+    orderCount: number; // amíg van rendelése, nem törölhető
+};
+
+// A backend SaveSupplierData-jának megfelelő alak (felvétel és módosítás)
+export type SupplierInput = {
+    name: string;
+    email: string | null;
+    phone: string | null;
+};
+
+// A backend SaveWarehouseData-jának megfelelő alak (felvétel és módosítás)
+export type WarehouseInput = {
+    name: string;
+    address: string;
+    capacity: number;
+    latitude: number | null;
+    longitude: number | null;
+};
+
+// A backend StockAdjustmentData-jának megfelelő alak: a megszámolt mennyiség, a különbség kerül a naplóba
+export type StockAdjustment = {
+    warehouseId: number;
+    countedQuantity: number;
+    note: string;
+};
+
+// Termékimport előnézete (backend ProductImportPreviewData)
+export type ProductImportRow = {
+    rowNumber: number;
+    name: string | null;
+    sku: string | null;
+    category: string | null;
+    price: number | null;
+    minStockLevel: number | null;
+    action: 'Create' | 'Update';
+    errors: Record<string, string[]>; // mezőnként; '' a sor egészére
+};
+
+export type ProductImportPreview = {
+    schemaErrors: string[];
+    warnings: string[];
+    rows: ProductImportRow[];
+    createCount: number;
+    updateCount: number;
+    errorCount: number;
+};
+
+export type ProductImportResult = {
+    created: number;
+    updated: number;
 };
 
 // Új rendelés tétele; unitCost csak beszerzési rendelésnél (vevői rendelésnél a termék aktuális ára számít)
@@ -179,6 +230,7 @@ export type User = {
     id: string;
     userName: string;
     displayName: string;
+    email: string | null; // értesítésekhez; null: nem kap levelet
     roles: string[];
 };
 
@@ -186,6 +238,7 @@ export type User = {
 export type NewUser = {
     userName: string;
     displayName: string;
+    email: string | null;
     password: string;
     roles: string[];
 };
@@ -193,6 +246,7 @@ export type NewUser = {
 // A backend ModifyUserData-jának megfelelő alak; a bejelentkezési név nem módosítható
 export type UserUpdate = {
     displayName: string;
+    email: string | null;
     newPassword: string | null; // null: a jelszó marad
     roles: string[];
 };

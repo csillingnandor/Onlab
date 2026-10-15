@@ -48,6 +48,19 @@ public class SupplierOrdersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    // PUT api/supplierorders/5: függő beszerzés módosítása (409, ha már nem függő)
+    [HttpPut("{id:int}")]
+    [RequireAction(AppActions.SupplierOrdersEdit)]
+    public async Task<ActionResult<SupplierOrderData>> Modify(int id, CreateSupplierOrderData data, CancellationToken ct)
+    {
+        var validation = await _createValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
+        var modified = await _supplierOrderService.ModifyAsync(id, data, ct);
+        return modified is null ? NotFound() : Ok(modified);
+    }
+
     // POST api/supplierorders/5/receive: beérkeztetés a célraktárba (409, ha már beérkezett vagy le van mondva)
     [HttpPost("{id:int}/receive")]
     [RequireAction(AppActions.SupplierOrdersReceive)]

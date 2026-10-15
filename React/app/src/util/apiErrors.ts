@@ -50,6 +50,23 @@ export const postJson = <T>(url: string, body: unknown, errorMessage: string): P
 export const putJson = <T>(url: string, body: unknown, errorMessage: string): Promise<T> =>
   sendJson<T>('PUT', url, body, errorMessage);
 
+// Fájl letöltése a bejelentkezett felhasználó tokenjével (pl. Excel export); a fájlnevet a szerver adja
+export async function downloadFile(url: string, fallbackName: string, errorMessage: string): Promise<void> {
+  const response = await apiFetch(url);
+  if (!response.ok) throw new Error(errorMessage);
+
+  const disposition = response.headers.get('Content-Disposition') ?? '';
+  const match = /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i.exec(disposition);
+  const name = match ? decodeURIComponent(match[1] ?? match[2] ?? fallbackName) : fallbackName;
+
+  const blobUrl = URL.createObjectURL(await response.blob());
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = name;
+  link.click();
+  URL.revokeObjectURL(blobUrl);
+}
+
 // DELETE; 409: a backend elutasította (pl. hivatkoznak az elemre), az üzenetét adjuk tovább
 export async function deleteRequest(url: string, errorMessage: string): Promise<void> {
   const response = await apiFetch(url, { method: 'DELETE' });

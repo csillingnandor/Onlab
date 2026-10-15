@@ -15,15 +15,18 @@ public class ProductsController : ControllerBase
     private readonly IProductService _productService;
     private readonly IValidator<CreateProductData> _createValidator;
     private readonly IValidator<ModifyProductData> _modifyValidator;
+    private readonly IValidator<StockAdjustmentData> _adjustmentValidator;
 
     public ProductsController(
         IProductService productService,
         IValidator<CreateProductData> createValidator,
-        IValidator<ModifyProductData> modifyValidator)
+        IValidator<ModifyProductData> modifyValidator,
+        IValidator<StockAdjustmentData> adjustmentValidator)
     {
         _productService = productService;
         _createValidator = createValidator;
         _modifyValidator = modifyValidator;
+        _adjustmentValidator = adjustmentValidator;
     }
 
     [HttpGet]
@@ -58,6 +61,19 @@ public class ProductsController : ControllerBase
     {
         var movements = await _productService.GetMovementsAsync(id, ct);
         return movements is null ? NotFound() : Ok(movements);
+    }
+
+    // POST api/products/5/adjustments: kézi készletkorrekció (leltár); a válasz a frissített termék
+    [HttpPost("{id:int}/adjustments")]
+    [RequireAction(AppActions.ProductsAdjustStock)]
+    public async Task<ActionResult<ProductData>> AdjustStock(int id, StockAdjustmentData data, CancellationToken ct)
+    {
+        var validation = await _adjustmentValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
+        var product = await _productService.AdjustStockAsync(id, data, ct);
+        return product is null ? NotFound() : Ok(product);
     }
 
     [HttpPost]

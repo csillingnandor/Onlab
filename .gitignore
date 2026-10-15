@@ -8,6 +8,9 @@
 # Ideiglenes mentés a rétegekre bontás előttről
 C#/_backup/
 
+# Fejlesztés közben fájlba mentett e-mailek (Email:PickupDirectory)
+C#/IOMS.API/mails/
+
 # Környezeti fájlok (minta: .env.example)
 .env
 .env.*

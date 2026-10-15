@@ -44,10 +44,19 @@ public static class IdentitySeeder
 
         foreach (var seedUser in users)
         {
-            if (await userManager.FindByNameAsync(seedUser.UserName) is not null)
+            var existing = await userManager.FindByNameAsync(seedUser.UserName);
+            if (existing is not null)
+            {
+                // A később a konfigurációba került e-mail címet pótoljuk (a felületen megadottat nem írjuk felül)
+                if (string.IsNullOrEmpty(existing.Email) && !string.IsNullOrEmpty(seedUser.Email))
+                {
+                    existing.Email = seedUser.Email;
+                    await EnsureSucceeded(userManager.UpdateAsync(existing), seedUser.UserName);
+                }
                 continue;
+            }
 
-            var user = new AppUser { UserName = seedUser.UserName, DisplayName = seedUser.DisplayName };
+            var user = new AppUser { UserName = seedUser.UserName, DisplayName = seedUser.DisplayName, Email = seedUser.Email };
             await EnsureSucceeded(userManager.CreateAsync(user, seedUser.Password), seedUser.UserName);
             if (seedUser.Roles.Count > 0)
                 await EnsureSucceeded(userManager.AddToRolesAsync(user, seedUser.Roles), seedUser.UserName);

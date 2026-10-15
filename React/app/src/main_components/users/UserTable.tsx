@@ -17,6 +17,7 @@ export default function UserTable({ users, currentUserId, onEdit, onDelete }: Us
           <tr>
             <th>Felhasználónév</th>
             <th>Teljes név</th>
+            <th>E-mail</th>
             <th>Szerepkörök</th>
             <th className="numeric">Műveletek</th>
           </tr>
@@ -29,6 +30,7 @@ export default function UserTable({ users, currentUserId, onEdit, onDelete }: Us
                 {user.id === currentUserId && <span className="badge bg-info ms-2">Te</span>}
               </td>
               <td className="data-table-strong">{user.displayName}</td>
+              <td>{user.email ?? <span className="text-muted small" title="Nem kap e-mail értesítést">nincs megadva</span>}</td>
               <td>
                 {user.roles.length > 0
                   ? user.roles.map((role) => <span key={role} className="badge bg-secondary me-1">{role}</span>)

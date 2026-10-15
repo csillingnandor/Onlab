@@ -15,6 +15,7 @@ type UserFormModalProps = {
 type UserForm = {
   userName: string;
   displayName: string;
+  email: string;
   password: string;
   roles: string[];
 };
@@ -22,7 +23,7 @@ type UserForm = {
 // Új felhasználó felvétele, illetve meglévő módosítása (név, szerepkörök, opcionálisan új jelszó).
 // A jelszóerősséget (min. 8 karakter, kis- és nagybetű, számjegy) a backend ellenőrzi, a hibáit itt jelenítjük meg.
 export default function UserFormModal({ show, user, roles, onSaved, onHide }: UserFormModalProps) {
-  const [form, setForm] = useState<UserForm>({ userName: '', displayName: '', password: '', roles: [] });
+  const [form, setForm] = useState<UserForm>({ userName: '', displayName: '', email: '', password: '', roles: [] });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +34,7 @@ export default function UserFormModal({ show, user, roles, onSaved, onHide }: Us
       setForm({
         userName: user?.userName ?? '',
         displayName: user?.displayName ?? '',
+        email: user?.email ?? '',
         password: '',
         roles: user?.roles ?? [],
       });
@@ -52,12 +54,14 @@ export default function UserFormModal({ show, user, roles, onSaved, onHide }: Us
       const saved = user
         ? await userService.update(user.id, {
             displayName: form.displayName.trim(),
+            email: form.email.trim() || null,
             newPassword: form.password ? form.password : null,
             roles: form.roles,
           })
         : await userService.create({
             userName: form.userName.trim(),
             displayName: form.displayName.trim(),
+            email: form.email.trim() || null,
             password: form.password,
             roles: form.roles,
           });
@@ -106,6 +110,18 @@ export default function UserFormModal({ show, user, roles, onSaved, onHide }: Us
           required
           autoFocus={isEdit}
         />
+      </Form.Group>
+
+      <Form.Group controlId="user-form-email" className="mb-3">
+        <Form.Label>E-mail <span className="text-muted">(nem kötelező)</span></Form.Label>
+        <Form.Control
+          type="email"
+          maxLength={254}
+          placeholder="pl. kovacs.janos@ceg.hu"
+          value={form.email}
+          onChange={(e) => update({ email: e.target.value })}
+        />
+        <Form.Text muted>Erre a címre érkeznek az értesítések (és adminisztrátornál a napi összefoglaló).</Form.Text>
       </Form.Group>
 
       <Form.Group controlId="user-form-password" className="mb-3">

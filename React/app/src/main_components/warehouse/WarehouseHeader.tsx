@@ -1,6 +1,7 @@
 import type { WarehouseViewMode } from '../../util/Types.js';
 import ViewModeToggle, { type ViewModeOption } from '../../common/button/ViewModeToggle.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
+import ExportButton from '../../common/button/ExportButton.js';
 
 const viewModeOptions: ViewModeOption<WarehouseViewMode>[] = [
   { value: 'table', label: 'Táblázat nézet', icon: 'bi-table' },
@@ -15,6 +16,7 @@ type WarehouseHeaderProps = {
   activeFilterCount: number;
   filterPanelId: string;
   onFilterToggle: () => void;
+  onAddClick?: (() => void) | undefined; // nincs megadva: nincs létrehozási jog, a gomb nem látszik
 };
 
 export default function WarehouseHeader({
@@ -25,6 +27,7 @@ export default function WarehouseHeader({
   activeFilterCount,
   filterPanelId,
   onFilterToggle,
+  onAddClick,
 }: WarehouseHeaderProps) {
   return (
     <header className="warehouse-page-header">
@@ -42,6 +45,13 @@ export default function WarehouseHeader({
         />
 
         <ViewModeToggle options={viewModeOptions} value={viewMode} onChange={onViewModeChange} />
+        <ExportButton kind="warehouses" />
+        {onAddClick && (
+          <button type="button" className="header-btn header-btn-primary" onClick={onAddClick}>
+            <i className="bi bi-plus-lg" aria-hidden="true"></i>
+            Új raktár
+          </button>
+        )}
       </div>
     </header>
   );

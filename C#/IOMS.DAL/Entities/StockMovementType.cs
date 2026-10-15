@@ -10,4 +10,7 @@ public enum StockMovementType
 
     // Vevői rendelés kiszállítása (−)
     Shipment,
+
+    // Kézi készletkorrekció (leltáreltérés, sérülés...; + vagy −), megjegyzéssel
+    Adjustment,
 }

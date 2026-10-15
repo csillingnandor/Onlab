@@ -12,5 +12,11 @@ public class ModifyUserDataValidator : AbstractValidator<ModifyUserData>
             .NotEmpty()
             .MaximumLength(100)
             .WithName("Teljes név");
+
+        RuleFor(u => u.Email)
+            .MaximumLength(254)
+            .EmailAddress()
+            .When(u => !string.IsNullOrWhiteSpace(u.Email))
+            .WithName("E-mail");
     }
 }

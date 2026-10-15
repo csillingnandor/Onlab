@@ -1,5 +1,5 @@
 import type { CustomerOrder, CustomerOrderItem, NewOrderItem } from '../util/Types.js';
-import { apiFetch, postJson, readValidationErrors } from '../util/apiErrors.js';
+import { apiFetch, postJson, putJson, readValidationErrors } from '../util/apiErrors.js';
 
 const ORDERS_URL = import.meta.env.VITE_API_BASE_URL + '/customerorders';
 const ORDER_ITEMS_URL = import.meta.env.VITE_API_BASE_URL + '/customerorderitems';
@@ -26,6 +26,14 @@ const orderService = {
       ORDERS_URL,
       { customerId, warehouseId, items: items.map(({ productId, quantity }) => ({ productId, quantity })) },
       'Nem sikerült a rendelés mentése.',
+    ),
+
+  // Függő rendelés módosítása (409, ha közben már nem függő); a megmaradó tételek ára nem változik
+  update: (id: number, customerId: number, warehouseId: number, items: NewOrderItem[]): Promise<CustomerOrder> =>
+    putJson(
+      `${ORDERS_URL}/${id}`,
+      { customerId, warehouseId, items: items.map(({ productId, quantity }) => ({ productId, quantity })) },
+      'Nem sikerült a rendelés módosítása.',
     ),
 
   // Státuszváltás (ship / deliver / cancel); a válasz a frissített rendelés.

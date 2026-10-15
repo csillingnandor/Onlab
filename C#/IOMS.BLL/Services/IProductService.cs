@@ -20,4 +20,8 @@ public interface IProductService
 
     // A termék készlettörténete minden raktárból, legújabb elöl; null, ha nincs ilyen termék.
     Task<IReadOnlyList<StockMovementData>?> GetMovementsAsync(int id, CancellationToken ct = default);
+
+    // Kézi korrekció: a raktári készlet a megszámolt mennyiségre áll, a különbség Adjustment mozgásként kerül a naplóba.
+    // null, ha nincs ilyen termék; BusinessValidationException, ha nincs ilyen raktár vagy nincs eltérés.
+    Task<ProductData?> AdjustStockAsync(int id, StockAdjustmentData data, CancellationToken ct = default);
 }

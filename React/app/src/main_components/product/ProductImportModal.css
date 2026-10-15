@@ -1,0 +1,33 @@
+/* Import előnézet: görgethető táblázat, a hibás sorok és cellák kiemelve */
+.product-import-table-wrapper {
+  max-height: 55vh;
+  overflow: auto;
+  border: 1px solid var(--app-border, #343a40);
+  border-radius: 0.375rem;
+}
+
+.product-import-table {
+  font-size: 0.85rem;
+}
+
+.product-import-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.product-import-row-error td {
+  background-color: rgba(220, 53, 69, 0.08);
+}
+
+.product-import-cell-error {
+  outline: 2px solid rgba(220, 53, 69, 0.75);
+  outline-offset: -2px;
+}
+
+.product-import-messages {
+  color: var(--bs-danger);
+  font-size: 0.8rem;
+  min-width: 14rem;
+}

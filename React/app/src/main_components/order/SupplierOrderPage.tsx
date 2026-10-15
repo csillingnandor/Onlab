@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import supplierOrderService from '../../services/supplierOrderService.js';
+import supplierService from '../../services/supplierService.js';
 import type { NewOrderItem, SupplierOrder } from '../../util/Types.js';
 import { countActiveFilters, emptyOrderFilter, filterOrders, type OrderFilter } from '../../util/orderFilter.js';
-import CreateOrderModal from './CreateOrderModal.js';
+import CreateOrderModal, { type OrderDraft } from './CreateOrderModal.js';
+import ExportButton from '../../common/button/ExportButton.js';
+import { useQueryFlag } from '../../util/useQueryFlag.js';
 import OrderAccordionItem from './OrderAccordionItem.js';
 import OrderFilterPanel from './OrderFilterPanel.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
@@ -13,7 +16,7 @@ import '../../common/table/DataTable.css';
 import './CustomerOrderPage.css';
 
 // Stabil referencia, hogy a modal ne töltse újra a listát minden rendereléskor
-const loadSuppliers = () => supplierOrderService.getSuppliers();
+const loadSuppliers = () => supplierService.getAll();
 
 const FILTER_PANEL_ID = 'supplier-order-filter';
 
@@ -28,6 +31,22 @@ export default function SupplierOrderPage() {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
   const [receivingOrder, setReceivingOrder] = useState<SupplierOrder | null>(null);
+  const [editing, setEditing] = useState<SupplierOrder | null>(null);
+  const [newRequested, consumeNew] = useQueryFlag('new');
+
+  // A műszerfal gyorsgombja (?new=1) rögtön az új beszerzés űrlapot nyitja
+  useEffect(() => {
+    if (!newRequested) return;
+    if (hasAction('supplier-orders.create')) setCreateOpen(true);
+    consumeNew();
+  }, [newRequested, consumeNew, hasAction]);
+
+  // Stabil referencia, hogy a modal csak megnyitáskor töltse újra az űrlapot
+  const editDraft = useMemo<OrderDraft | null>(() => editing && {
+    partyId: editing.supplierId,
+    warehouseId: editing.warehouseId,
+    items: editing.items.map((i) => ({ productId: i.productId, quantity: i.quantity, unitCost: i.unitCost })),
+  }, [editing]);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -83,6 +102,13 @@ export default function SupplierOrderPage() {
     setCreateOpen(false);
   };
 
+  const handleEdit = async (partyId: number, items: NewOrderItem[], warehouseId: number | null) => {
+    if (!editing) return;
+    const updated = await supplierOrderService.update(editing.id, partyId, warehouseId!, items);
+    setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+    setEditing(null);
+  };
+
   // Csak a még meg nem érkezett (függő vagy úton lévő) rendelés érkeztethető be
   const canReceive = (order: SupplierOrder) => order.status === 'Pending' || order.status === 'Shipped';
 
@@ -125,6 +151,7 @@ export default function SupplierOrderPage() {
             <i className={`bi ${allOpen ? 'bi-arrows-collapse' : 'bi-arrows-expand'}`} aria-hidden="true"></i>
             {allOpen ? 'Összes becsukása' : 'Összes kinyitása'}
           </button>
+          <ExportButton kind="supplier-orders" />
           {hasAction('supplier-orders.create') && (
             <button type="button" className="header-btn header-btn-primary" onClick={() => setCreateOpen(true)}>
               <i className="bi bi-plus-lg" aria-hidden="true"></i>
@@ -154,6 +181,18 @@ export default function SupplierOrderPage() {
         onSubmit={handleCreate}
         onHide={() => setCreateOpen(false)}
       />
+      <CreateOrderModal
+        show={editing !== null}
+        title={editing ? `#${editing.id} beszerzés módosítása` : 'Beszerzés módosítása'}
+        submitLabel="Módosítások mentése"
+        partyLabel="Beszállító"
+        loadParties={loadSuppliers}
+        priceMode="manual"
+        warehouseLabel="Célraktár"
+        initial={editDraft}
+        onSubmit={handleEdit}
+        onHide={() => setEditing(null)}
+      />
 
       {error ? (
         <div className="alert alert-danger" role="alert">{error}</div>
@@ -181,12 +220,20 @@ export default function SupplierOrderPage() {
               isOpen={openIds.has(order.id)}
               onToggle={() => toggleOrder(order.id)}
               actions={
-                canReceive(order) && hasAction('supplier-orders.receive') && (
-                  <Button variant="success" size="sm" onClick={() => setReceivingOrder(order)}>
-                    <i className="bi bi-box-arrow-in-down me-1" aria-hidden="true"></i>
-                    Beérkeztetés
-                  </Button>
-                )
+                <>
+                  {order.status === 'Pending' && hasAction('supplier-orders.edit') && (
+                    <Button variant="outline-secondary" size="sm" onClick={() => setEditing(order)}>
+                      <i className="bi bi-pencil me-1" aria-hidden="true"></i>
+                      Módosítás
+                    </Button>
+                  )}
+                  {canReceive(order) && hasAction('supplier-orders.receive') && (
+                    <Button variant="success" size="sm" onClick={() => setReceivingOrder(order)}>
+                      <i className="bi bi-box-arrow-in-down me-1" aria-hidden="true"></i>
+                      Beérkeztetés
+                    </Button>
+                  )}
+                </>
               }
             />
           ))}

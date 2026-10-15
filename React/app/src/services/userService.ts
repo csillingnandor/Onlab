@@ -3,6 +3,7 @@ import { apiFetch, deleteRequest, postJson, putJson } from '../util/apiErrors.js
 
 const USERS_URL = import.meta.env.VITE_API_BASE_URL + '/users';
 const ROLES_URL = import.meta.env.VITE_API_BASE_URL + '/roles';
+const NOTIFICATIONS_URL = import.meta.env.VITE_API_BASE_URL + '/notifications';
 
 // Felhasználók és szerepkörök kezelése (csak a "users" oldal jogosultságával)
 const userService = {
@@ -37,6 +38,10 @@ const userService = {
   // 409: rendszer-szerepkör, vagy még tartoznak hozzá felhasználók
   deleteRole: (id: string): Promise<void> =>
     deleteRequest(`${ROLES_URL}/${id}`, 'Nem sikerült a szerepkör törlése.'),
+
+  // A napi összefoglaló azonnali kiküldése az adminisztrátoroknak; a válasz a címzettek száma
+  sendDailySummary: (): Promise<{ recipients: number }> =>
+    postJson(`${NOTIFICATIONS_URL}/daily-summary`, null, 'Nem sikerült az összefoglaló kiküldése.'),
 };
 
 export default userService;

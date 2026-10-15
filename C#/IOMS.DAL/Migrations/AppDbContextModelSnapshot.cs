@@ -1943,6 +1943,10 @@ namespace IOMS.DAL.Migrations
                     b.Property<int?>("CustomerOrderId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 

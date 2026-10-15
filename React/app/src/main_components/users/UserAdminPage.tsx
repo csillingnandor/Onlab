@@ -27,6 +27,24 @@ export default function UserAdminPage() {
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null | undefined>(undefined);
   const [deletingRole, setDeletingRole] = useState<Role | null>(null);
+  const [summaryBusy, setSummaryBusy] = useState(false);
+  const [summaryMessage, setSummaryMessage] = useState<string | null>(null);
+
+  // Kipróbáláshoz: az ütemezett napi összefoglaló azonnali kiküldése
+  const handleSendSummary = async () => {
+    setSummaryBusy(true);
+    setSummaryMessage(null);
+    try {
+      const { recipients } = await userService.sendDailySummary();
+      setSummaryMessage(recipients > 0
+        ? `A napi összefoglaló kiküldve ${recipients} adminisztrátornak.`
+        : 'Egy adminisztrátornak sincs megadva e-mail címe, ezért nem ment ki levél.');
+    } catch (err: unknown) {
+      setSummaryMessage(err instanceof Error ? err.message : 'Nem sikerült az összefoglaló kiküldése.');
+    } finally {
+      setSummaryBusy(false);
+    }
+  };
 
   // A két lista összefügg (szerepkör átnevezése, taglétszám), ezért módosítás után mindkettőt újratöltjük
   const reload = useCallback(async () => {
@@ -111,15 +129,34 @@ export default function UserAdminPage() {
             {users.length} felhasználó, {roles.length} szerepkör · a módosítások a felhasználó következő bejelentkezésekor lépnek életbe
           </p>
         </div>
-        <button
-          type="button"
-          className="header-btn header-btn-primary"
-          onClick={() => (tab === 'users' ? setEditingUser(null) : setEditingRole(null))}
-        >
-          <i className="bi bi-plus-lg" aria-hidden="true"></i>
-          {tab === 'users' ? 'Új felhasználó' : 'Új szerepkör'}
-        </button>
+        <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            className="header-btn"
+            onClick={handleSendSummary}
+            disabled={summaryBusy}
+            title="A tegnapi nap összefoglalójának azonnali kiküldése az adminisztrátoroknak"
+          >
+            <i className="bi bi-envelope-paper" aria-hidden="true"></i>
+            Napi összefoglaló küldése
+          </button>
+          <button
+            type="button"
+            className="header-btn header-btn-primary"
+            onClick={() => (tab === 'users' ? setEditingUser(null) : setEditingRole(null))}
+          >
+            <i className="bi bi-plus-lg" aria-hidden="true"></i>
+            {tab === 'users' ? 'Új felhasználó' : 'Új szerepkör'}
+          </button>
+        </div>
       </header>
+
+      {summaryMessage && (
+        <div className="alert alert-info alert-dismissible mb-0" role="status">
+          {summaryMessage}
+          <button type="button" className="btn-close" aria-label="Bezárás" onClick={() => setSummaryMessage(null)}></button>
+        </div>
+      )}
 
       <Nav variant="tabs" activeKey={tab} onSelect={(key) => setTab(key === 'roles' ? 'roles' : 'users')}>
         <Nav.Item>

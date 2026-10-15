@@ -5,7 +5,10 @@ import type { Customer } from '../../util/Types.js';
 import { emptyCustomerFilter, filterCustomers, type CustomerFilter } from '../../util/customerFilter.js';
 import { countActive } from '../../common/filter/filterUtils.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
-import CreateCustomerModal from './CreateCustomerModal.js';
+import CustomerFormModal from './CustomerFormModal.js';
+import ConfirmModal from '../../common/modal/ConfirmModal.js';
+import ExportButton from '../../common/button/ExportButton.js';
+import { useQueryFlag } from '../../util/useQueryFlag.js';
 import CustomerFilterPanel from './CustomerFilterPanel.js';
 import CustomerTable from './CustomerTable.js';
 import { useAuth } from '../../auth/useAuth.js';
@@ -20,7 +23,17 @@ export default function CustomerPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<CustomerFilter>(emptyCustomerFilter);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const [createOpen, setCreateOpen] = useState<boolean>(false);
+  // undefined: zárva, null: új vevő, egyébként a szerkesztett vevő
+  const [editing, setEditing] = useState<Customer | null | undefined>(undefined);
+  const [deleting, setDeleting] = useState<Customer | null>(null);
+  const [newRequested, consumeNew] = useQueryFlag('new');
+
+  // A műszerfal gyorsgombja (?new=1) rögtön az új vevő űrlapot nyitja
+  useEffect(() => {
+    if (!newRequested) return;
+    if (hasAction('customers.create')) setEditing(null);
+    consumeNew();
+  }, [newRequested, consumeNew, hasAction]);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -45,10 +58,20 @@ export default function CustomerPage() {
   const visibleCustomers = useMemo(() => filterCustomers(customers, filter), [customers, filter]);
   const activeFilterCount = countActive(filter);
 
-  // A lista név szerint rendezett (mint a backendnél), az új vevő is a helyére kerül
-  const handleCreated = (customer: Customer) => {
-    setCustomers((prev) => [...prev, customer].sort((a, b) => a.name.localeCompare(b.name, 'hu')));
-    setCreateOpen(false);
+  // A lista név szerint rendezett (mint a backendnél), az új / átnevezett vevő is a helyére kerül
+  const handleSaved = (customer: Customer) => {
+    setCustomers((prev) =>
+      [...prev.filter((c) => c.id !== customer.id), customer].sort((a, b) => a.name.localeCompare(b.name, 'hu')),
+    );
+    setEditing(undefined);
+  };
+
+  // 409 (vannak rendelései) esetén a ConfirmModal mutatja a hibaüzenetet
+  const handleConfirmDelete = async () => {
+    if (!deleting) return;
+    await customerService.delete(deleting.id);
+    setCustomers((prev) => prev.filter((c) => c.id !== deleting.id));
+    setDeleting(null);
   };
 
   const renderContent = () => {
@@ -72,7 +95,13 @@ export default function CustomerPage() {
       return <div className="alert alert-info text-center" role="status">Nincs a szűrésnek megfelelő vevő.</div>;
     }
 
-    return <CustomerTable customers={visibleCustomers} />;
+    return (
+      <CustomerTable
+        customers={visibleCustomers}
+        onEdit={hasAction('customers.edit') ? setEditing : undefined}
+        onDelete={hasAction('customers.delete') ? setDeleting : undefined}
+      />
+    );
   };
 
   return (
@@ -91,15 +120,38 @@ export default function CustomerPage() {
             controls={FILTER_PANEL_ID}
             onToggle={() => setFilterOpen((prev) => !prev)}
           />
+          <ExportButton kind="customers" />
           {hasAction('customers.create') && (
-            <button type="button" className="header-btn header-btn-primary" onClick={() => setCreateOpen(true)}>
+            <button type="button" className="header-btn header-btn-primary" onClick={() => setEditing(null)}>
               <i className="bi bi-plus-lg" aria-hidden="true"></i>
               Új vevő
             </button>
           )}
         </div>
       </header>
-      <CreateCustomerModal show={createOpen} onCreated={handleCreated} onHide={() => setCreateOpen(false)} />
+      <CustomerFormModal
+        show={editing !== undefined}
+        customer={editing ?? null}
+        onSaved={handleSaved}
+        onHide={() => setEditing(undefined)}
+      />
+      <ConfirmModal
+        show={deleting !== null}
+        title="Vevő törlése"
+        confirmLabel="Törlés"
+        confirmIcon="bi-trash"
+        busyLabel="Törlés..."
+        onConfirm={handleConfirmDelete}
+        onHide={() => setDeleting(null)}
+      >
+        {deleting && (
+          <>
+            <p className="mb-2">Biztosan törlöd ezt a vevőt?</p>
+            <p className="mb-2"><strong>{deleting.name}</strong> <span className="text-secondary ms-2">{deleting.email}</span></p>
+            <p className="mb-0 small text-secondary">Csak rendelés nélküli vevő törölhető. A művelet nem vonható vissza.</p>
+          </>
+        )}
+      </ConfirmModal>
       {filterOpen && (
         <CustomerFilterPanel
           id={FILTER_PANEL_ID}

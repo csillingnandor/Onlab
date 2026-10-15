@@ -418,3 +418,39 @@
 .date-range-menu-custom {
   padding: 0.5rem 1rem 0.25rem;
 }
+
+/* Gyorsgombok a fejléc alatt: ikon + felirat, a képernyőszélességhez igazodó rácsban */
+.dashboard-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.dashboard-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--app-surface, #212529);
+  border: 1px solid var(--app-border, #343a40);
+  border-radius: 0.5rem;
+  color: var(--app-text, #dee2e6);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.dashboard-quick-action .bi {
+  font-size: 1.25rem;
+  color: #0d6efd;
+}
+
+.dashboard-quick-action:hover,
+.dashboard-quick-action:focus-visible {
+  background-color: var(--app-surface-hover, #2c3036);
+  border-color: #0d6efd;
+  color: var(--app-emphasis, #ffffff);
+  transform: translateY(-1px);
+}
+

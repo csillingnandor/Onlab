@@ -4,9 +4,10 @@ import FormModal from '../../common/modal/FormModal.js';
 import customerService from '../../services/customerService.js';
 import type { Customer, NewCustomer } from '../../util/Types.js';
 
-type CreateCustomerModalProps = {
+type CustomerFormModalProps = {
   show: boolean;
-  onCreated: (customer: Customer) => void;
+  customer: Customer | null; // null: új vevő
+  onSaved: (customer: Customer) => void;
   onHide: () => void;
 };
 
@@ -16,18 +17,19 @@ const PHONE_PATTERN = String.raw`\+?[0-9 \(\)\/\-]+`;
 
 const emptyCustomer: NewCustomer = { name: '', email: '', phone: '' };
 
-// A szabályok a backend CreateCustomerDataValidator-ával egyeznek; az e-mail egyediségét csak a szerver tudja ellenőrizni.
-export default function CreateCustomerModal({ show, onCreated, onHide }: CreateCustomerModalProps) {
+// Vevő felvétele és módosítása. A szabályok a backend CreateCustomerDataValidator-ával egyeznek (a módosítás is ezt használja);
+// az e-mail egyediségét csak a szerver tudja ellenőrizni.
+export default function CustomerFormModal({ show, customer, onSaved, onHide }: CustomerFormModalProps) {
   const [form, setForm] = useState<NewCustomer>(emptyCustomer);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (show) {
-      setForm(emptyCustomer);
+      setForm(customer ? { name: customer.name, email: customer.email, phone: customer.phone ?? '' } : emptyCustomer);
       setError(null);
     }
-  }, [show]);
+  }, [show, customer]);
 
   const update = (patch: Partial<NewCustomer>) => setForm((prev) => ({ ...prev, ...patch }));
 
@@ -36,12 +38,8 @@ export default function CreateCustomerModal({ show, onCreated, onHide }: CreateC
     setError(null);
     try {
       const phone = form.phone?.trim();
-      const created = await customerService.create({
-        name: form.name.trim(),
-        email: form.email.trim(),
-        phone: phone ? phone : null,
-      });
-      onCreated(created);
+      const input = { name: form.name.trim(), email: form.email.trim(), phone: phone ? phone : null };
+      onSaved(customer ? await customerService.update(customer.id, input) : await customerService.create(input));
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Hiba történt a mentés során.');
     } finally {
@@ -52,14 +50,14 @@ export default function CreateCustomerModal({ show, onCreated, onHide }: CreateC
   return (
     <FormModal
       show={show}
-      title="Új vevő"
-      submitLabel="Vevő mentése"
+      title={customer ? 'Vevő módosítása' : 'Új vevő'}
+      submitLabel={customer ? 'Módosítások mentése' : 'Vevő mentése'}
       saving={saving}
       error={error}
       onSubmit={handleSubmit}
       onHide={onHide}
     >
-      <Form.Group controlId="create-customer-name" className="mb-3">
+      <Form.Group controlId="customer-form-name" className="mb-3">
         <Form.Label>Név</Form.Label>
         <Form.Control
           type="text"
@@ -72,7 +70,7 @@ export default function CreateCustomerModal({ show, onCreated, onHide }: CreateC
         />
       </Form.Group>
 
-      <Form.Group controlId="create-customer-email" className="mb-3">
+      <Form.Group controlId="customer-form-email" className="mb-3">
         <Form.Label>E-mail</Form.Label>
         <Form.Control
           type="email"
@@ -84,7 +82,7 @@ export default function CreateCustomerModal({ show, onCreated, onHide }: CreateC
         />
       </Form.Group>
 
-      <Form.Group controlId="create-customer-phone">
+      <Form.Group controlId="customer-form-phone">
         <Form.Label>
           Telefon <span className="text-muted">(nem kötelező)</span>
         </Form.Label>

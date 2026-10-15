@@ -1,7 +1,8 @@
-import type { Product, ProductInput, ProductSaleStatistics, StockMovement } from '../util/Types.js';
-import { apiFetch, readValidationErrors } from '../util/apiErrors.js';
+import type { Product, ProductImportPreview, ProductImportResult, ProductInput, ProductSaleStatistics, StockAdjustment, StockMovement } from '../util/Types.js';
+import { apiFetch, downloadFile, postJson, readValidationErrors } from '../util/apiErrors.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/products';
+const IMPORT_URL = import.meta.env.VITE_API_BASE_URL + '/import/products';
 
 const productService = {
   getAll: async (): Promise<Product[]> => {
@@ -50,6 +51,29 @@ const productService = {
     return response.json();
   },
 
+  // Kézi korrekció (leltár): a válasz a frissített termék
+  adjustStock: (productId: number, adjustment: StockAdjustment): Promise<Product> =>
+    postJson(`${API_BASE_URL}/${productId}/adjustments`, adjustment, 'Nem sikerült a készlet korrigálása.'),
+
+  downloadImportTemplate: (): Promise<void> =>
+    downloadFile(`${IMPORT_URL}/template`, 'termek-import-sablon.xlsx', 'Nem sikerült a sablon letöltése.'),
+
+  // Előnézet: a fájl sorai a hibáikkal, mentés nélkül
+  previewImport: async (file: File): Promise<ProductImportPreview> => {
+    const response = await apiFetch(`${IMPORT_URL}/preview`, { method: 'POST', body: formWith(file) });
+    if (response.status === 400) throw new Error(await readValidationErrors(response, 'A fájl nem dolgozható fel.'));
+    if (!response.ok) throw new Error('Nem sikerült a fájl feldolgozása.');
+    return response.json();
+  },
+
+  // Mentés: a szerver újra feldolgozza a fájlt, és csak hibátlan fájlt fogad el
+  importProducts: async (file: File): Promise<ProductImportResult> => {
+    const response = await apiFetch(IMPORT_URL, { method: 'POST', body: formWith(file) });
+    if (response.status === 400) throw new Error(await readValidationErrors(response, 'A fájl hibás, nem importálható.'));
+    if (!response.ok) throw new Error('Nem sikerült az importálás.');
+    return response.json();
+  },
+
   // from / to: 'YYYY-MM-DD'; ha elhagyjuk, a backend az utolsó 30 napot adja
   getSaleStatistics: async (productId: number, from?: string, to?: string): Promise<ProductSaleStatistics> => {
     const params = new URLSearchParams();
@@ -66,3 +90,9 @@ const productService = {
 };
 
 export default productService;
+
+function formWith(file: File): FormData {
+  const form = new FormData();
+  form.append('file', file);
+  return form;
+}

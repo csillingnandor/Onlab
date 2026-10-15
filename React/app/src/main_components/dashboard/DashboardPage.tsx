@@ -8,6 +8,7 @@ import { presetRange, type DateRange } from '../../util/dateRange.js';
 import { priceFormatter } from '../../util/format.js';
 import { emptyOrderFilter, filterOrders } from '../../util/orderFilter.js';
 import DateRangeMenu from './DateRangeMenu.js';
+import QuickActions from './QuickActions.js';
 import KpiCard from './KpiCard.js';
 import OrderStatusChart from './OrderStatusChart.js';
 import ProductSalesPanel from './ProductSalesPanel.js';
@@ -72,6 +73,8 @@ export default function DashboardPage() {
         </div>
         <DateRangeMenu value={range} onChange={setRange} />
       </header>
+
+      <QuickActions />
 
       {loading ? (
         <div className="text-center py-5">

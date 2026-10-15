@@ -1,6 +1,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
+using IOMS.BLL.Notifications;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
@@ -14,11 +15,13 @@ public class SupplierOrderService : ISupplierOrderService
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly INotificationService _notifications;
 
-    public SupplierOrderService(AppDbContext context, IMapper mapper)
+    public SupplierOrderService(AppDbContext context, IMapper mapper, INotificationService notifications)
     {
         _context = context;
         _mapper = mapper;
+        _notifications = notifications;
     }
 
     public async Task<IReadOnlyList<SupplierOrderData>> GetAllAsync(CancellationToken ct = default)
@@ -42,6 +45,61 @@ public class SupplierOrderService : ISupplierOrderService
     // Új, Pending státuszú beszerzési rendelés; az azonos termékű sorokat összevonja (súlyozott átlagárral).
     public async Task<SupplierOrderData> CreateAsync(CreateSupplierOrderData data, CancellationToken ct = default)
     {
+        await ValidateReferencesAsync(data, ct);
+
+        var order = new SupplierOrder
+        {
+            SupplierId = data.SupplierId,
+            WarehouseId = data.WarehouseId,
+            OrderDate = DateTime.UtcNow,
+            Status = OrderStatus.Pending,
+            Items = MergeLines(data),
+        };
+
+        _context.SupplierOrders.Add(order);
+        await _context.SaveChangesAsync(ct);
+
+        // Újratöltés, hogy a beszállító- és terméknevek is benne legyenek.
+        return (await GetByIdAsync(order.Id, ct))!;
+    }
+
+    public async Task<SupplierOrderData?> ModifyAsync(int id, CreateSupplierOrderData data, CancellationToken ct = default)
+    {
+        var status = await _context.SupplierOrders
+            .Where(o => o.Id == id)
+            .Select(o => (OrderStatus?)o.Status)
+            .SingleOrDefaultAsync(ct);
+        if (status is null)
+            return null;
+        if (status != OrderStatus.Pending)
+            throw new ConflictException(nameof(id), $"A {id} azonosítójú rendelés már nem függő, nem módosítható.");
+
+        await ValidateReferencesAsync(data, ct);
+        var items = MergeLines(data);
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        // Feltételes módosítás: ha közben beérkeztették, nem írjuk át
+        var updated = await _context.SupplierOrders
+            .Where(o => o.Id == id && o.Status == OrderStatus.Pending)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(o => o.SupplierId, data.SupplierId)
+                .SetProperty(o => o.WarehouseId, data.WarehouseId), ct);
+        if (updated == 0)
+            throw new ConflictException(nameof(id), $"A {id} azonosítójú rendelés állapota időközben megváltozott.");
+
+        await _context.SupplierOrderItems.Where(i => i.SupplierOrderId == id).ExecuteDeleteAsync(ct);
+        foreach (var item in items)
+            item.SupplierOrderId = id;
+        _context.SupplierOrderItems.AddRange(items);
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return await GetByIdAsync(id, ct);
+    }
+
+    private async Task ValidateReferencesAsync(CreateSupplierOrderData data, CancellationToken ct)
+    {
         if (!await _context.Suppliers.AnyAsync(s => s.Id == data.SupplierId, ct))
             throw new BusinessValidationException(nameof(data.SupplierId), $"Nincs {data.SupplierId} azonosítójú beszállító.");
 
@@ -51,10 +109,12 @@ public class SupplierOrderService : ISupplierOrderService
         var missing = await _context.Products.GetMissingIdsAsync(data.Items.Select(i => i.ProductId), ct);
         if (missing.Count > 0)
             throw new BusinessValidationException(nameof(data.Items), $"Ismeretlen termék azonosító(k): {string.Join(", ", missing)}");
+    }
 
-        // Ugyanaz a termék többször is szerepelhet a kérésben; egy tétellé vonjuk össze,
-        // az egységár a sorok mennyiséggel súlyozott átlaga, így a rendelés végösszege nem változik.
-        var merged = data.Items
+    // Ugyanaz a termék többször is szerepelhet a kérésben; egy tétellé vonjuk össze,
+    // az egységár a sorok mennyiséggel súlyozott átlaga, így a rendelés végösszege nem változik.
+    private static List<SupplierOrderItem> MergeLines(CreateSupplierOrderData data) =>
+        data.Items
             .GroupBy(l => l.ProductId)
             .Select(g =>
             {
@@ -67,22 +127,6 @@ public class SupplierOrderService : ISupplierOrderService
                 };
             })
             .ToList();
-
-        var order = new SupplierOrder
-        {
-            SupplierId = data.SupplierId,
-            WarehouseId = data.WarehouseId,
-            OrderDate = DateTime.UtcNow,
-            Status = OrderStatus.Pending,
-            Items = merged,
-        };
-
-        _context.SupplierOrders.Add(order);
-        await _context.SaveChangesAsync(ct);
-
-        // Újratöltés, hogy a beszállító- és terméknevek is benne legyenek.
-        return (await GetByIdAsync(order.Id, ct))!;
-    }
 
     // Beérkeztetés: Delivered státusz, a tételek mennyisége a célraktár készletéhez adódik,
     // és termékenként egy Receipt mozgás kerül a naplóba. Minden egy tranzakcióban történik.
@@ -152,6 +196,8 @@ public class SupplierOrderService : ISupplierOrderService
         await _context.SaveChangesAsync(ct);
         await transaction.CommitAsync(ct);
 
-        return await GetByIdAsync(id, ct);
+        var result = (await GetByIdAsync(id, ct))!;
+        await _notifications.SupplierOrderReceivedAsync(result, ct);
+        return result;
     }
 }

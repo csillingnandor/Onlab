@@ -8,6 +8,7 @@ import './MainContent.css';
 import DashboardPage from './main_components/dashboard/DashboardPage.js';
 import WarehousePage from './main_components/warehouse/WarehousePage.js';
 import CustomerPage from './main_components/customer/CustomerPage.js';
+import SupplierPage from './main_components/supplier/SupplierPage.js';
 import UserAdminPage from './main_components/users/UserAdminPage.js';
 import RequirePage, { HomeRedirect } from './auth/RequirePage.js';
 import { appPages, type PageKey } from './util/pages.js';
@@ -20,6 +21,7 @@ const pageElements: Record<PageKey, ReactNode> = {
   'customer-orders': <CustomerOrderPage />,
   'supplier-orders': <SupplierOrderPage />,
   customers: <CustomerPage />,
+  suppliers: <SupplierPage />,
   users: <UserAdminPage />,
 };
 

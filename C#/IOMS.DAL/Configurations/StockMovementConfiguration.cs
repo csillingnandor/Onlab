@@ -10,6 +10,7 @@ internal class StockMovementConfiguration : IEntityTypeConfiguration<StockMoveme
     {
         // Típus szövegként tárolva ("Receipt"), hogy az adatbázisban is olvasható legyen
         builder.Property(m => m.Type).HasConversion<string>().HasMaxLength(20);
+        builder.Property(m => m.Note).HasMaxLength(200);
 
         // A 0 darabos mozgásnak nincs értelme
         builder.ToTable(t => t.HasCheckConstraint("CK_StockMovement_QuantityChange", "[QuantityChange] <> 0"));

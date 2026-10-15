@@ -57,4 +57,40 @@ public class CustomerService : ICustomerService
 
         return (await GetByIdAsync(customer.Id, ct))!;
     }
+
+    public async Task<CustomerData?> ModifyAsync(int id, CreateCustomerData data, CancellationToken ct = default)
+    {
+        var customer = await _context.Customers.SingleOrDefaultAsync(c => c.Id == id, ct);
+        if (customer is null)
+            return null;
+
+        var email = data.Email.Trim();
+        if (await _context.Customers.AnyAsync(c => c.Email == email && c.Id != id, ct))
+            throw new BusinessValidationException(nameof(data.Email), $"Már létezik vevő ezzel az e-mail címmel: {email}");
+
+        customer.Name = data.Name.Trim();
+        customer.Email = email;
+        customer.Phone = string.IsNullOrWhiteSpace(data.Phone) ? null : data.Phone.Trim();
+        await _context.SaveChangesAsync(ct);
+
+        return await GetByIdAsync(id, ct);
+    }
+
+    // A rendelések (és így az eladási statisztikák) nem veszhetnek el, ezért rendeléssel rendelkező vevő nem törölhető
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    {
+        var customer = await _context.Customers
+            .Where(c => c.Id == id)
+            .Select(c => new { c.Name, OrderCount = c.Orders.Count() })
+            .SingleOrDefaultAsync(ct);
+        if (customer is null)
+            return false;
+
+        if (customer.OrderCount > 0)
+            throw new ConflictException(nameof(id),
+                $"{customer.Name} nem törölhető, mert {customer.OrderCount} rendelése van.");
+
+        await _context.Customers.Where(c => c.Id == id).ExecuteDeleteAsync(ct);
+        return true;
+    }
 }

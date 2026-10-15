@@ -37,6 +37,7 @@ public class UserService : IUserService
         {
             UserName = data.UserName.Trim(),
             DisplayName = data.DisplayName.Trim(),
+            Email = NormalizeEmail(data.Email),
         };
 
         // A UserManager ugyanezt a (scoped) kontextust használja, így egy tranzakcióba kerül a felhasználó és a szerepkörei
@@ -64,6 +65,7 @@ public class UserService : IUserService
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
         user.DisplayName = data.DisplayName.Trim();
+        user.Email = NormalizeEmail(data.Email);
         EnsureSucceeded(await _userManager.UpdateAsync(user));
 
         var removed = currentRoles.Except(newRoles).ToList();
@@ -113,6 +115,7 @@ public class UserService : IUserService
                 Id = u.Id,
                 UserName = u.UserName!,
                 DisplayName = u.DisplayName,
+                Email = u.Email,
                 Roles = _context.UserRoles
                     .Where(ur => ur.UserId == u.Id)
                     .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name!)
@@ -120,6 +123,8 @@ public class UserService : IUserService
                     .ToList(),
             });
     }
+
+    private static string? NormalizeEmail(string? email) => string.IsNullOrWhiteSpace(email) ? null : email.Trim();
 
     // Duplikátumok nélkül; nem létező szerepkörnél 400
     private async Task<List<string>> ValidateRolesAsync(IEnumerable<string> roles, CancellationToken ct)

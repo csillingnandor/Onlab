@@ -9,6 +9,13 @@ import './CreateOrderModal.css';
 
 type Party = { id: number; name: string };
 
+// Meglévő (függő) rendelés adatai szerkesztéshez
+export type OrderDraft = {
+  partyId: number;
+  warehouseId: number;
+  items: { productId: number; quantity: number; unitCost?: number }[];
+};
+
 type CreateOrderModalProps = {
   show: boolean;
   title: string; // pl. 'Új vevői rendelés'
@@ -20,6 +27,9 @@ type CreateOrderModalProps = {
   warehouseLabel?: string;
   onSubmit: (partyId: number, items: NewOrderItem[], warehouseId: number | null) => Promise<void>;
   onHide: () => void;
+  // Szerkesztésnél a rendelés jelenlegi adatai (null / nincs megadva: üres űrlap)
+  initial?: OrderDraft | null | undefined;
+  submitLabel?: string | undefined;
 };
 
 // Egy tételsor nyers mezőértékei; a key csak a React listához kell
@@ -41,6 +51,8 @@ export default function CreateOrderModal({
   warehouseLabel,
   onSubmit,
   onHide,
+  initial,
+  submitLabel = 'Rendelés mentése',
 }: CreateOrderModalProps) {
   const [parties, setParties] = useState<Party[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -57,9 +69,16 @@ export default function CreateOrderModal({
     if (!show) return;
     let ignore = false;
 
-    setPartyId('');
-    setWarehouseId('');
-    setLines([emptyLine()]);
+    setPartyId(initial ? String(initial.partyId) : '');
+    setWarehouseId(initial ? String(initial.warehouseId) : '');
+    setLines(initial && initial.items.length > 0
+      ? initial.items.map((item) => ({
+          key: nextLineKey++,
+          productId: String(item.productId),
+          quantity: String(item.quantity),
+          unitCost: item.unitCost === undefined ? '' : String(item.unitCost),
+        }))
+      : [emptyLine()]);
     setError(null);
     setListsLoading(true);
 
@@ -84,7 +103,7 @@ export default function CreateOrderModal({
     return () => {
       ignore = true;
     };
-  }, [show, loadParties, warehouseLabel]);
+  }, [show, loadParties, warehouseLabel, initial]);
 
   const selectedWarehouse = warehouses.find((w) => String(w.id) === warehouseId) ?? null;
   const stockIn = (product: Product) =>
@@ -139,7 +158,7 @@ export default function CreateOrderModal({
     <FormModal
       show={show}
       title={title}
-      submitLabel="Rendelés mentése"
+      submitLabel={submitLabel}
       saving={saving}
       error={error}
       onSubmit={handleSubmit}

@@ -1,6 +1,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
+using IOMS.BLL.Notifications;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
@@ -16,11 +17,13 @@ public class ProductService : IProductService
 
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly INotificationService _notifications;
 
-    public ProductService(AppDbContext context, IMapper mapper)
+    public ProductService(AppDbContext context, IMapper mapper, INotificationService notifications)
     {
         _context = context;
         _mapper = mapper;
+        _notifications = notifications;
     }
 
     public async Task<IReadOnlyList<ProductData>> GetAllAsync(CancellationToken ct = default)
@@ -222,5 +225,54 @@ public class ProductService : IProductService
         _context.Products.Remove(product);
         await _context.SaveChangesAsync(ct);
         return true;
+    }
+
+    public async Task<ProductData?> AdjustStockAsync(int id, StockAdjustmentData data, CancellationToken ct = default)
+    {
+        if (!await _context.Products.AnyAsync(p => p.Id == id, ct))
+            return null;
+
+        var warehouseName = await _context.Warehouses
+            .Where(w => w.Id == data.WarehouseId)
+            .Select(w => w.Name)
+            .SingleOrDefaultAsync(ct)
+            ?? throw new BusinessValidationException(nameof(data.WarehouseId), $"Nincs {data.WarehouseId} azonosítójú raktár.");
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        var inventory = await _context.Inventories
+            .SingleOrDefaultAsync(i => i.ProductId == id && i.WarehouseId == data.WarehouseId, ct);
+        var current = inventory?.Quantity ?? 0;
+        var change = data.CountedQuantity - current;
+
+        if (change == 0)
+            throw new BusinessValidationException(nameof(data.CountedQuantity),
+                $"A megadott mennyiség megegyezik a nyilvántartott készlettel ({warehouseName}: {current} db), nincs mit korrigálni.");
+
+        // Mint kiszállításnál: a 0-ra fogyott sor törlődik, hogy a raktáronkénti bontásban ne jelenjen meg
+        if (inventory is null)
+            _context.Inventories.Add(new Inventory { ProductId = id, WarehouseId = data.WarehouseId, Quantity = data.CountedQuantity });
+        else if (data.CountedQuantity == 0)
+            _context.Inventories.Remove(inventory);
+        else
+            inventory.Quantity = data.CountedQuantity;
+
+        _context.StockMovements.Add(new StockMovement
+        {
+            ProductId = id,
+            WarehouseId = data.WarehouseId,
+            QuantityChange = change,
+            Type = IOMS.DAL.Entities.StockMovementType.Adjustment,
+            Note = string.IsNullOrWhiteSpace(data.Note) ? null : data.Note.Trim(),
+            CreatedAt = DateTime.UtcNow,
+        });
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        if (change < 0)
+            await _notifications.StockDecreasedAsync(new Dictionary<int, int> { [id] = -change }, ct);
+
+        return await GetByIdAsync(id, ct);
     }
 }

@@ -13,13 +13,17 @@ public static class AppRoles
         [Admin] = new([.. AppPages.All], [.. AppActions.All]),
         ["Raktárvezető"] = new(
             [AppPages.Dashboard, AppPages.Products, AppPages.Warehouses, AppPages.SupplierOrders],
-            [AppActions.ProductsCreate, AppActions.ProductsEdit, AppActions.ProductsDelete, AppActions.SupplierOrdersReceive]),
+            [AppActions.ProductsCreate, AppActions.ProductsEdit, AppActions.ProductsDelete, AppActions.ProductsAdjustStock,
+             AppActions.ProductsImport, AppActions.WarehousesCreate, AppActions.WarehousesEdit, AppActions.WarehousesDelete,
+             AppActions.SupplierOrdersReceive]),
         ["Értékesítő"] = new(
             [AppPages.Dashboard, AppPages.CustomerOrders, AppPages.Customers],
-            [AppActions.CustomerOrdersCreate, AppActions.CustomerOrdersShip, AppActions.CustomerOrdersDeliver,
-             AppActions.CustomerOrdersCancel, AppActions.CustomersCreate]),
+            [AppActions.CustomerOrdersCreate, AppActions.CustomerOrdersEdit, AppActions.CustomerOrdersShip,
+             AppActions.CustomerOrdersDeliver, AppActions.CustomerOrdersCancel,
+             AppActions.CustomersCreate, AppActions.CustomersEdit, AppActions.CustomersDelete]),
         ["Beszerző"] = new(
-            [AppPages.Dashboard, AppPages.SupplierOrders, AppPages.Warehouses],
-            [AppActions.SupplierOrdersCreate]),
+            [AppPages.Dashboard, AppPages.SupplierOrders, AppPages.Warehouses, AppPages.Suppliers],
+            [AppActions.SupplierOrdersCreate, AppActions.SupplierOrdersEdit,
+             AppActions.SuppliersCreate, AppActions.SuppliersEdit, AppActions.SuppliersDelete]),
     };
 }

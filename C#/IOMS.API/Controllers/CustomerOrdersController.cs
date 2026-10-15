@@ -49,6 +49,19 @@ public class CustomerOrdersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    // PUT api/customerorders/5: függő rendelés módosítása (409, ha már nem függő)
+    [HttpPut("{id:int}")]
+    [RequireAction(AppActions.CustomerOrdersEdit)]
+    public async Task<ActionResult<CustomerOrderData>> Modify(int id, CreateCustomerOrderData data, CancellationToken ct)
+    {
+        var validation = await _createValidator.ValidateAsync(data, ct);
+        if (!validation.IsValid)
+            return ValidationProblem(validation.ToModelState());
+
+        var modified = await _orderService.ModifyAsync(id, data, ct);
+        return modified is null ? NotFound() : Ok(modified);
+    }
+
     // POST api/customerorders/5/ship: kiszállítás, a kiszolgáló raktár készlete csökken (409, ha nincs elég)
     [HttpPost("{id:int}/ship")]
     [RequireAction(AppActions.CustomerOrdersShip)]

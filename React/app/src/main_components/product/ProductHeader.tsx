@@ -1,6 +1,7 @@
 import type { ViewMode } from '../../util/Types.js';
 import ViewModeToggle, { type ViewModeOption } from '../../common/button/ViewModeToggle.js';
 import FilterToggle from '../../common/filter/FilterToggle.js';
+import ExportButton from '../../common/button/ExportButton.js';
 
 const viewModeOptions: ViewModeOption<ViewMode>[] = [
   { value: 'list', label: 'Lista nézet', icon: 'bi-list' },
@@ -16,6 +17,7 @@ type ProductHeaderProps = {
   filterPanelId: string;
   onFilterToggle: () => void;
   onAddProductClick?: (() => void) | undefined; // nincs megadva: nincs létrehozási jog, a gomb nem látszik
+  onImportClick?: (() => void) | undefined; // nincs megadva: nincs importálási jog
 };
 
 export default function ProductHeader({
@@ -27,6 +29,7 @@ export default function ProductHeader({
     filterPanelId,
     onFilterToggle,
     onAddProductClick,
+    onImportClick,
 }: ProductHeaderProps) {
 
     return (
@@ -42,6 +45,13 @@ export default function ProductHeader({
                 onToggle={onFilterToggle}
             />
             <ViewModeToggle options={viewModeOptions} value={viewMode} onChange={onViewModeChange} />
+            <ExportButton kind="products" />
+            {onImportClick && (
+                <button type="button" className="header-btn" onClick={onImportClick} title="Termékek importálása Excelből">
+                    <i className="bi bi-upload" aria-hidden="true"></i>
+                    Import
+                </button>
+            )}
             {onAddProductClick && (
                 <button type="button" className="header-btn header-btn-primary" onClick={onAddProductClick}>
                     <i className="bi bi-plus-lg" aria-hidden="true"></i>

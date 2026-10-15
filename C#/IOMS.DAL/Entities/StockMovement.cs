@@ -27,4 +27,7 @@ public class StockMovement
     public CustomerOrder? CustomerOrder { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    // Kézi korrekció indoka (pl. "Leltár 2026-10", "Sérült áru"); a többi típusnál üres
+    public string? Note { get; set; }
 }
