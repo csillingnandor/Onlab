@@ -24,4 +24,15 @@
 -Excel import, táblázatban preview és séma/egyéb hibák előre kijelzése
 -Raktárforgalom chart
 
+7. konzi
+-Identity Role ASP.net
+-Ethereal
+-AI agenttel riport készítése
+-Rendelés predikció
+-CD/CD
+-Időszakos készletigény számítás agenttel
+-Útvonal, gps követése applikációból, dinamikus státsz
+-Útvonal tervezés atutomatába, címre
+-Raktár belső elrendezése, később mobilra is (IKEA önkiszolgáló)
+
 

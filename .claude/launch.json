@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "react-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "React/app"],
+      "port": 5173
+    },
+    {
+      "name": "react-app-verify",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "React/app", "--", "--port", "5174", "--strictPort"],
+      "port": 5174
+    }
+  ]
+}

@@ -16,6 +16,7 @@ namespace IOMS.BLL.Services;
 public class AuthService : IAuthService
 {
     private const string InvalidCredentialsMessage = "Hibás felhasználónév vagy jelszó.";
+    private const string LockOutMessage = "Túl sok sikertelen próbálkozás, a fiók néhány percre zárolva van.";
 
     private readonly UserManager<AppUser> _userManager;
     private readonly AppDbContext _context;
@@ -35,7 +36,7 @@ public class AuthService : IAuthService
             ?? throw new AuthenticationFailedException(InvalidCredentialsMessage);
 
         if (await _userManager.IsLockedOutAsync(user))
-            throw new AuthenticationFailedException("Túl sok sikertelen próbálkozás, a fiók néhány percre zárolva van.");
+            throw new AuthenticationFailedException(LockOutMessage);
 
         if (!await _userManager.CheckPasswordAsync(user, data.Password))
         {
