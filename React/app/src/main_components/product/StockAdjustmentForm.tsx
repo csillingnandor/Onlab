@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap';
+import { Alert, Col, Form, Row, Spinner } from 'react-bootstrap';
+import Button from '../../common/button/Button.js';
 import productService from '../../services/productService.js';
 import warehouseService from '../../services/warehouseService.js';
 import type { Product, Warehouse } from '../../util/Types.js';

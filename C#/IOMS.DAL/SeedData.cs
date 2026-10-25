@@ -56,8 +56,10 @@ internal static class SeedData
 
     public static Warehouse[] Warehouses =>
     [
-        new Warehouse { Id = 1, Name = "Budapesti központi raktár", Address = "1117 Budapest, Példa utca 1.", Capacity = 5000, Latitude = 47.4730, Longitude = 19.0530 },
-        new Warehouse { Id = 2, Name = "Debreceni raktár", Address = "4031 Debrecen, Minta út 12.", Capacity = 2000, Latitude = 47.5316, Longitude = 21.6273 },
+        new Warehouse { Id = 1, Name = "Budapesti központi raktár", Address = "1117 Budapest, Példa utca 1.", Capacity = 5000, Latitude = 47.4730, Longitude = 19.0530,
+            LayoutWidth = 26, LayoutDepth = 20, DockX = 13, DockY = 19 },
+        new Warehouse { Id = 2, Name = "Debreceni raktár", Address = "4031 Debrecen, Minta út 12.", Capacity = 2000, Latitude = 47.5316, Longitude = 21.6273,
+            LayoutWidth = 16, LayoutDepth = 12, DockX = 8, DockY = 11 },
         new Warehouse { Id = 3, Name = "Győri raktár", Address = "9027 Győr, Ipari park 5.", Capacity = 3000, Latitude = 47.6875, Longitude = 17.6504 },
         new Warehouse { Id = 4, Name = "Szegedi raktár", Address = "6728 Szeged, Logisztikai út 3.", Capacity = 1500, Latitude = 46.2530, Longitude = 20.1414 },
         new Warehouse { Id = 5, Name = "Pécsi raktár", Address = "7630 Pécs, Raktár utca 9.", Capacity = 1200, Latitude = 46.0727, Longitude = 18.2323 },
@@ -318,4 +320,87 @@ internal static class SeedData
         new StockMovement { Id = 18, ProductId = 19, WarehouseId = 1, QuantityChange = 18, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
         new StockMovement { Id = 19, ProductId = 20, WarehouseId = 1, QuantityChange = 5, Type = StockMovementType.Opening, CreatedAt = OpeningDate },
     ];
+
+    // ---------- Raktárak belső elrendezése
+    // Budapest (26 × 20 m): két polcblokk, köztük középfolyosó; a polcok párosával háttal állnak (y = 2-3, 6-7, 10-11),
+    // a depó a bejáratnál, lent középen. Debrecen (16 × 12 m): egy blokk, két polcpár. A többi raktárnak nincs elrendezése.
+    // A tárolóhelyek és a helyekhez rendelt készlet ezekből generálódik, rögzített sorrendben, így az Id-k stabilak.
+    private const int LocationMaxQuantity = 40;
+
+    public static Rack[] Racks =>
+    [
+        new Rack { Id = 1, WarehouseId = 1, Code = "A", X = 2, Y = 2, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 2, WarehouseId = 1, Code = "B", X = 14, Y = 2, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 3, WarehouseId = 1, Code = "C", X = 2, Y = 3, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 4, WarehouseId = 1, Code = "D", X = 14, Y = 3, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 5, WarehouseId = 1, Code = "E", X = 2, Y = 6, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 6, WarehouseId = 1, Code = "F", X = 14, Y = 6, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 7, WarehouseId = 1, Code = "G", X = 2, Y = 7, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 8, WarehouseId = 1, Code = "H", X = 14, Y = 7, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 9, WarehouseId = 1, Code = "I", X = 2, Y = 10, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 10, WarehouseId = 1, Code = "J", X = 14, Y = 10, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 11, WarehouseId = 1, Code = "K", X = 2, Y = 11, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 12, WarehouseId = 1, Code = "L", X = 14, Y = 11, Length = 10, Levels = 4, Orientation = RackOrientation.Horizontal },
+
+        new Rack { Id = 13, WarehouseId = 2, Code = "A", X = 3, Y = 2, Length = 10, Levels = 3, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 14, WarehouseId = 2, Code = "B", X = 3, Y = 3, Length = 10, Levels = 3, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 15, WarehouseId = 2, Code = "C", X = 3, Y = 6, Length = 10, Levels = 3, Orientation = RackOrientation.Horizontal },
+        new Rack { Id = 16, WarehouseId = 2, Code = "D", X = 3, Y = 7, Length = 10, Levels = 3, Orientation = RackOrientation.Horizontal },
+    ];
+
+    // Polconként rekesz, azon belül szint szerint; kód: "A-03-2"
+    public static StorageLocation[] StorageLocations
+    {
+        get
+        {
+            var locations = new List<StorageLocation>();
+            foreach (var rack in Racks)
+                for (var bay = 1; bay <= rack.Length; bay++)
+                    for (var level = 1; level <= rack.Levels; level++)
+                        locations.Add(new StorageLocation
+                        {
+                            Id = locations.Count + 1,
+                            RackId = rack.Id,
+                            Bay = bay,
+                            Level = level,
+                            Code = $"{rack.Code}-{bay:00}-{level}",
+                            MaxQuantity = LocationMaxQuantity,
+                        });
+            return [.. locations];
+        }
+    }
+
+    // A budapesti kezdőkészlet nagy része helyekre osztva, változó méretű adagokban, szétszórva a polcokon.
+    // Termékenként kb. az ötöde (legalább 1 db) a depón marad, mint még el nem helyezett beérkezés.
+    public static LocationStock[] LocationStocks
+    {
+        get
+        {
+            var budapestLocationIds = StorageLocations
+                .Where(l => Racks.Single(r => r.Id == l.RackId).WarehouseId == 1)
+                .Select(l => l.Id)
+                .ToArray();
+            var used = new HashSet<int>();
+            var stocks = new List<LocationStock>();
+
+            foreach (var inventory in Inventories.Where(i => i.WarehouseId == 1))
+            {
+                var remaining = inventory.Quantity - Math.Max(1, inventory.Quantity / 5);
+                var index = inventory.ProductId * 53 % budapestLocationIds.Length;
+                var chunk = 0;
+                while (remaining > 0)
+                {
+                    while (used.Contains(budapestLocationIds[index]))
+                        index = (index + 7) % budapestLocationIds.Length;
+
+                    var quantity = Math.Min(remaining, Math.Min(LocationMaxQuantity, 6 + (inventory.ProductId * 7 + chunk * 11) % 30));
+                    stocks.Add(new LocationStock { LocationId = budapestLocationIds[index], ProductId = inventory.ProductId, Quantity = quantity });
+                    used.Add(budapestLocationIds[index]);
+                    remaining -= quantity;
+                    chunk++;
+                }
+            }
+            return [.. stocks];
+        }
+    }
 }

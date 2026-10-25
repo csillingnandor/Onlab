@@ -1710,6 +1710,251 @@ namespace IOMS.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.LocationStock", b =>
+                {
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("LocationId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("LocationStocks", t =>
+                        {
+                            t.HasCheckConstraint("CK_LocationStock_Quantity", "[Quantity] > 0");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            LocationId = 54,
+                            ProductId = 1,
+                            Quantity = 13
+                        },
+                        new
+                        {
+                            LocationId = 61,
+                            ProductId = 1,
+                            Quantity = 21
+                        },
+                        new
+                        {
+                            LocationId = 107,
+                            ProductId = 2,
+                            Quantity = 5
+                        },
+                        new
+                        {
+                            LocationId = 213,
+                            ProductId = 4,
+                            Quantity = 20
+                        },
+                        new
+                        {
+                            LocationId = 266,
+                            ProductId = 5,
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            LocationId = 319,
+                            ProductId = 6,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            LocationId = 372,
+                            ProductId = 7,
+                            Quantity = 15
+                        },
+                        new
+                        {
+                            LocationId = 425,
+                            ProductId = 8,
+                            Quantity = 8
+                        },
+                        new
+                        {
+                            LocationId = 478,
+                            ProductId = 9,
+                            Quantity = 9
+                        },
+                        new
+                        {
+                            LocationId = 5,
+                            ProductId = 9,
+                            Quantity = 19
+                        },
+                        new
+                        {
+                            LocationId = 51,
+                            ProductId = 10,
+                            Quantity = 12
+                        },
+                        new
+                        {
+                            LocationId = 104,
+                            ProductId = 11,
+                            Quantity = 3
+                        },
+                        new
+                        {
+                            LocationId = 157,
+                            ProductId = 12,
+                            Quantity = 30
+                        },
+                        new
+                        {
+                            LocationId = 164,
+                            ProductId = 12,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            LocationId = 210,
+                            ProductId = 13,
+                            Quantity = 6
+                        },
+                        new
+                        {
+                            LocationId = 263,
+                            ProductId = 14,
+                            Quantity = 14
+                        },
+                        new
+                        {
+                            LocationId = 270,
+                            ProductId = 14,
+                            Quantity = 4
+                        },
+                        new
+                        {
+                            LocationId = 316,
+                            ProductId = 15,
+                            Quantity = 5
+                        },
+                        new
+                        {
+                            LocationId = 369,
+                            ProductId = 16,
+                            Quantity = 28
+                        },
+                        new
+                        {
+                            LocationId = 376,
+                            ProductId = 16,
+                            Quantity = 9
+                        },
+                        new
+                        {
+                            LocationId = 383,
+                            ProductId = 16,
+                            Quantity = 3
+                        },
+                        new
+                        {
+                            LocationId = 422,
+                            ProductId = 17,
+                            Quantity = 35
+                        },
+                        new
+                        {
+                            LocationId = 429,
+                            ProductId = 17,
+                            Quantity = 16
+                        },
+                        new
+                        {
+                            LocationId = 436,
+                            ProductId = 17,
+                            Quantity = 27
+                        },
+                        new
+                        {
+                            LocationId = 443,
+                            ProductId = 17,
+                            Quantity = 8
+                        },
+                        new
+                        {
+                            LocationId = 450,
+                            ProductId = 17,
+                            Quantity = 19
+                        },
+                        new
+                        {
+                            LocationId = 457,
+                            ProductId = 17,
+                            Quantity = 30
+                        },
+                        new
+                        {
+                            LocationId = 464,
+                            ProductId = 17,
+                            Quantity = 11
+                        },
+                        new
+                        {
+                            LocationId = 471,
+                            ProductId = 17,
+                            Quantity = 22
+                        },
+                        new
+                        {
+                            LocationId = 12,
+                            ProductId = 17,
+                            Quantity = 33
+                        },
+                        new
+                        {
+                            LocationId = 19,
+                            ProductId = 17,
+                            Quantity = 14
+                        },
+                        new
+                        {
+                            LocationId = 26,
+                            ProductId = 17,
+                            Quantity = 25
+                        },
+                        new
+                        {
+                            LocationId = 475,
+                            ProductId = 18,
+                            Quantity = 12
+                        },
+                        new
+                        {
+                            LocationId = 2,
+                            ProductId = 18,
+                            Quantity = 23
+                        },
+                        new
+                        {
+                            LocationId = 9,
+                            ProductId = 18,
+                            Quantity = 29
+                        },
+                        new
+                        {
+                            LocationId = 48,
+                            ProductId = 19,
+                            Quantity = 15
+                        },
+                        new
+                        {
+                            LocationId = 101,
+                            ProductId = 20,
+                            Quantity = 4
+                        });
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -1926,6 +2171,230 @@ namespace IOMS.DAL.Migrations
                             Name = "AMD Ryzen 7 7700X processzor",
                             Price = 109990m,
                             SKU = "ALK-R77700X"
+                        });
+                });
+
+            modelBuilder.Entity("IOMS.DAL.Entities.Rack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Levels")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Orientation")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("X")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WarehouseId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("Racks", t =>
+                        {
+                            t.HasCheckConstraint("CK_Rack_Position", "[X] >= 0 AND [Y] >= 0");
+
+                            t.HasCheckConstraint("CK_Rack_Size", "[Length] > 0 AND [Levels] > 0");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "A",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 2,
+                            Y = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "B",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 14,
+                            Y = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "C",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 2,
+                            Y = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "D",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 14,
+                            Y = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "E",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 2,
+                            Y = 6
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Code = "F",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 14,
+                            Y = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Code = "G",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 2,
+                            Y = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Code = "H",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 14,
+                            Y = 7
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Code = "I",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 2,
+                            Y = 10
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Code = "J",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 14,
+                            Y = 10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Code = "K",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 2,
+                            Y = 11
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Code = "L",
+                            Length = 10,
+                            Levels = 4,
+                            Orientation = "Horizontal",
+                            WarehouseId = 1,
+                            X = 14,
+                            Y = 11
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Code = "A",
+                            Length = 10,
+                            Levels = 3,
+                            Orientation = "Horizontal",
+                            WarehouseId = 2,
+                            X = 3,
+                            Y = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Code = "B",
+                            Length = 10,
+                            Levels = 3,
+                            Orientation = "Horizontal",
+                            WarehouseId = 2,
+                            X = 3,
+                            Y = 3
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Code = "C",
+                            Length = 10,
+                            Levels = 3,
+                            Orientation = "Horizontal",
+                            WarehouseId = 2,
+                            X = 3,
+                            Y = 6
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Code = "D",
+                            Length = 10,
+                            Levels = 3,
+                            Orientation = "Horizontal",
+                            WarehouseId = 2,
+                            X = 3,
+                            Y = 7
                         });
                 });
 
@@ -2150,6 +2619,5446 @@ namespace IOMS.DAL.Migrations
                             QuantityChange = 5,
                             Type = "Opening",
                             WarehouseId = 1
+                        });
+                });
+
+            modelBuilder.Entity("IOMS.DAL.Entities.StorageLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Bay")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RackId", "Bay", "Level")
+                        .IsUnique();
+
+                    b.ToTable("StorageLocations", t =>
+                        {
+                            t.HasCheckConstraint("CK_StorageLocation_MaxQuantity", "[MaxQuantity] > 0");
+
+                            t.HasCheckConstraint("CK_StorageLocation_Position", "[Bay] > 0 AND [Level] > 0");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Bay = 1,
+                            Code = "A-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Bay = 1,
+                            Code = "A-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Bay = 1,
+                            Code = "A-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Bay = 1,
+                            Code = "A-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Bay = 2,
+                            Code = "A-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Bay = 2,
+                            Code = "A-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Bay = 2,
+                            Code = "A-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Bay = 2,
+                            Code = "A-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Bay = 3,
+                            Code = "A-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Bay = 3,
+                            Code = "A-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Bay = 3,
+                            Code = "A-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Bay = 3,
+                            Code = "A-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Bay = 4,
+                            Code = "A-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Bay = 4,
+                            Code = "A-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Bay = 4,
+                            Code = "A-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Bay = 4,
+                            Code = "A-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Bay = 5,
+                            Code = "A-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Bay = 5,
+                            Code = "A-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Bay = 5,
+                            Code = "A-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Bay = 5,
+                            Code = "A-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Bay = 6,
+                            Code = "A-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Bay = 6,
+                            Code = "A-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Bay = 6,
+                            Code = "A-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Bay = 6,
+                            Code = "A-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Bay = 7,
+                            Code = "A-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Bay = 7,
+                            Code = "A-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Bay = 7,
+                            Code = "A-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Bay = 7,
+                            Code = "A-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Bay = 8,
+                            Code = "A-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Bay = 8,
+                            Code = "A-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Bay = 8,
+                            Code = "A-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Bay = 8,
+                            Code = "A-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Bay = 9,
+                            Code = "A-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Bay = 9,
+                            Code = "A-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Bay = 9,
+                            Code = "A-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Bay = 9,
+                            Code = "A-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Bay = 10,
+                            Code = "A-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Bay = 10,
+                            Code = "A-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Bay = 10,
+                            Code = "A-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Bay = 10,
+                            Code = "A-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 1
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Bay = 1,
+                            Code = "B-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Bay = 1,
+                            Code = "B-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Bay = 1,
+                            Code = "B-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Bay = 1,
+                            Code = "B-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Bay = 2,
+                            Code = "B-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Bay = 2,
+                            Code = "B-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Bay = 2,
+                            Code = "B-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 48,
+                            Bay = 2,
+                            Code = "B-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Bay = 3,
+                            Code = "B-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Bay = 3,
+                            Code = "B-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Bay = 3,
+                            Code = "B-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Bay = 3,
+                            Code = "B-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Bay = 4,
+                            Code = "B-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Bay = 4,
+                            Code = "B-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Bay = 4,
+                            Code = "B-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Bay = 4,
+                            Code = "B-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Bay = 5,
+                            Code = "B-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Bay = 5,
+                            Code = "B-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Bay = 5,
+                            Code = "B-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Bay = 5,
+                            Code = "B-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 61,
+                            Bay = 6,
+                            Code = "B-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Bay = 6,
+                            Code = "B-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Bay = 6,
+                            Code = "B-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Bay = 6,
+                            Code = "B-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Bay = 7,
+                            Code = "B-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 66,
+                            Bay = 7,
+                            Code = "B-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 67,
+                            Bay = 7,
+                            Code = "B-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 68,
+                            Bay = 7,
+                            Code = "B-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 69,
+                            Bay = 8,
+                            Code = "B-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 70,
+                            Bay = 8,
+                            Code = "B-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 71,
+                            Bay = 8,
+                            Code = "B-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 72,
+                            Bay = 8,
+                            Code = "B-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 73,
+                            Bay = 9,
+                            Code = "B-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 74,
+                            Bay = 9,
+                            Code = "B-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 75,
+                            Bay = 9,
+                            Code = "B-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 76,
+                            Bay = 9,
+                            Code = "B-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 77,
+                            Bay = 10,
+                            Code = "B-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 78,
+                            Bay = 10,
+                            Code = "B-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 79,
+                            Bay = 10,
+                            Code = "B-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 80,
+                            Bay = 10,
+                            Code = "B-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 2
+                        },
+                        new
+                        {
+                            Id = 81,
+                            Bay = 1,
+                            Code = "C-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 82,
+                            Bay = 1,
+                            Code = "C-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 83,
+                            Bay = 1,
+                            Code = "C-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 84,
+                            Bay = 1,
+                            Code = "C-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 85,
+                            Bay = 2,
+                            Code = "C-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 86,
+                            Bay = 2,
+                            Code = "C-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 87,
+                            Bay = 2,
+                            Code = "C-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 88,
+                            Bay = 2,
+                            Code = "C-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 89,
+                            Bay = 3,
+                            Code = "C-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 90,
+                            Bay = 3,
+                            Code = "C-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 91,
+                            Bay = 3,
+                            Code = "C-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 92,
+                            Bay = 3,
+                            Code = "C-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 93,
+                            Bay = 4,
+                            Code = "C-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 94,
+                            Bay = 4,
+                            Code = "C-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 95,
+                            Bay = 4,
+                            Code = "C-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 96,
+                            Bay = 4,
+                            Code = "C-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 97,
+                            Bay = 5,
+                            Code = "C-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 98,
+                            Bay = 5,
+                            Code = "C-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 99,
+                            Bay = 5,
+                            Code = "C-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 100,
+                            Bay = 5,
+                            Code = "C-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 101,
+                            Bay = 6,
+                            Code = "C-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 102,
+                            Bay = 6,
+                            Code = "C-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 103,
+                            Bay = 6,
+                            Code = "C-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 104,
+                            Bay = 6,
+                            Code = "C-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 105,
+                            Bay = 7,
+                            Code = "C-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 106,
+                            Bay = 7,
+                            Code = "C-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 107,
+                            Bay = 7,
+                            Code = "C-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 108,
+                            Bay = 7,
+                            Code = "C-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 109,
+                            Bay = 8,
+                            Code = "C-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 110,
+                            Bay = 8,
+                            Code = "C-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 111,
+                            Bay = 8,
+                            Code = "C-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 112,
+                            Bay = 8,
+                            Code = "C-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 113,
+                            Bay = 9,
+                            Code = "C-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 114,
+                            Bay = 9,
+                            Code = "C-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 115,
+                            Bay = 9,
+                            Code = "C-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 116,
+                            Bay = 9,
+                            Code = "C-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 117,
+                            Bay = 10,
+                            Code = "C-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 118,
+                            Bay = 10,
+                            Code = "C-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 119,
+                            Bay = 10,
+                            Code = "C-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 120,
+                            Bay = 10,
+                            Code = "C-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 3
+                        },
+                        new
+                        {
+                            Id = 121,
+                            Bay = 1,
+                            Code = "D-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 122,
+                            Bay = 1,
+                            Code = "D-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 123,
+                            Bay = 1,
+                            Code = "D-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 124,
+                            Bay = 1,
+                            Code = "D-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 125,
+                            Bay = 2,
+                            Code = "D-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 126,
+                            Bay = 2,
+                            Code = "D-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 127,
+                            Bay = 2,
+                            Code = "D-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 128,
+                            Bay = 2,
+                            Code = "D-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 129,
+                            Bay = 3,
+                            Code = "D-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 130,
+                            Bay = 3,
+                            Code = "D-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 131,
+                            Bay = 3,
+                            Code = "D-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 132,
+                            Bay = 3,
+                            Code = "D-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 133,
+                            Bay = 4,
+                            Code = "D-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 134,
+                            Bay = 4,
+                            Code = "D-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 135,
+                            Bay = 4,
+                            Code = "D-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 136,
+                            Bay = 4,
+                            Code = "D-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 137,
+                            Bay = 5,
+                            Code = "D-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 138,
+                            Bay = 5,
+                            Code = "D-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 139,
+                            Bay = 5,
+                            Code = "D-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 140,
+                            Bay = 5,
+                            Code = "D-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 141,
+                            Bay = 6,
+                            Code = "D-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 142,
+                            Bay = 6,
+                            Code = "D-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 143,
+                            Bay = 6,
+                            Code = "D-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 144,
+                            Bay = 6,
+                            Code = "D-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 145,
+                            Bay = 7,
+                            Code = "D-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 146,
+                            Bay = 7,
+                            Code = "D-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 147,
+                            Bay = 7,
+                            Code = "D-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 148,
+                            Bay = 7,
+                            Code = "D-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 149,
+                            Bay = 8,
+                            Code = "D-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 150,
+                            Bay = 8,
+                            Code = "D-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 151,
+                            Bay = 8,
+                            Code = "D-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 152,
+                            Bay = 8,
+                            Code = "D-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 153,
+                            Bay = 9,
+                            Code = "D-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 154,
+                            Bay = 9,
+                            Code = "D-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 155,
+                            Bay = 9,
+                            Code = "D-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 156,
+                            Bay = 9,
+                            Code = "D-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 157,
+                            Bay = 10,
+                            Code = "D-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 158,
+                            Bay = 10,
+                            Code = "D-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 159,
+                            Bay = 10,
+                            Code = "D-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 160,
+                            Bay = 10,
+                            Code = "D-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 4
+                        },
+                        new
+                        {
+                            Id = 161,
+                            Bay = 1,
+                            Code = "E-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 162,
+                            Bay = 1,
+                            Code = "E-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 163,
+                            Bay = 1,
+                            Code = "E-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 164,
+                            Bay = 1,
+                            Code = "E-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 165,
+                            Bay = 2,
+                            Code = "E-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 166,
+                            Bay = 2,
+                            Code = "E-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 167,
+                            Bay = 2,
+                            Code = "E-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 168,
+                            Bay = 2,
+                            Code = "E-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 169,
+                            Bay = 3,
+                            Code = "E-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 170,
+                            Bay = 3,
+                            Code = "E-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 171,
+                            Bay = 3,
+                            Code = "E-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 172,
+                            Bay = 3,
+                            Code = "E-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 173,
+                            Bay = 4,
+                            Code = "E-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 174,
+                            Bay = 4,
+                            Code = "E-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 175,
+                            Bay = 4,
+                            Code = "E-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 176,
+                            Bay = 4,
+                            Code = "E-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 177,
+                            Bay = 5,
+                            Code = "E-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 178,
+                            Bay = 5,
+                            Code = "E-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 179,
+                            Bay = 5,
+                            Code = "E-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 180,
+                            Bay = 5,
+                            Code = "E-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 181,
+                            Bay = 6,
+                            Code = "E-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 182,
+                            Bay = 6,
+                            Code = "E-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 183,
+                            Bay = 6,
+                            Code = "E-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 184,
+                            Bay = 6,
+                            Code = "E-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 185,
+                            Bay = 7,
+                            Code = "E-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 186,
+                            Bay = 7,
+                            Code = "E-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 187,
+                            Bay = 7,
+                            Code = "E-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 188,
+                            Bay = 7,
+                            Code = "E-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 189,
+                            Bay = 8,
+                            Code = "E-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 190,
+                            Bay = 8,
+                            Code = "E-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 191,
+                            Bay = 8,
+                            Code = "E-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 192,
+                            Bay = 8,
+                            Code = "E-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 193,
+                            Bay = 9,
+                            Code = "E-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 194,
+                            Bay = 9,
+                            Code = "E-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 195,
+                            Bay = 9,
+                            Code = "E-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 196,
+                            Bay = 9,
+                            Code = "E-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 197,
+                            Bay = 10,
+                            Code = "E-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 198,
+                            Bay = 10,
+                            Code = "E-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 199,
+                            Bay = 10,
+                            Code = "E-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 200,
+                            Bay = 10,
+                            Code = "E-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 5
+                        },
+                        new
+                        {
+                            Id = 201,
+                            Bay = 1,
+                            Code = "F-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 202,
+                            Bay = 1,
+                            Code = "F-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 203,
+                            Bay = 1,
+                            Code = "F-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 204,
+                            Bay = 1,
+                            Code = "F-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 205,
+                            Bay = 2,
+                            Code = "F-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 206,
+                            Bay = 2,
+                            Code = "F-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 207,
+                            Bay = 2,
+                            Code = "F-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 208,
+                            Bay = 2,
+                            Code = "F-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 209,
+                            Bay = 3,
+                            Code = "F-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 210,
+                            Bay = 3,
+                            Code = "F-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 211,
+                            Bay = 3,
+                            Code = "F-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 212,
+                            Bay = 3,
+                            Code = "F-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 213,
+                            Bay = 4,
+                            Code = "F-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 214,
+                            Bay = 4,
+                            Code = "F-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 215,
+                            Bay = 4,
+                            Code = "F-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 216,
+                            Bay = 4,
+                            Code = "F-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 217,
+                            Bay = 5,
+                            Code = "F-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 218,
+                            Bay = 5,
+                            Code = "F-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 219,
+                            Bay = 5,
+                            Code = "F-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 220,
+                            Bay = 5,
+                            Code = "F-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 221,
+                            Bay = 6,
+                            Code = "F-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 222,
+                            Bay = 6,
+                            Code = "F-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 223,
+                            Bay = 6,
+                            Code = "F-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 224,
+                            Bay = 6,
+                            Code = "F-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 225,
+                            Bay = 7,
+                            Code = "F-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 226,
+                            Bay = 7,
+                            Code = "F-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 227,
+                            Bay = 7,
+                            Code = "F-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 228,
+                            Bay = 7,
+                            Code = "F-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 229,
+                            Bay = 8,
+                            Code = "F-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 230,
+                            Bay = 8,
+                            Code = "F-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 231,
+                            Bay = 8,
+                            Code = "F-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 232,
+                            Bay = 8,
+                            Code = "F-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 233,
+                            Bay = 9,
+                            Code = "F-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 234,
+                            Bay = 9,
+                            Code = "F-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 235,
+                            Bay = 9,
+                            Code = "F-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 236,
+                            Bay = 9,
+                            Code = "F-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 237,
+                            Bay = 10,
+                            Code = "F-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 238,
+                            Bay = 10,
+                            Code = "F-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 239,
+                            Bay = 10,
+                            Code = "F-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 240,
+                            Bay = 10,
+                            Code = "F-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 6
+                        },
+                        new
+                        {
+                            Id = 241,
+                            Bay = 1,
+                            Code = "G-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 242,
+                            Bay = 1,
+                            Code = "G-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 243,
+                            Bay = 1,
+                            Code = "G-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 244,
+                            Bay = 1,
+                            Code = "G-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 245,
+                            Bay = 2,
+                            Code = "G-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 246,
+                            Bay = 2,
+                            Code = "G-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 247,
+                            Bay = 2,
+                            Code = "G-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 248,
+                            Bay = 2,
+                            Code = "G-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 249,
+                            Bay = 3,
+                            Code = "G-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 250,
+                            Bay = 3,
+                            Code = "G-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 251,
+                            Bay = 3,
+                            Code = "G-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 252,
+                            Bay = 3,
+                            Code = "G-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 253,
+                            Bay = 4,
+                            Code = "G-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 254,
+                            Bay = 4,
+                            Code = "G-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 255,
+                            Bay = 4,
+                            Code = "G-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 256,
+                            Bay = 4,
+                            Code = "G-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 257,
+                            Bay = 5,
+                            Code = "G-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 258,
+                            Bay = 5,
+                            Code = "G-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 259,
+                            Bay = 5,
+                            Code = "G-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 260,
+                            Bay = 5,
+                            Code = "G-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 261,
+                            Bay = 6,
+                            Code = "G-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 262,
+                            Bay = 6,
+                            Code = "G-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 263,
+                            Bay = 6,
+                            Code = "G-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 264,
+                            Bay = 6,
+                            Code = "G-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 265,
+                            Bay = 7,
+                            Code = "G-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 266,
+                            Bay = 7,
+                            Code = "G-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 267,
+                            Bay = 7,
+                            Code = "G-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 268,
+                            Bay = 7,
+                            Code = "G-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 269,
+                            Bay = 8,
+                            Code = "G-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 270,
+                            Bay = 8,
+                            Code = "G-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 271,
+                            Bay = 8,
+                            Code = "G-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 272,
+                            Bay = 8,
+                            Code = "G-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 273,
+                            Bay = 9,
+                            Code = "G-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 274,
+                            Bay = 9,
+                            Code = "G-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 275,
+                            Bay = 9,
+                            Code = "G-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 276,
+                            Bay = 9,
+                            Code = "G-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 277,
+                            Bay = 10,
+                            Code = "G-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 278,
+                            Bay = 10,
+                            Code = "G-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 279,
+                            Bay = 10,
+                            Code = "G-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 280,
+                            Bay = 10,
+                            Code = "G-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 7
+                        },
+                        new
+                        {
+                            Id = 281,
+                            Bay = 1,
+                            Code = "H-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 282,
+                            Bay = 1,
+                            Code = "H-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 283,
+                            Bay = 1,
+                            Code = "H-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 284,
+                            Bay = 1,
+                            Code = "H-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 285,
+                            Bay = 2,
+                            Code = "H-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 286,
+                            Bay = 2,
+                            Code = "H-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 287,
+                            Bay = 2,
+                            Code = "H-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 288,
+                            Bay = 2,
+                            Code = "H-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 289,
+                            Bay = 3,
+                            Code = "H-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 290,
+                            Bay = 3,
+                            Code = "H-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 291,
+                            Bay = 3,
+                            Code = "H-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 292,
+                            Bay = 3,
+                            Code = "H-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 293,
+                            Bay = 4,
+                            Code = "H-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 294,
+                            Bay = 4,
+                            Code = "H-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 295,
+                            Bay = 4,
+                            Code = "H-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 296,
+                            Bay = 4,
+                            Code = "H-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 297,
+                            Bay = 5,
+                            Code = "H-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 298,
+                            Bay = 5,
+                            Code = "H-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 299,
+                            Bay = 5,
+                            Code = "H-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 300,
+                            Bay = 5,
+                            Code = "H-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 301,
+                            Bay = 6,
+                            Code = "H-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 302,
+                            Bay = 6,
+                            Code = "H-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 303,
+                            Bay = 6,
+                            Code = "H-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 304,
+                            Bay = 6,
+                            Code = "H-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 305,
+                            Bay = 7,
+                            Code = "H-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 306,
+                            Bay = 7,
+                            Code = "H-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 307,
+                            Bay = 7,
+                            Code = "H-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 308,
+                            Bay = 7,
+                            Code = "H-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 309,
+                            Bay = 8,
+                            Code = "H-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 310,
+                            Bay = 8,
+                            Code = "H-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 311,
+                            Bay = 8,
+                            Code = "H-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 312,
+                            Bay = 8,
+                            Code = "H-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 313,
+                            Bay = 9,
+                            Code = "H-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 314,
+                            Bay = 9,
+                            Code = "H-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 315,
+                            Bay = 9,
+                            Code = "H-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 316,
+                            Bay = 9,
+                            Code = "H-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 317,
+                            Bay = 10,
+                            Code = "H-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 318,
+                            Bay = 10,
+                            Code = "H-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 319,
+                            Bay = 10,
+                            Code = "H-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 320,
+                            Bay = 10,
+                            Code = "H-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 8
+                        },
+                        new
+                        {
+                            Id = 321,
+                            Bay = 1,
+                            Code = "I-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 322,
+                            Bay = 1,
+                            Code = "I-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 323,
+                            Bay = 1,
+                            Code = "I-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 324,
+                            Bay = 1,
+                            Code = "I-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 325,
+                            Bay = 2,
+                            Code = "I-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 326,
+                            Bay = 2,
+                            Code = "I-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 327,
+                            Bay = 2,
+                            Code = "I-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 328,
+                            Bay = 2,
+                            Code = "I-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 329,
+                            Bay = 3,
+                            Code = "I-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 330,
+                            Bay = 3,
+                            Code = "I-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 331,
+                            Bay = 3,
+                            Code = "I-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 332,
+                            Bay = 3,
+                            Code = "I-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 333,
+                            Bay = 4,
+                            Code = "I-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 334,
+                            Bay = 4,
+                            Code = "I-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 335,
+                            Bay = 4,
+                            Code = "I-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 336,
+                            Bay = 4,
+                            Code = "I-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 337,
+                            Bay = 5,
+                            Code = "I-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 338,
+                            Bay = 5,
+                            Code = "I-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 339,
+                            Bay = 5,
+                            Code = "I-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 340,
+                            Bay = 5,
+                            Code = "I-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 341,
+                            Bay = 6,
+                            Code = "I-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 342,
+                            Bay = 6,
+                            Code = "I-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 343,
+                            Bay = 6,
+                            Code = "I-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 344,
+                            Bay = 6,
+                            Code = "I-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 345,
+                            Bay = 7,
+                            Code = "I-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 346,
+                            Bay = 7,
+                            Code = "I-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 347,
+                            Bay = 7,
+                            Code = "I-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 348,
+                            Bay = 7,
+                            Code = "I-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 349,
+                            Bay = 8,
+                            Code = "I-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 350,
+                            Bay = 8,
+                            Code = "I-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 351,
+                            Bay = 8,
+                            Code = "I-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 352,
+                            Bay = 8,
+                            Code = "I-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 353,
+                            Bay = 9,
+                            Code = "I-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 354,
+                            Bay = 9,
+                            Code = "I-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 355,
+                            Bay = 9,
+                            Code = "I-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 356,
+                            Bay = 9,
+                            Code = "I-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 357,
+                            Bay = 10,
+                            Code = "I-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 358,
+                            Bay = 10,
+                            Code = "I-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 359,
+                            Bay = 10,
+                            Code = "I-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 360,
+                            Bay = 10,
+                            Code = "I-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 9
+                        },
+                        new
+                        {
+                            Id = 361,
+                            Bay = 1,
+                            Code = "J-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 362,
+                            Bay = 1,
+                            Code = "J-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 363,
+                            Bay = 1,
+                            Code = "J-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 364,
+                            Bay = 1,
+                            Code = "J-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 365,
+                            Bay = 2,
+                            Code = "J-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 366,
+                            Bay = 2,
+                            Code = "J-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 367,
+                            Bay = 2,
+                            Code = "J-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 368,
+                            Bay = 2,
+                            Code = "J-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 369,
+                            Bay = 3,
+                            Code = "J-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 370,
+                            Bay = 3,
+                            Code = "J-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 371,
+                            Bay = 3,
+                            Code = "J-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 372,
+                            Bay = 3,
+                            Code = "J-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 373,
+                            Bay = 4,
+                            Code = "J-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 374,
+                            Bay = 4,
+                            Code = "J-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 375,
+                            Bay = 4,
+                            Code = "J-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 376,
+                            Bay = 4,
+                            Code = "J-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 377,
+                            Bay = 5,
+                            Code = "J-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 378,
+                            Bay = 5,
+                            Code = "J-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 379,
+                            Bay = 5,
+                            Code = "J-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 380,
+                            Bay = 5,
+                            Code = "J-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 381,
+                            Bay = 6,
+                            Code = "J-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 382,
+                            Bay = 6,
+                            Code = "J-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 383,
+                            Bay = 6,
+                            Code = "J-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 384,
+                            Bay = 6,
+                            Code = "J-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 385,
+                            Bay = 7,
+                            Code = "J-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 386,
+                            Bay = 7,
+                            Code = "J-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 387,
+                            Bay = 7,
+                            Code = "J-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 388,
+                            Bay = 7,
+                            Code = "J-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 389,
+                            Bay = 8,
+                            Code = "J-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 390,
+                            Bay = 8,
+                            Code = "J-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 391,
+                            Bay = 8,
+                            Code = "J-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 392,
+                            Bay = 8,
+                            Code = "J-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 393,
+                            Bay = 9,
+                            Code = "J-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 394,
+                            Bay = 9,
+                            Code = "J-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 395,
+                            Bay = 9,
+                            Code = "J-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 396,
+                            Bay = 9,
+                            Code = "J-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 397,
+                            Bay = 10,
+                            Code = "J-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 398,
+                            Bay = 10,
+                            Code = "J-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 399,
+                            Bay = 10,
+                            Code = "J-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 400,
+                            Bay = 10,
+                            Code = "J-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 10
+                        },
+                        new
+                        {
+                            Id = 401,
+                            Bay = 1,
+                            Code = "K-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 402,
+                            Bay = 1,
+                            Code = "K-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 403,
+                            Bay = 1,
+                            Code = "K-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 404,
+                            Bay = 1,
+                            Code = "K-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 405,
+                            Bay = 2,
+                            Code = "K-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 406,
+                            Bay = 2,
+                            Code = "K-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 407,
+                            Bay = 2,
+                            Code = "K-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 408,
+                            Bay = 2,
+                            Code = "K-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 409,
+                            Bay = 3,
+                            Code = "K-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 410,
+                            Bay = 3,
+                            Code = "K-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 411,
+                            Bay = 3,
+                            Code = "K-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 412,
+                            Bay = 3,
+                            Code = "K-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 413,
+                            Bay = 4,
+                            Code = "K-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 414,
+                            Bay = 4,
+                            Code = "K-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 415,
+                            Bay = 4,
+                            Code = "K-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 416,
+                            Bay = 4,
+                            Code = "K-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 417,
+                            Bay = 5,
+                            Code = "K-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 418,
+                            Bay = 5,
+                            Code = "K-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 419,
+                            Bay = 5,
+                            Code = "K-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 420,
+                            Bay = 5,
+                            Code = "K-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 421,
+                            Bay = 6,
+                            Code = "K-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 422,
+                            Bay = 6,
+                            Code = "K-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 423,
+                            Bay = 6,
+                            Code = "K-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 424,
+                            Bay = 6,
+                            Code = "K-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 425,
+                            Bay = 7,
+                            Code = "K-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 426,
+                            Bay = 7,
+                            Code = "K-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 427,
+                            Bay = 7,
+                            Code = "K-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 428,
+                            Bay = 7,
+                            Code = "K-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 429,
+                            Bay = 8,
+                            Code = "K-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 430,
+                            Bay = 8,
+                            Code = "K-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 431,
+                            Bay = 8,
+                            Code = "K-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 432,
+                            Bay = 8,
+                            Code = "K-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 433,
+                            Bay = 9,
+                            Code = "K-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 434,
+                            Bay = 9,
+                            Code = "K-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 435,
+                            Bay = 9,
+                            Code = "K-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 436,
+                            Bay = 9,
+                            Code = "K-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 437,
+                            Bay = 10,
+                            Code = "K-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 438,
+                            Bay = 10,
+                            Code = "K-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 439,
+                            Bay = 10,
+                            Code = "K-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 440,
+                            Bay = 10,
+                            Code = "K-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 11
+                        },
+                        new
+                        {
+                            Id = 441,
+                            Bay = 1,
+                            Code = "L-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 442,
+                            Bay = 1,
+                            Code = "L-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 443,
+                            Bay = 1,
+                            Code = "L-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 444,
+                            Bay = 1,
+                            Code = "L-01-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 445,
+                            Bay = 2,
+                            Code = "L-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 446,
+                            Bay = 2,
+                            Code = "L-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 447,
+                            Bay = 2,
+                            Code = "L-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 448,
+                            Bay = 2,
+                            Code = "L-02-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 449,
+                            Bay = 3,
+                            Code = "L-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 450,
+                            Bay = 3,
+                            Code = "L-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 451,
+                            Bay = 3,
+                            Code = "L-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 452,
+                            Bay = 3,
+                            Code = "L-03-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 453,
+                            Bay = 4,
+                            Code = "L-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 454,
+                            Bay = 4,
+                            Code = "L-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 455,
+                            Bay = 4,
+                            Code = "L-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 456,
+                            Bay = 4,
+                            Code = "L-04-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 457,
+                            Bay = 5,
+                            Code = "L-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 458,
+                            Bay = 5,
+                            Code = "L-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 459,
+                            Bay = 5,
+                            Code = "L-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 460,
+                            Bay = 5,
+                            Code = "L-05-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 461,
+                            Bay = 6,
+                            Code = "L-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 462,
+                            Bay = 6,
+                            Code = "L-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 463,
+                            Bay = 6,
+                            Code = "L-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 464,
+                            Bay = 6,
+                            Code = "L-06-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 465,
+                            Bay = 7,
+                            Code = "L-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 466,
+                            Bay = 7,
+                            Code = "L-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 467,
+                            Bay = 7,
+                            Code = "L-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 468,
+                            Bay = 7,
+                            Code = "L-07-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 469,
+                            Bay = 8,
+                            Code = "L-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 470,
+                            Bay = 8,
+                            Code = "L-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 471,
+                            Bay = 8,
+                            Code = "L-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 472,
+                            Bay = 8,
+                            Code = "L-08-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 473,
+                            Bay = 9,
+                            Code = "L-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 474,
+                            Bay = 9,
+                            Code = "L-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 475,
+                            Bay = 9,
+                            Code = "L-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 476,
+                            Bay = 9,
+                            Code = "L-09-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 477,
+                            Bay = 10,
+                            Code = "L-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 478,
+                            Bay = 10,
+                            Code = "L-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 479,
+                            Bay = 10,
+                            Code = "L-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 480,
+                            Bay = 10,
+                            Code = "L-10-4",
+                            Level = 4,
+                            MaxQuantity = 40,
+                            RackId = 12
+                        },
+                        new
+                        {
+                            Id = 481,
+                            Bay = 1,
+                            Code = "A-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 482,
+                            Bay = 1,
+                            Code = "A-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 483,
+                            Bay = 1,
+                            Code = "A-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 484,
+                            Bay = 2,
+                            Code = "A-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 485,
+                            Bay = 2,
+                            Code = "A-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 486,
+                            Bay = 2,
+                            Code = "A-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 487,
+                            Bay = 3,
+                            Code = "A-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 488,
+                            Bay = 3,
+                            Code = "A-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 489,
+                            Bay = 3,
+                            Code = "A-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 490,
+                            Bay = 4,
+                            Code = "A-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 491,
+                            Bay = 4,
+                            Code = "A-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 492,
+                            Bay = 4,
+                            Code = "A-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 493,
+                            Bay = 5,
+                            Code = "A-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 494,
+                            Bay = 5,
+                            Code = "A-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 495,
+                            Bay = 5,
+                            Code = "A-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 496,
+                            Bay = 6,
+                            Code = "A-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 497,
+                            Bay = 6,
+                            Code = "A-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 498,
+                            Bay = 6,
+                            Code = "A-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 499,
+                            Bay = 7,
+                            Code = "A-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 500,
+                            Bay = 7,
+                            Code = "A-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 501,
+                            Bay = 7,
+                            Code = "A-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 502,
+                            Bay = 8,
+                            Code = "A-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 503,
+                            Bay = 8,
+                            Code = "A-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 504,
+                            Bay = 8,
+                            Code = "A-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 505,
+                            Bay = 9,
+                            Code = "A-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 506,
+                            Bay = 9,
+                            Code = "A-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 507,
+                            Bay = 9,
+                            Code = "A-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 508,
+                            Bay = 10,
+                            Code = "A-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 509,
+                            Bay = 10,
+                            Code = "A-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 510,
+                            Bay = 10,
+                            Code = "A-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 13
+                        },
+                        new
+                        {
+                            Id = 511,
+                            Bay = 1,
+                            Code = "B-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 512,
+                            Bay = 1,
+                            Code = "B-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 513,
+                            Bay = 1,
+                            Code = "B-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 514,
+                            Bay = 2,
+                            Code = "B-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 515,
+                            Bay = 2,
+                            Code = "B-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 516,
+                            Bay = 2,
+                            Code = "B-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 517,
+                            Bay = 3,
+                            Code = "B-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 518,
+                            Bay = 3,
+                            Code = "B-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 519,
+                            Bay = 3,
+                            Code = "B-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 520,
+                            Bay = 4,
+                            Code = "B-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 521,
+                            Bay = 4,
+                            Code = "B-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 522,
+                            Bay = 4,
+                            Code = "B-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 523,
+                            Bay = 5,
+                            Code = "B-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 524,
+                            Bay = 5,
+                            Code = "B-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 525,
+                            Bay = 5,
+                            Code = "B-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 526,
+                            Bay = 6,
+                            Code = "B-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 527,
+                            Bay = 6,
+                            Code = "B-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 528,
+                            Bay = 6,
+                            Code = "B-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 529,
+                            Bay = 7,
+                            Code = "B-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 530,
+                            Bay = 7,
+                            Code = "B-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 531,
+                            Bay = 7,
+                            Code = "B-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 532,
+                            Bay = 8,
+                            Code = "B-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 533,
+                            Bay = 8,
+                            Code = "B-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 534,
+                            Bay = 8,
+                            Code = "B-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 535,
+                            Bay = 9,
+                            Code = "B-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 536,
+                            Bay = 9,
+                            Code = "B-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 537,
+                            Bay = 9,
+                            Code = "B-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 538,
+                            Bay = 10,
+                            Code = "B-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 539,
+                            Bay = 10,
+                            Code = "B-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 540,
+                            Bay = 10,
+                            Code = "B-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 14
+                        },
+                        new
+                        {
+                            Id = 541,
+                            Bay = 1,
+                            Code = "C-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 542,
+                            Bay = 1,
+                            Code = "C-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 543,
+                            Bay = 1,
+                            Code = "C-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 544,
+                            Bay = 2,
+                            Code = "C-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 545,
+                            Bay = 2,
+                            Code = "C-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 546,
+                            Bay = 2,
+                            Code = "C-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 547,
+                            Bay = 3,
+                            Code = "C-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 548,
+                            Bay = 3,
+                            Code = "C-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 549,
+                            Bay = 3,
+                            Code = "C-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 550,
+                            Bay = 4,
+                            Code = "C-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 551,
+                            Bay = 4,
+                            Code = "C-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 552,
+                            Bay = 4,
+                            Code = "C-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 553,
+                            Bay = 5,
+                            Code = "C-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 554,
+                            Bay = 5,
+                            Code = "C-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 555,
+                            Bay = 5,
+                            Code = "C-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 556,
+                            Bay = 6,
+                            Code = "C-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 557,
+                            Bay = 6,
+                            Code = "C-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 558,
+                            Bay = 6,
+                            Code = "C-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 559,
+                            Bay = 7,
+                            Code = "C-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 560,
+                            Bay = 7,
+                            Code = "C-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 561,
+                            Bay = 7,
+                            Code = "C-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 562,
+                            Bay = 8,
+                            Code = "C-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 563,
+                            Bay = 8,
+                            Code = "C-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 564,
+                            Bay = 8,
+                            Code = "C-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 565,
+                            Bay = 9,
+                            Code = "C-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 566,
+                            Bay = 9,
+                            Code = "C-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 567,
+                            Bay = 9,
+                            Code = "C-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 568,
+                            Bay = 10,
+                            Code = "C-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 569,
+                            Bay = 10,
+                            Code = "C-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 570,
+                            Bay = 10,
+                            Code = "C-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 15
+                        },
+                        new
+                        {
+                            Id = 571,
+                            Bay = 1,
+                            Code = "D-01-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 572,
+                            Bay = 1,
+                            Code = "D-01-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 573,
+                            Bay = 1,
+                            Code = "D-01-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 574,
+                            Bay = 2,
+                            Code = "D-02-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 575,
+                            Bay = 2,
+                            Code = "D-02-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 576,
+                            Bay = 2,
+                            Code = "D-02-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 577,
+                            Bay = 3,
+                            Code = "D-03-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 578,
+                            Bay = 3,
+                            Code = "D-03-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 579,
+                            Bay = 3,
+                            Code = "D-03-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 580,
+                            Bay = 4,
+                            Code = "D-04-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 581,
+                            Bay = 4,
+                            Code = "D-04-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 582,
+                            Bay = 4,
+                            Code = "D-04-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 583,
+                            Bay = 5,
+                            Code = "D-05-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 584,
+                            Bay = 5,
+                            Code = "D-05-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 585,
+                            Bay = 5,
+                            Code = "D-05-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 586,
+                            Bay = 6,
+                            Code = "D-06-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 587,
+                            Bay = 6,
+                            Code = "D-06-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 588,
+                            Bay = 6,
+                            Code = "D-06-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 589,
+                            Bay = 7,
+                            Code = "D-07-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 590,
+                            Bay = 7,
+                            Code = "D-07-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 591,
+                            Bay = 7,
+                            Code = "D-07-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 592,
+                            Bay = 8,
+                            Code = "D-08-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 593,
+                            Bay = 8,
+                            Code = "D-08-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 594,
+                            Bay = 8,
+                            Code = "D-08-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 595,
+                            Bay = 9,
+                            Code = "D-09-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 596,
+                            Bay = 9,
+                            Code = "D-09-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 597,
+                            Bay = 9,
+                            Code = "D-09-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 598,
+                            Bay = 10,
+                            Code = "D-10-1",
+                            Level = 1,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 599,
+                            Bay = 10,
+                            Code = "D-10-2",
+                            Level = 2,
+                            MaxQuantity = 40,
+                            RackId = 16
+                        },
+                        new
+                        {
+                            Id = 600,
+                            Bay = 10,
+                            Code = "D-10-3",
+                            Level = 3,
+                            MaxQuantity = 40,
+                            RackId = 16
                         });
                 });
 
@@ -2495,8 +8404,20 @@ namespace IOMS.DAL.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DockX")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DockY")
+                        .HasColumnType("int");
+
                     b.Property<double?>("Latitude")
                         .HasColumnType("float");
+
+                    b.Property<int?>("LayoutDepth")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LayoutWidth")
+                        .HasColumnType("int");
 
                     b.Property<double?>("Longitude")
                         .HasColumnType("float");
@@ -2516,7 +8437,11 @@ namespace IOMS.DAL.Migrations
                             Id = 1,
                             Address = "1117 Budapest, Példa utca 1.",
                             Capacity = 5000,
+                            DockX = 13,
+                            DockY = 19,
                             Latitude = 47.472999999999999,
+                            LayoutDepth = 20,
+                            LayoutWidth = 26,
                             Longitude = 19.053000000000001,
                             Name = "Budapesti központi raktár"
                         },
@@ -2525,7 +8450,11 @@ namespace IOMS.DAL.Migrations
                             Id = 2,
                             Address = "4031 Debrecen, Minta út 12.",
                             Capacity = 2000,
+                            DockX = 8,
+                            DockY = 11,
                             Latitude = 47.531599999999997,
+                            LayoutDepth = 12,
+                            LayoutWidth = 16,
                             Longitude = 21.627300000000002,
                             Name = "Debreceni raktár"
                         },
@@ -2748,6 +8677,36 @@ namespace IOMS.DAL.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.LocationStock", b =>
+                {
+                    b.HasOne("IOMS.DAL.Entities.StorageLocation", "Location")
+                        .WithMany("Stocks")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IOMS.DAL.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("IOMS.DAL.Entities.Rack", b =>
+                {
+                    b.HasOne("IOMS.DAL.Entities.Warehouse", "Warehouse")
+                        .WithMany("Racks")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.StockMovement", b =>
                 {
                     b.HasOne("IOMS.DAL.Entities.CustomerOrder", "CustomerOrder")
@@ -2779,6 +8738,17 @@ namespace IOMS.DAL.Migrations
                     b.Navigation("SupplierOrder");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("IOMS.DAL.Entities.StorageLocation", b =>
+                {
+                    b.HasOne("IOMS.DAL.Entities.Rack", "Rack")
+                        .WithMany("Locations")
+                        .HasForeignKey("RackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rack");
                 });
 
             modelBuilder.Entity("IOMS.DAL.Entities.SupplierOrder", b =>
@@ -2887,6 +8857,16 @@ namespace IOMS.DAL.Migrations
                     b.Navigation("OrderItems");
                 });
 
+            modelBuilder.Entity("IOMS.DAL.Entities.Rack", b =>
+                {
+                    b.Navigation("Locations");
+                });
+
+            modelBuilder.Entity("IOMS.DAL.Entities.StorageLocation", b =>
+                {
+                    b.Navigation("Stocks");
+                });
+
             modelBuilder.Entity("IOMS.DAL.Entities.Supplier", b =>
                 {
                     b.Navigation("Orders");
@@ -2900,6 +8880,8 @@ namespace IOMS.DAL.Migrations
             modelBuilder.Entity("IOMS.DAL.Entities.Warehouse", b =>
                 {
                     b.Navigation("Inventories");
+
+                    b.Navigation("Racks");
                 });
 #pragma warning restore 612, 618
         }

@@ -37,6 +37,15 @@ public class WarehousesController : ControllerBase
         return warehouse is null ? NotFound() : Ok(warehouse);
     }
 
+    // Belső elrendezés a 3D nézethez; elrendezés nélküli raktárnál HasLayout = false
+    [HttpGet("{id:int}/layout")]
+    [RequirePage(AppPages.Warehouses)]
+    public async Task<ActionResult<WarehouseLayoutData>> GetLayout(int id, CancellationToken ct)
+    {
+        var layout = await _warehouseService.GetLayoutAsync(id, ct);
+        return layout is null ? NotFound() : Ok(layout);
+    }
+
     [HttpPost]
     [RequireAction(AppActions.WarehousesCreate)]
     public async Task<ActionResult<WarehouseData>> Create(SaveWarehouseData data, CancellationToken ct)

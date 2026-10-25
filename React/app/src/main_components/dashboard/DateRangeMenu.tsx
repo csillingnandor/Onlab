@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button, Dropdown, Form } from 'react-bootstrap';
+import { Dropdown, Form } from 'react-bootstrap';
+import Button from '../../common/button/Button.js';
 import '../../common/button/HeaderButton.css';
 import {
   formatIsoDate,

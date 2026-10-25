@@ -19,6 +19,9 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Warehouse> Warehouses { get; set; }
     public DbSet<Inventory> Inventories { get; set; }
     public DbSet<StockMovement> StockMovements { get; set; }
+    public DbSet<Rack> Racks { get; set; }
+    public DbSet<StorageLocation> StorageLocations { get; set; }
+    public DbSet<LocationStock> LocationStocks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

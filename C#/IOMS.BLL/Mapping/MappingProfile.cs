@@ -3,8 +3,10 @@ using IOMS.DAL.Entities;
 using IOMS.DTO;
 using DataMovementType = IOMS.DTO.StockMovementType;
 using DataOrderStatus = IOMS.DTO.OrderStatus;
+using DataRackOrientation = IOMS.DTO.RackOrientation;
 using EntityMovementType = IOMS.DAL.Entities.StockMovementType;
 using EntityOrderStatus = IOMS.DAL.Entities.OrderStatus;
+using EntityRackOrientation = IOMS.DAL.Entities.RackOrientation;
 
 namespace IOMS.BLL.Mapping;
 
@@ -28,6 +30,9 @@ public class MappingProfile : Profile
             : t == EntityMovementType.Receipt ? DataMovementType.Receipt
             : t == EntityMovementType.Shipment ? DataMovementType.Shipment
             : DataMovementType.Adjustment);
+
+        CreateProjection<EntityRackOrientation, DataRackOrientation>().ConvertUsing(o =>
+            o == EntityRackOrientation.Horizontal ? DataRackOrientation.Horizontal : DataRackOrientation.Vertical);
 
         // ---------- Termék
         // A 'since' időpontot a ProductService adja át a ProjectTo paramétereként (az utolsó 7 nap kezdete)
@@ -77,6 +82,30 @@ public class MappingProfile : Profile
             .ForMember(d => d.Items, o => o.MapFrom(ord => ord.Items.OrderBy(i => i.Id)));
 
         // ---------- Raktár
-        CreateProjection<Warehouse, WarehouseData>();
+        CreateProjection<Warehouse, WarehouseData>()
+            .ForMember(d => d.HasLayout, o => o.MapFrom(w => w.LayoutWidth != null));
+
+        // ---------- Raktár belső elrendezése
+        CreateProjection<LocationStock, LocationStockData>()
+            .ForMember(d => d.ProductSku, o => o.MapFrom(s => s.Product.SKU));
+
+        CreateProjection<StorageLocation, StorageLocationData>()
+            .ForMember(d => d.Quantity, o => o.MapFrom(l => l.Stocks.Sum(s => s.Quantity)))
+            .ForMember(d => d.Stocks, o => o.MapFrom(l => l.Stocks.OrderBy(s => s.Product.Name)));
+
+        CreateProjection<Rack, RackData>()
+            .ForMember(d => d.Locations, o => o.MapFrom(r => r.Locations.OrderBy(l => l.Bay).ThenBy(l => l.Level)));
+
+        CreateProjection<Warehouse, WarehouseLayoutData>()
+            .ForMember(d => d.WarehouseId, o => o.MapFrom(w => w.Id))
+            .ForMember(d => d.WarehouseName, o => o.MapFrom(w => w.Name))
+            .ForMember(d => d.HasLayout, o => o.MapFrom(w => w.LayoutWidth != null))
+            .ForMember(d => d.Width, o => o.MapFrom(w => w.LayoutWidth ?? 0))
+            .ForMember(d => d.Depth, o => o.MapFrom(w => w.LayoutDepth ?? 0))
+            .ForMember(d => d.DockX, o => o.MapFrom(w => w.DockX ?? 0))
+            .ForMember(d => d.DockY, o => o.MapFrom(w => w.DockY ?? 0))
+            .ForMember(d => d.Racks, o => o.MapFrom(w => w.Racks.OrderBy(r => r.Code)))
+            // A WarehouseService számolja ki (Inventory − a helyekhez rendelt mennyiség)
+            .ForMember(d => d.UnplacedStock, o => o.Ignore());
     }
 }

@@ -184,9 +184,54 @@ export type Warehouse = {
     capacity: number;
     latitude: number | null; // null, ha nincs megadva hely (a térképen nem jelenik meg)
     longitude: number | null;
+    hasLayout: boolean; // van-e belső elrendezése (3D nézet)
 };
 
 export type WarehouseViewMode = 'table' | 'map';
+
+// A backend WarehouseLayoutData-jának megfelelő alak. A rács egysége 1 m, az origó az alaprajz bal felső sarka,
+// x jobbra, y a bejárat felé nő (a 3D jelenetben: x -> X, y -> Z, a szintek a Y tengelyen).
+export type RackOrientation = 'Horizontal' | 'Vertical';
+
+export type LocationStock = {
+    productId: number;
+    productName: string;
+    productSku: string;
+    quantity: number;
+};
+
+export type StorageLocation = {
+    id: number;
+    code: string; // pl. 'A-03-2': polc, rekesz, szint
+    bay: number; // 1-től
+    level: number; // 1-től, alulról
+    maxQuantity: number;
+    quantity: number; // a stocks összege
+    stocks: LocationStock[];
+};
+
+export type Rack = {
+    id: number;
+    code: string;
+    x: number;
+    y: number;
+    length: number; // rekeszek száma az orientation irányában
+    levels: number;
+    orientation: RackOrientation;
+    locations: StorageLocation[];
+};
+
+export type WarehouseLayout = {
+    warehouseId: number;
+    warehouseName: string;
+    hasLayout: boolean; // false: nincs megadva elrendezés (a méretek 0-k)
+    width: number;
+    depth: number;
+    dockX: number;
+    dockY: number;
+    racks: Rack[];
+    unplacedStock: LocationStock[]; // a depón lévő, helyhez még nem rendelt készlet
+};
 
 // A backend DailyProductSaleData-jának megfelelő alak
 export type DailyProductSale = {

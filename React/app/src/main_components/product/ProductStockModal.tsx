@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Alert, Button, Modal, Spinner, Table } from 'react-bootstrap';
+import { Alert, Modal, Spinner, Table } from 'react-bootstrap';
+import Button from '../../common/button/Button.js';
 import productService from '../../services/productService.js';
 import type { Product, StockMovement, StockMovementType } from '../../util/Types.js';
 import { dateTimeFormatter } from '../../util/format.js';

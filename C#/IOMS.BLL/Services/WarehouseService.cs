@@ -37,6 +37,40 @@ public class WarehouseService : IWarehouseService
             .SingleOrDefaultAsync(ct);
     }
 
+    public async Task<WarehouseLayoutData?> GetLayoutAsync(int id, CancellationToken ct = default)
+    {
+        // Polconként sok hely és helyenként több termék: külön lekérdezésekben, hogy ne sokszorozódjanak a sorok
+        var layout = await _context.Warehouses
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(w => w.Id == id)
+            .ProjectTo<WarehouseLayoutData>(_mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync(ct);
+        if (layout is null)
+            return null;
+
+        // Ami a raktár készletéből nincs helyhez rendelve, az a depón van
+        var unplaced = await _context.Inventories
+            .AsNoTracking()
+            .Where(i => i.WarehouseId == id)
+            .Select(i => new
+            {
+                i.ProductId,
+                i.Product.Name,
+                i.Product.SKU,
+                Quantity = i.Quantity - (_context.LocationStocks
+                    .Where(s => s.ProductId == i.ProductId && s.Location.Rack.WarehouseId == id)
+                    .Sum(s => (int?)s.Quantity) ?? 0),
+            })
+            .ToListAsync(ct);
+
+        layout.UnplacedStock = [.. unplaced
+            .Where(u => u.Quantity > 0)
+            .OrderBy(u => u.Name)
+            .Select(u => new LocationStockData { ProductId = u.ProductId, ProductName = u.Name, ProductSku = u.SKU, Quantity = u.Quantity })];
+        return layout;
+    }
+
     public async Task<WarehouseData> CreateAsync(SaveWarehouseData data, CancellationToken ct = default)
     {
         var warehouse = new Warehouse();

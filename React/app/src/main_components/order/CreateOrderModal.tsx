@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Col, Form, Row, Spinner, Table } from 'react-bootstrap';
+import { Col, Form, Row, Spinner, Table } from 'react-bootstrap';
+import Button from '../../common/button/Button.js';
 import FormModal from '../../common/modal/FormModal.js';
 import productService from '../../services/productService.js';
 import warehouseService from '../../services/warehouseService.js';

@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Alert, Button, Modal, Spinner } from 'react-bootstrap';
+import { Alert, Modal, Spinner } from 'react-bootstrap';
+import Button from '../button/Button.js';
 import { useI18n } from '../../i18n/useI18n.js';
 
 type ConfirmModalProps = {

@@ -10,4 +10,7 @@ public class WarehouseData
     // null, ha a raktárnak nincs megadva helye (ilyenkor a térképen nem jelenik meg)
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+
+    // Van-e belső elrendezése (3D nézet: GET api/warehouses/{id}/layout)
+    public bool HasLayout { get; set; }
 }

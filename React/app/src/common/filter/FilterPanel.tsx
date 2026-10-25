@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { Button, Row } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
+import Button from '../button/Button.js';
 import { useI18n } from '../../i18n/useI18n.js';
 import './Filter.css';
 

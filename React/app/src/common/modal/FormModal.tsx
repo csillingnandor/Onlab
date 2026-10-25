@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from 'react';
-import { Alert, Button, Form, Modal, Spinner } from 'react-bootstrap';
+import { Alert, Form, Modal, Spinner } from 'react-bootstrap';
+import Button from '../button/Button.js';
 import { useI18n } from '../../i18n/useI18n.js';
 
 type FormModalProps = {

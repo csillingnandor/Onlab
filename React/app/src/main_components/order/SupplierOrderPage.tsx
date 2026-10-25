@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import Button from '../../common/button/Button.js';
 import supplierOrderService from '../../services/supplierOrderService.js';
 import supplierService from '../../services/supplierService.js';
 import type { NewOrderItem, SupplierOrder } from '../../util/Types.js';

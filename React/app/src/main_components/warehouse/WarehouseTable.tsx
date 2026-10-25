@@ -7,6 +7,8 @@ type WarehouseTableProps = {
   // Nincs megadva: nincs hozzá jogosultság, a gomb nem jelenik meg (ha egyik sincs, az oszlop sem)
   onEdit?: ((warehouse: Warehouse) => void) | undefined;
   onDelete?: ((warehouse: Warehouse) => void) | undefined;
+  // Belső elrendezés (3D nézet); csak az elrendezéssel rendelkező raktáraknál jelenik meg
+  onShowLayout?: ((warehouse: Warehouse) => void) | undefined;
 };
 
 function formatCoordinates(warehouse: Warehouse) {
@@ -17,8 +19,8 @@ function formatCoordinates(warehouse: Warehouse) {
   return `${warehouse.latitude.toFixed(4)}, ${warehouse.longitude.toFixed(4)}`;
 }
 
-export default function WarehouseTable({ warehouses, onEdit, onDelete }: WarehouseTableProps) {
-  const showActions = onEdit !== undefined || onDelete !== undefined;
+export default function WarehouseTable({ warehouses, onEdit, onDelete, onShowLayout }: WarehouseTableProps) {
+  const showActions = onEdit !== undefined || onDelete !== undefined || onShowLayout !== undefined;
 
   return (
     <div className="data-table-wrapper">
@@ -45,6 +47,14 @@ export default function WarehouseTable({ warehouses, onEdit, onDelete }: Warehou
                     itemLabel={warehouse.name}
                     onEdit={onEdit && (() => onEdit(warehouse))}
                     onDelete={onDelete && (() => onDelete(warehouse))}
+                    extraActions={onShowLayout && warehouse.hasLayout
+                      ? [{
+                        icon: 'bi-grid-3x3-gap',
+                        label: 'Elrendezés',
+                        ariaLabel: `${warehouse.name} belső elrendezése`,
+                        onClick: () => onShowLayout(warehouse),
+                      }]
+                      : []}
                   />
                 </td>
               )}

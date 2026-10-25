@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from 'react';
-import { Alert, Button, Form, Spinner } from 'react-bootstrap';
+import { Alert, Form, Spinner } from 'react-bootstrap';
+import Button from '../common/button/Button.js';
 import { useAuth } from './useAuth.js';
 import { useI18n } from '../i18n/useI18n.js';
 import ThemeToggle from '../header_components/ThemeToggle.js';
 import LanguageSelect from '../header_components/LanguageSelect.js';
 import './LoginPage.css';
+import logoUrl from '../assets/3d-delivery-box-parcel.png';
 
 // Bejelentkezés nélkül csak ez az oldal látszik (App.tsx)
 export default function LoginPage() {
@@ -38,7 +40,7 @@ export default function LoginPage() {
 
       <Form className="login-card" onSubmit={handleSubmit}>
         <div className="login-brand">
-          <img src="src/assets/3d-delivery-box-parcel.png" alt="" width="48" height="48" />
+          <img src={logoUrl} alt="" width="48" height="48" />
           <h1>IOMS</h1>
           <p>Order & Inventory</p>
         </div>

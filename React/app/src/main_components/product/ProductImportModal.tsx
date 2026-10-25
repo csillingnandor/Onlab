@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Alert, Badge, Button, Form, Modal, Spinner, Table } from 'react-bootstrap';
+import { Alert, Badge, Form, Modal, Spinner, Table } from 'react-bootstrap';
+import Button from '../../common/button/Button.js';
 import productService from '../../services/productService.js';
 import type { ProductImportPreview, ProductImportResult, ProductImportRow } from '../../util/Types.js';
 import { priceFormatter } from '../../util/format.js';

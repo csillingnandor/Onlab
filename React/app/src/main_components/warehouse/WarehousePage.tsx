@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import warehouseService from '../../services/warehouseService.js';
 import type { Warehouse } from '../../util/Types.js';
 import { countActive } from '../../common/filter/filterUtils.js';
@@ -19,6 +20,7 @@ const byName = (a: Warehouse, b: Warehouse) => a.name.localeCompare(b.name, 'hu'
 
 export default function WarehousePage() {
   const { hasAction } = useAuth();
+  const navigate = useNavigate();
   // undefined: zárva, null: új raktár, egyébként a szerkesztett
   const [editing, setEditing] = useState<Warehouse | null | undefined>(undefined);
   const [deleting, setDeleting] = useState<Warehouse | null>(null);
@@ -93,6 +95,7 @@ export default function WarehousePage() {
           warehouses={visibleWarehouses}
           onEdit={hasAction('warehouses.edit') ? setEditing : undefined}
           onDelete={hasAction('warehouses.delete') ? setDeleting : undefined}
+          onShowLayout={(warehouse) => navigate(`/warehouse/${warehouse.id}/layout`)}
         />
       )
       : <WarehouseMap warehouses={visibleWarehouses} />;

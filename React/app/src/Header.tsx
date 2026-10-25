@@ -4,6 +4,8 @@ import LanguageSelect from './header_components/LanguageSelect.js';
 import { useAuth } from './auth/useAuth.js';
 import { useI18n } from './i18n/useI18n.js';
 import './Header.css';
+// Importálva a Vite a buildbe is átmásolja, és minden útvonalon (pl. /warehouse/1/layout) jó címet ad
+import defaultLogoUrl from './assets/3d-delivery-box-parcel.png';
 
 type HeaderProps = {
   appName?: string;
@@ -12,7 +14,7 @@ type HeaderProps = {
 
 export default function Header({
   appName = "IOMS - Order & Inventory",
-  logoUrl = "src/assets/3d-delivery-box-parcel.png"
+  logoUrl = defaultLogoUrl
 }: HeaderProps) {
   const { user, logout } = useAuth();
   const { t } = useI18n();
