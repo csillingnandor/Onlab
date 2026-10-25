@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (.NET)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: C#
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore IOMS.slnx
+
+      - name: Build
+        run: dotnet build IOMS.slnx --configuration Release --no-restore
+
+      # Hibát jelez, ha az entitások / konfigurációk módosultak, de nincs hozzájuk migráció
+      - name: Check for missing migrations
+        working-directory: .
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+        run: |
+          dotnet tool restore
+          dotnet ef migrations has-pending-model-changes --project C#/IOMS.DAL --startup-project C#/IOMS.API --configuration Release --no-build
+
+  frontend:
+    name: Frontend (React)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: React/app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: React/app/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # A vite build nem ellenőrzi a típusokat
+      - name: Type check
+        run: npx tsc --noEmit -p .
+
+      - name: Build
+        run: npm run build

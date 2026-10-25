@@ -11,7 +11,7 @@ public interface IEmailSender
     Task SendAsync(EmailMessage message, CancellationToken ct = default);
 }
 
-// MailKit alapú küldés: SMTP-n, vagy (PickupDirectory esetén) .eml fájlba
+// MailKit alapú küldés: SMTP-n, vagy (Host nélkül, PickupDirectory esetén) .eml fájlba
 internal class EmailSender : IEmailSender
 {
     private readonly EmailOptions _options;
@@ -38,7 +38,7 @@ internal class EmailSender : IEmailSender
         mime.Subject = message.Subject;
         mime.Body = new BodyBuilder { HtmlBody = message.HtmlBody }.ToMessageBody();
 
-        if (!string.IsNullOrWhiteSpace(_options.PickupDirectory))
+        if (string.IsNullOrWhiteSpace(_options.Host) && !string.IsNullOrWhiteSpace(_options.PickupDirectory))
         {
             Directory.CreateDirectory(_options.PickupDirectory);
             var path = Path.Combine(_options.PickupDirectory, $"{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.eml");

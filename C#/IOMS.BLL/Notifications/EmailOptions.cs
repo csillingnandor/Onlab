@@ -1,7 +1,8 @@
 namespace IOMS.BLL.Notifications;
 
-// appsettings "Email" szekció. Ha a PickupDirectory meg van adva, a levelek .eml fájlként ebbe a mappába kerülnek
-// (fejlesztéshez, SMTP-szerver nélkül is megnézhetők); egyébként a megadott SMTP-szerveren mennek ki.
+// appsettings "Email" szekció. Ha a Host meg van adva, a levelek a megadott SMTP-szerveren mennek ki
+// (fejlesztéshez: Ethereal, a hozzáférés user-secrets-ben); egyébként, ha a PickupDirectory meg van adva,
+// .eml fájlként ebbe a mappába kerülnek (SMTP-szerver nélkül is megnézhetők).
 public class EmailOptions
 {
     public const string SectionName = "Email";

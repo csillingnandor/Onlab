@@ -29,7 +29,7 @@
 -Ethereal
 -AI agenttel riport készítése
 -Rendelés predikció
--CD/CD
+-CI/CD
 -Időszakos készletigény számítás agenttel
 -Útvonal, gps követése applikációból, dinamikus státsz
 -Útvonal tervezés atutomatába, címre
