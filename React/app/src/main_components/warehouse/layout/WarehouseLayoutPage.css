@@ -130,6 +130,81 @@
   flex-shrink: 0;
 }
 
+/* Felvételi útvonal */
+.layout3d-route-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--app-text);
+}
+
+.layout3d-route-summary strong {
+  color: var(--app-heading);
+}
+
+.layout3d-stops {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.layout3d-stops > li {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--app-border-subtle);
+}
+
+.layout3d-stops > li:first-child {
+  border-top: none;
+}
+
+.layout3d-stops .layout3d-stock-list {
+  flex: 1;
+  min-width: 0;
+}
+
+.layout3d-stops .layout3d-stock-list li {
+  border-top: none;
+  padding: 0.1rem 0;
+}
+
+.layout3d-stop-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #198754;
+  border-radius: 50%;
+}
+
+/* Helykód, amelyre kattintva a hely kijelölődik a 3D nézetben */
+.layout3d-link {
+  display: block;
+  padding: 0;
+  font-size: 0.8rem;
+  font-family: var(--bs-font-monospace);
+  color: var(--app-accent-text);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.layout3d-link:hover {
+  color: var(--app-accent-text-hover);
+}
+
 .layout3d-scene {
   position: relative;
   width: 100%;

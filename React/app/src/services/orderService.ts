@@ -1,4 +1,4 @@
-import type { CustomerOrder, CustomerOrderItem, NewOrderItem } from '../util/Types.js';
+import type { CustomerOrder, CustomerOrderItem, NewOrderItem, PickRoute } from '../util/Types.js';
 import { apiFetch, postJson, putJson, readValidationErrors } from '../util/apiErrors.js';
 
 const ORDERS_URL = import.meta.env.VITE_API_BASE_URL + '/customerorders';
@@ -43,6 +43,18 @@ const orderService = {
     if (response.status === 404) throw new Error('A rendelés már nem létezik.');
     if (response.status === 409) throw new Error(await readValidationErrors(response, 'A művelet nem hajtható végre.'));
     if (!response.ok) throw new Error('Nem sikerült a rendelés állapotának módosítása.');
+    return response.json();
+  },
+
+  // Függő rendelés felvételi körútja a kiszolgáló raktárban (3D raktárnézet).
+  // 409: már nem függő, 400: a raktárnak nincs elrendezése (az üzenetet a backend adja).
+  getPickRoute: async (id: number): Promise<PickRoute> => {
+    const response = await apiFetch(`${ORDERS_URL}/${id}/pick-route`);
+    if (response.status === 404) throw new Error('A rendelés már nem létezik.');
+    if (response.status === 400 || response.status === 409) {
+      throw new Error(await readValidationErrors(response, 'Ehhez a rendeléshez nem tervezhető útvonal.'));
+    }
+    if (!response.ok) throw new Error('Nem sikerült a felvételi útvonal betöltése.');
     return response.json();
   },
 

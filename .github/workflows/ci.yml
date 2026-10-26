@@ -33,6 +33,9 @@ jobs:
       - name: Build
         run: dotnet build IOMS.slnx --configuration Release --no-restore
 
+      - name: Test
+        run: dotnet test IOMS.slnx --configuration Release --no-build
+
       # Hibát jelez, ha az entitások / konfigurációk módosultak, de nincs hozzájuk migráció
       - name: Check for missing migrations
         working-directory: .

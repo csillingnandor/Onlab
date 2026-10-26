@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Form, Spinner } from 'react-bootstrap';
 import warehouseService from '../../../services/warehouseService.js';
-import type { WarehouseLayout } from '../../../util/Types.js';
+import orderService from '../../../services/orderService.js';
+import type { CustomerOrder, PickRoute, WarehouseLayout } from '../../../util/Types.js';
 import ViewModeToggle, { type ViewModeOption } from '../../../common/button/ViewModeToggle.js';
 import { useTheme } from '../../../theme/useTheme.js';
 import WarehouseScene, { type LayoutViewMode } from './WarehouseScene.js';
 import LocationPanel from './LocationPanel.js';
+import RoutePanel from './RoutePanel.js';
 import { scenePalette } from './scenePalette.js';
 import '../WarehousePage.css';
 import './WarehouseLayoutPage.css';
@@ -16,17 +18,25 @@ const viewModeOptions: ViewModeOption<LayoutViewMode>[] = [
   { value: 'top', label: 'Felülnézet', icon: 'bi-grid-3x3' },
 ];
 
-// Egy raktár belső elrendezése 3D-ben (csak megtekintés): polcok, tárolóhelyek telítettsége,
-// a kiválasztott hely tartalma és a depón lévő, még el nem helyezett készlet.
+// Egy raktár belső elrendezése 3D-ben: polcok, tárolóhelyek telítettsége, a kiválasztott hely tartalma,
+// a depón lévő, még el nem helyezett készlet, és egy függő rendelés felvételi útvonala (?order=<id>).
 export default function WarehouseLayoutPage() {
   const { id } = useParams();
   const warehouseId = Number(id);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const orderParam = Number(searchParams.get('order'));
+  const selectedOrderId = Number.isInteger(orderParam) && orderParam > 0 ? orderParam : null;
   const { theme } = useTheme();
   const [layout, setLayout] = useState<WarehouseLayout | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<LayoutViewMode>('3d');
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [highlightProductId, setHighlightProductId] = useState<number | null>(null);
+  const [orders, setOrders] = useState<CustomerOrder[] | null>(null);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
+  const [route, setRoute] = useState<PickRoute | null>(null);
+  const [routeError, setRouteError] = useState<string | null>(null);
+  const [playing, setPlaying] = useState<boolean>(true);
 
   useEffect(() => {
     let ignore = false; // StrictMode dupla futtatásánál a régi választ eldobjuk
@@ -44,7 +54,60 @@ export default function WarehouseLayoutPage() {
     };
   }, [warehouseId]);
 
+  // A raktárból kiszállításra váró (függő) rendelések az útvonaltervezéshez
+  useEffect(() => {
+    let ignore = false;
+
+    orderService.getAll()
+      .then((data) => {
+        if (!ignore) setOrders(data.filter((o) => o.warehouseId === warehouseId && o.status === 'Pending'));
+      })
+      .catch(() => {
+        if (!ignore) setOrdersError('A rendelések nem érhetők el (nincs hozzá jogosultság, vagy hiba történt).');
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [warehouseId]);
+
+  // A kiválasztott rendelés körútja; rendelésváltáskor az előző eltűnik, amíg az új betöltődik
+  useEffect(() => {
+    if (selectedOrderId === null) return;
+    let ignore = false;
+
+    orderService.getPickRoute(selectedOrderId)
+      .then((data) => {
+        if (!ignore) setRoute(data);
+      })
+      .catch((err: unknown) => {
+        if (!ignore) setRouteError(err instanceof Error ? err.message : 'Ismeretlen hiba történt.');
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [selectedOrderId]);
+
+  const selectOrder = (orderId: number | null) => {
+    setRoute(null);
+    setRouteError(null);
+    setPlaying(true);
+    setHighlightProductId(null);
+    setSearchParams(orderId === null ? {} : { order: String(orderId) }, { replace: true });
+  };
+
   const locations = useMemo(() => layout?.racks.flatMap((rack) => rack.locations) ?? [], [layout]);
+
+  // Kiemelés: a felvételi útvonal helyei, különben a kiválasztott termék helyei
+  const highlightLocationIds = useMemo(() => {
+    if (route) {
+      return new Set(route.stops.flatMap((s) => s.picks.map((p) => p.locationId)).filter((x): x is number => x !== null));
+    }
+    if (highlightProductId === null) return null;
+    return new Set(locations.filter((l) => l.stocks.some((s) => s.productId === highlightProductId)).map((l) => l.id));
+  }, [route, highlightProductId, locations]);
+  const highlightLabel = route ? 'A felvétel helyei' : highlightProductId !== null ? 'A kiválasztott termék helyei' : null;
   const selectedLocation = locations.find((l) => l.id === selectedLocationId) ?? null;
 
   // A kiemelhető termékek: amelyek legalább egy helyen megtalálhatók
@@ -82,7 +145,9 @@ export default function WarehouseLayoutPage() {
             mode={mode}
             palette={scenePalette(theme)}
             selectedLocationId={selectedLocationId}
-            highlightProductId={highlightProductId}
+            highlightLocationIds={highlightLocationIds}
+            route={route}
+            routePlaying={playing}
             onSelect={setSelectedLocationId}
           />
         </div>
@@ -90,8 +155,22 @@ export default function WarehouseLayoutPage() {
           location={selectedLocation}
           unplacedStock={layout.unplacedStock}
           palette={scenePalette(theme)}
-          highlightActive={highlightProductId !== null}
-        />
+          highlightLabel={highlightLabel}
+          showRouteLegend={route !== null}
+        >
+          <RoutePanel
+            orders={orders}
+            ordersError={ordersError}
+            selectedOrderId={selectedOrderId}
+            onSelectOrder={selectOrder}
+            route={route}
+            routeLoading={selectedOrderId !== null && route === null && routeError === null}
+            routeError={routeError}
+            playing={playing}
+            onTogglePlaying={() => setPlaying((prev) => !prev)}
+            onSelectLocation={setSelectedLocationId}
+          />
+        </LocationPanel>
       </div>
     );
   };

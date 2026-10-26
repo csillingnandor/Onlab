@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../common/button/Button.js';
 import orderService, { type OrderAction } from '../../services/orderService.js';
 import customerService from '../../services/customerService.js';
@@ -39,7 +40,8 @@ const actionsFor = (order: CustomerOrder): OrderAction[] =>
   order.status === 'Pending' ? ['cancel', 'ship'] : order.status === 'Shipped' ? ['deliver'] : [];
 
 export default function CustomerOrderPage() {
-  const { hasAction } = useAuth();
+  const { hasAction, hasPage } = useAuth();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -236,6 +238,17 @@ export default function CustomerOrderPage() {
               onToggle={() => toggleOrder(order.id)}
               actions={
                 <>
+                  {/* Felvételi útvonal a kiszolgáló raktár 3D nézetében */}
+                  {order.status === 'Pending' && hasPage('warehouses') && (
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => navigate(`/warehouse/${order.warehouseId}/layout?order=${order.id}`)}
+                    >
+                      <i className="bi bi-signpost-split me-1" aria-hidden="true"></i>
+                      Útvonal
+                    </Button>
+                  )}
                   {order.status === 'Pending' && hasAction('customer-orders.edit') && (
                     <Button variant="outline-secondary" size="sm" onClick={() => setEditing(order)}>
                       <i className="bi bi-pencil me-1" aria-hidden="true"></i>

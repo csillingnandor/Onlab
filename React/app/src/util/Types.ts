@@ -233,6 +233,34 @@ export type WarehouseLayout = {
     unplacedStock: LocationStock[]; // a depón lévő, helyhez még nem rendelt készlet
 };
 
+// A backend PickRouteData-jának megfelelő alak: függő rendelés felvételi körútja (depó -> megállók -> depó)
+export type GridPoint = { x: number; y: number };
+
+export type PickLine = {
+    locationId: number | null; // null: depóról / hiány
+    locationCode: string | null;
+    productId: number;
+    productName: string;
+    quantity: number;
+};
+
+export type PickStop = {
+    sequence: number; // 1-től, bejárási sorrendben
+    x: number; // a folyosócella, ahol meg kell állni
+    y: number;
+    picks: PickLine[];
+};
+
+export type PickRoute = {
+    orderId: number;
+    warehouseId: number;
+    distance: number; // méter
+    path: GridPoint[]; // cellánként, a depótól a depóig
+    stops: PickStop[];
+    fromDock: PickLine[];
+    shortages: PickLine[];
+};
+
 // A backend DailyProductSaleData-jának megfelelő alak
 export type DailyProductSale = {
     date: string; // 'YYYY-MM-DD', időpont nélkül

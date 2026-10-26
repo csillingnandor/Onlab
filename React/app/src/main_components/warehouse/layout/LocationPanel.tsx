@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { LocationStock, StorageLocation } from '../../../util/Types.js';
 import type { ScenePalette } from './scenePalette.js';
 
@@ -5,7 +6,9 @@ type LocationPanelProps = {
   location: StorageLocation | null; // a 3D nézetben kiválasztott hely
   unplacedStock: LocationStock[];
   palette: ScenePalette;
-  highlightActive: boolean; // termékkiemelés van érvényben (más a jelmagyarázat)
+  highlightLabel: string | null; // kiemelés van érvényben (pl. 'A felvétel helyei'): más a jelmagyarázat
+  showRouteLegend: boolean;
+  children?: ReactNode; // a panel elejére kerülő további szakasz (felvételi útvonal)
 };
 
 function StockList({ stocks }: { stocks: LocationStock[] }) {
@@ -25,20 +28,32 @@ function StockList({ stocks }: { stocks: LocationStock[] }) {
 }
 
 // A 3D nézet melletti panel: a kiválasztott tárolóhely tartalma, jelmagyarázat és a depón lévő készlet
-export default function LocationPanel({ location, unplacedStock, palette, highlightActive }: LocationPanelProps) {
-  const legend = highlightActive
+export default function LocationPanel({
+  location,
+  unplacedStock,
+  palette,
+  highlightLabel,
+  showRouteLegend,
+  children,
+}: LocationPanelProps) {
+  const legend = highlightLabel
     ? [
-      { color: palette.highlight, label: 'A kiválasztott termék helyei' },
-      { color: palette.emptyBin, label: 'Más termék / üres hely' },
+      { color: palette.highlight, label: highlightLabel },
+      { color: palette.emptyBin, label: 'Más / üres hely' },
     ]
     : [
       { color: palette.fillLow, label: 'Alig foglalt' },
       { color: palette.fillHigh, label: 'Tele' },
       { color: palette.emptyBin, label: 'Üres (áttetsző)' },
     ];
+  if (showRouteLegend) {
+    legend.push({ color: palette.route, label: 'Útvonal és megállók' }, { color: palette.picker, label: 'Árufelvevő' });
+  }
 
   return (
     <aside className="layout3d-panel">
+      {children}
+
       <section>
         <h2>Tárolóhely</h2>
         {location ? (

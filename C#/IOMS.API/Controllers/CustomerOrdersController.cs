@@ -14,11 +14,14 @@ public class CustomerOrdersController : ControllerBase
 {
     private readonly ICustomerOrderService _orderService;
     private readonly IValidator<CreateCustomerOrderData> _createValidator;
+    private readonly IPickRouteService _pickRoutes;
 
-    public CustomerOrdersController(ICustomerOrderService orderService, IValidator<CreateCustomerOrderData> createValidator)
+    public CustomerOrdersController(
+        ICustomerOrderService orderService, IValidator<CreateCustomerOrderData> createValidator, IPickRouteService pickRoutes)
     {
         _orderService = orderService;
         _createValidator = createValidator;
+        _pickRoutes = pickRoutes;
     }
 
     [HttpGet]
@@ -34,6 +37,16 @@ public class CustomerOrdersController : ControllerBase
     {
         var order = await _orderService.GetByIdAsync(id, ct);
         return order is null ? NotFound() : Ok(order);
+    }
+
+    // Függő rendelés felvételi körútja a kiszolgáló raktárban (3D nézet); 409, ha nem függő,
+    // 400, ha a raktárnak nincs elrendezése
+    [HttpGet("{id:int}/pick-route")]
+    [RequirePage(AppPages.CustomerOrders, AppPages.Warehouses)]
+    public async Task<ActionResult<PickRouteData>> GetPickRoute(int id, CancellationToken ct)
+    {
+        var route = await _pickRoutes.GetForOrderAsync(id, ct);
+        return route is null ? NotFound() : Ok(route);
     }
 
     [HttpPost]

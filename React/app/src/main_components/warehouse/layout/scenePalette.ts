@@ -16,6 +16,8 @@ export type ScenePalette = {
   fillHigh: string; // tele
   highlight: string; // a kiválasztott termék helyei
   selected: string;
+  route: string; // felvételi útvonal és megállók
+  picker: string; // az útvonalon haladó "targonca"
   labelText: string;
   labelBackground: string;
   labelBorder: string;
@@ -35,6 +37,8 @@ const palettes: Record<Theme, ScenePalette> = {
     fillHigh: '#0a58ca',
     highlight: '#fd7e14',
     selected: '#d63384',
+    route: '#198754',
+    picker: '#dc3545',
     labelText: '#212529',
     labelBackground: '#ffffff',
     labelBorder: '#adb5bd',
@@ -52,6 +56,8 @@ const palettes: Record<Theme, ScenePalette> = {
     fillHigh: '#9ec5fe',
     highlight: '#fd9843',
     selected: '#e685b5',
+    route: '#4cc38a',
+    picker: '#ff6b6b',
     labelText: '#f8f9fa',
     labelBackground: '#212529',
     labelBorder: '#6c757d',

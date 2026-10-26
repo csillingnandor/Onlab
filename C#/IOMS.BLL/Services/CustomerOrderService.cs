@@ -2,6 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using IOMS.BLL.Exceptions;
 using IOMS.BLL.Notifications;
+using IOMS.BLL.Warehousing;
 using IOMS.DAL;
 using IOMS.DAL.Entities;
 using IOMS.DTO;
@@ -16,12 +17,14 @@ public class CustomerOrderService : ICustomerOrderService
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
     private readonly INotificationService _notifications;
+    private readonly IPickRouteService _pickRoutes;
 
-    public CustomerOrderService(AppDbContext context, IMapper mapper, INotificationService notifications)
+    public CustomerOrderService(AppDbContext context, IMapper mapper, INotificationService notifications, IPickRouteService pickRoutes)
     {
         _context = context;
         _mapper = mapper;
         _notifications = notifications;
+        _pickRoutes = pickRoutes;
     }
 
     public async Task<IReadOnlyList<CustomerOrderData>> GetAllAsync(CancellationToken ct = default)
@@ -172,6 +175,11 @@ public class CustomerOrderService : ICustomerOrderService
             .Select(g => new { g.Key.ProductId, ProductName = g.Key.Name, Quantity = g.Sum(i => i.Quantity) })
             .ToListAsync(ct);
 
+        // Elrendezéssel rendelkező raktárnál a felvételi terv szerint a helyenkénti készlet is csökken
+        // (ugyanaz a terv, amit a 3D nézet útvonalként mutat); null, ha nincs elrendezés
+        var pickPlan = await _pickRoutes.PlanPicksAsync(
+            order.WarehouseId, lines.ToDictionary(l => l.ProductId, l => l.Quantity), ct);
+
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
         // Feltételes, atomi státuszváltás: két egyidejű kérésből csak az egyik jut tovább
@@ -211,6 +219,9 @@ public class CustomerOrderService : ICustomerOrderService
             .Where(i => i.WarehouseId == order.WarehouseId && productIds.Contains(i.ProductId) && i.Quantity == 0)
             .ExecuteDeleteAsync(ct);
 
+        foreach (var pick in pickPlan?.Picks.Where(p => p.LocationId is not null) ?? [])
+            await TakeFromLocationAsync(id, pick, ct);
+
         var now = DateTime.UtcNow;
         foreach (var line in lines)
         {
@@ -232,6 +243,23 @@ public class CustomerOrderService : ICustomerOrderService
         await _notifications.CustomerOrderStatusChangedAsync(result, ct);
         await _notifications.StockDecreasedAsync(lines.ToDictionary(l => l.ProductId, l => l.Quantity), ct);
         return result;
+    }
+
+    // Egy felvétel levonása a tárolóhelyről. A helyen 0 darab nem maradhat (CK_LocationStock_Quantity),
+    // ezért ha az egészet elvisszük, a sor törlődik. Ha közben megváltozott a hely készlete, a kiszállítás meghiúsul.
+    private async Task TakeFromLocationAsync(int orderId, PlannedPick pick, CancellationToken ct)
+    {
+        var stocks = _context.LocationStocks.Where(s => s.LocationId == pick.LocationId && s.ProductId == pick.ProductId);
+
+        var changed = await stocks.Where(s => s.Quantity == pick.Quantity).ExecuteDeleteAsync(ct);
+        if (changed == 0)
+            changed = await stocks
+                .Where(s => s.Quantity > pick.Quantity)
+                .ExecuteUpdateAsync(s => s.SetProperty(x => x.Quantity, x => x.Quantity - pick.Quantity), ct);
+
+        if (changed == 0)
+            throw new ConflictException(nameof(orderId),
+                $"A {orderId} azonosítójú rendelés egyik tárolóhelyének készlete időközben megváltozott, próbáld újra.");
     }
 
     // Kézbesítés: Shipped -> Delivered. Csak státuszváltás, a készlet a kiszállításkor már csökkent;

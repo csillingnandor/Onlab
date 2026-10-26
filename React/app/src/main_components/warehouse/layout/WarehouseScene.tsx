@@ -2,8 +2,9 @@ import { useMemo, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { Grid, Line, OrbitControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei';
 import { Color } from 'three';
-import type { Rack, StorageLocation, WarehouseLayout } from '../../../util/Types.js';
+import type { PickRoute, Rack, StorageLocation, WarehouseLayout } from '../../../util/Types.js';
 import InstancedBoxes from './InstancedBoxes.js';
+import RouteOverlay from './RouteOverlay.js';
 import TextSprite from './TextSprite.js';
 import {
   fillRatio,
@@ -22,7 +23,10 @@ type WarehouseSceneProps = {
   mode: LayoutViewMode;
   palette: ScenePalette;
   selectedLocationId: number | null;
-  highlightProductId: number | null; // ennek a terméknek a helyei kiemelve, a többi foglalt hely halványan
+  // Kiemelt helyek (pl. egy termék vagy a felvételi útvonal helyei); a többi foglalt hely ilyenkor halvány
+  highlightLocationIds: ReadonlySet<number> | null;
+  route: PickRoute | null;
+  routePlaying: boolean;
   onSelect: (locationId: number | null) => void;
 };
 
@@ -82,7 +86,9 @@ export default function WarehouseScene({
   mode,
   palette,
   selectedLocationId,
-  highlightProductId,
+  highlightLocationIds,
+  route,
+  routePlaying,
   onSelect,
 }: WarehouseSceneProps) {
   const [hovered, setHovered] = useState<PlacedLocation | null>(null);
@@ -109,10 +115,10 @@ export default function WarehouseScene({
     const dimmed = new Color(palette.emptyBin);
     return stocked.map(({ location }) => {
       if (location.id === selectedLocationId) return selected;
-      if (highlightProductId === null) return fillColor(palette, fillRatio(location));
-      return location.stocks.some((s) => s.productId === highlightProductId) ? highlight : dimmed;
+      if (highlightLocationIds === null) return fillColor(palette, fillRatio(location));
+      return highlightLocationIds.has(location.id) ? highlight : dimmed;
     });
-  }, [stocked, palette, selectedLocationId, highlightProductId]);
+  }, [stocked, palette, selectedLocationId, highlightLocationIds]);
 
   const emptyColors = useMemo(() => {
     const selected = new Color(palette.selected);
@@ -195,6 +201,8 @@ export default function WarehouseScene({
           onClick={(i) => onSelect(empty[i]?.location.id ?? null)}
           onHover={(i) => setHovered(i === null ? null : empty[i] ?? null)}
         />
+
+        {route && <RouteOverlay route={route} palette={palette} playing={routePlaying} fixedSizeLabels={mode === '3d'} />}
       </Canvas>
       {hovered && (
         <div className="layout3d-hover" aria-hidden="true">
